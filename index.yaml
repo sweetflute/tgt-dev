@@ -1,0 +1,41 @@
+indexes:
+
+- kind: GoodThing
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
+- kind: GoodThing
+  properties:
+  - name: user
+  - name: created
+
+- kind: Comment
+  properties:
+  - name: good_thing
+  - name: created
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: created
+
+- kind: Comment
+  properties:
+  - name: deleted
+  - name: created
+
+- kind: Comment
+  properties:
+  - name: deleted
+  - name: good_thing
+  - name: created
+    direction: desc
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: public
+  - name: user
+  - name: created

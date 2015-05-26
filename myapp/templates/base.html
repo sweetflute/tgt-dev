@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% autoescape true %}
+
+<head>
+    <title>3GT DEV</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://tgt-dev.appspot.com/static/css/local_styles.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src='http://tgt-dev.appspot.com/static/js/moustache.js'></script>
+    {% block head %}
+    {% endblock %}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <!-- some nav related stuff (without icons) -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-xs-12">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="http://tgt-dev.appspot.com/">3 Good Things</a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right" class="dropdown-toggle" data-toggle="dropdown">
+                        {% block nav_buttons %}
+                        {% endblock %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            {% block profile %}
+            {% endblock  %}
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+    {% block bottom_nav %}
+    <!-- some footer related stuff -->
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="text-center text-muted">3 Good Things | Developed by Jim Maddock | <a href='/privacy'>privacy policy</a></h6>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+</html>
+{% endautoescape %}

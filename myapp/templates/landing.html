@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head %}
+<script src='http://tgt-dev.appspot.com/static/js/landing.js'></script>
+{% endblock %}
+{% block nav_buttons %}
+<li>
+    <fb:login-button autologoutlink="true" scope="publish_actions, user_friends"></fb:login-button>
+</li>
+{% endblock %}
+{% block body %}
+<div id="good things" class="span8">
+    <p>Landing Page</p>
+    <ul class="media-list" id='good_things'>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block head %}
+<link href="http://tgt-dev.appspot.com/static/css/magicsuggest-min.css" rel="stylesheet">
+<script src="http://tgt-dev.appspot.com/static/js/magicsuggest-min.js"></script>
+<script src='http://tgt-dev.appspot.com/static/js/private_scripts.js'></script
+<script src='http://tgt-dev.appspot.com/static/js/jquery.tagcloud.js'></script>
+{% endblock %}
+{% block nav_buttons %}
+<li>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-target="#settings_modal">Account Settings</a></li>
+        <li class="divider"></li>
+        <li><a href="http://tgt-dev.appspot.com/logout" id="logout">Logout</a></li>
+    </ul>
+</li>
+{% endblock %}
+{% block body %}
+<!-- setings modal -->
+<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"> Settings</h4>
+      </div>
+      <div class="modal-body">
+          <form id='settings' action=''>
+              <div class="form-group">
+                  <input type="radio" name="send_reminders_true" id="send_reminders_true" value="send_reminders_true"><label>Send me a reminder email if I have not posted for
+                  <input type='number' name='reminder_days' id='reminder_days'/>
+                  days.</label>
+                  <input type="radio" name="send_reminders_false" id="send_reminders_false" value="send_reminders_false">
+                  <label>Don't send me reminder emails</label>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" id="save_settings">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-6 col-sm-8 col-xs-12">
+    <!-- input for posting a good thing -->
+    <div class="panel panel-default" id="my_good_thing">
+        <div class="panel-body">
+            <div class="media post">
+                <div class="media-left">
+                    <a href="{{ current_user.profile_url }}">
+                        <img class="media-object" src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square" alt="...">
+                    </a>
+                </div>
+                <div class="media-body post">
+                    <form id="post" action=''>
+                        <!-- the good thing -->
+                        <div class="form-group">
+                            <label for="good_thing">Good Thing</label>
+                            <input type="text" class="form-control" placeholder='Good Thing' name="good_thing">
+                        </div>
+                        <!-- the reason -->
+                        <div class="form-group">
+                            <label for="reason">Reason</label>
+                            <input type="text" class="form-control" placeholder='Reason' name="reason"/>
+                        </div>
+                        <!-- upload and image -->
+                        <div class="form-group">
+                            <label for="img">Image</label>
+                            <input type="file" class="form-control" placeholder='Image' name="img" multiple/>
+                        </div>
+                        <button type="submit" class="btn btn-default" id="submit_good_thing">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- list of posted good things -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <ul class="list-group" id='good_things'>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block profile %}
+<!-- profile sidebar -->
+<div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <img src="http://graph.facebook.com/{{ current_user.id }}/picture?width=250"" alt="..." class="img-rounded img-responsive">
+            <hr>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 00%" id="progress">
+                    <span class="sr-only" id="progress"></span>
+                </div>
+            </div>
+            <h4 class="text-muted" id="good_things_today"></h4>
+            <h4 class="text-muted" id="good_things_total"></h4>
+            <hr>
+            <h4>My Word Tags</h4>
+            <div id="word_cloud"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
