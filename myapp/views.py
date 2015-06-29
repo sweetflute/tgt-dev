@@ -7,6 +7,7 @@ import models
 import app_config
 import json
 import datetime
+import logging
 
 from google.appengine.ext import db
 from webapp2_extras import sessions
@@ -142,6 +143,7 @@ class PostHandler(BaseHandler):
     def post(self):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
+        tz_offset = self.request.get('tzoffset')
         # if the client isn't saving a post
         if view != '':
             good_things = models.GoodThing.all().order('created').filter('deleted =',False)
@@ -149,17 +151,17 @@ class PostHandler(BaseHandler):
             if view == 'me':
                 user = models.User.get_by_key_name(user_id)
                 good_things.filter('user =',user)
-                result = [x.template(user_id) for x in good_things]
+                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things]
             # return all public posts and current user's private posts
             elif view == 'all':
                 user = models.User.get_by_key_name(user_id)
-                result = [x.template(user_id) for x in good_things if (x.public or x.user.id == user.id)]
+                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things if (x.public or x.user.id == user.id)]
             # return a specified user's public posts
             else:
                 profile_user_id = str(self.request.get('view'))
                 profile_user = models.User.get_by_key_name(profile_user_id)
                 good_things.filter('user =',profile_user).filter('public =',True)
-                result = [x.template(user_id) for x in good_things]
+                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things]
         # save a post.  separate this into the post() method
         else:
             result = [self.save_post().template(user_id)]

@@ -125,7 +125,11 @@ window.onload = function() {
     $( document ).ready(function() {
         // get all posts on page load
         var view = 'view=all';
-        $.post( "/post",view).done(function(data){
+        // var timezone_offset = 0 - (new Date().getTimezoneOffset())/60;
+        var timezone_offset = (new Date().getTimezoneOffset())/60;
+        var data_in = view + '&tzoffset=' + timezone_offset
+
+        $.post( "/post",data_in).done(function(data){
             get_posts(data);
         });
         // get user settings
@@ -142,7 +146,8 @@ window.onload = function() {
 // change views
 $( document ).ready(function() {
     $( "a#view_select" ).click(function( event ) {
-        var data = 'view=' + $(this).data('view');
+        var timezone_offset = (new Date().getTimezoneOffset())/60;
+        var data = 'view=' + $(this).data('view') + '&tzoffset=' + timezone_offset;
         $.post( "/post",data).done(function (data) {
             $('ul#good_things').empty();
             get_posts(data);

@@ -1,3 +1,4 @@
+// *****NOT IN USE : USE script.js****
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
@@ -110,17 +111,21 @@ window.onload = function() {
         // get all posts on page load
         var user = $(location).attr('pathname').replace('/user/','');
         var view = 'view='+user;
-        $.post( "/post",view).done(function(data){
-            get_posts(data);
-        });
-        // get user settings
-        get_settings();
-        // get user stats
-        get_stats(user);
-        // get unread notifications
-        $.get('/notify','').done(function(data) {
-            get_notifications(data);
-        })
+        var timezone_offset = 0 - (new Date().getTimezoneOffset())/60;
+        var data_in = view + '&tzoffset=' + timezone_offset
+        console.log(data_in)
+        console.log(timezone_offset)
+        // $.post( "/post",data_in).done(function(data){
+        //     get_posts(data);
+        // });
+        // // get user settings
+        // get_settings();
+        // // get user stats
+        // get_stats(user);
+        // // get unread notifications
+        // $.get('/notify','').done(function(data) {
+        //     get_notifications(data);
+        // })
     });
 };
 

@@ -3,6 +3,7 @@ import string
 import datetime
 from google.appengine.ext import db
 from collections import Counter,OrderedDict
+import logging
 
 # model for user's settings
 # TODO: fix timezone issue
@@ -80,7 +81,7 @@ class GoodThing(db.Model):
     deleted = db.BooleanProperty(default=False)
     img = db.BlobProperty()
 
-    def template(self,user_id):
+    def template(self,user_id, tzoffset=0):
         if user_id == self.user.id:
             current_user = True
         else:
@@ -99,7 +100,7 @@ class GoodThing(db.Model):
             'mentions':self.get_mentions(),
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
-            'created': self.get_createdtime()
+            'created': self.get_createdtime(tzoffset)
             #add img
         }
         return template
@@ -155,8 +156,9 @@ class GoodThing(db.Model):
             return "private"
 
     # format the created time
-    def get_createdtime(self):
-        time = "%s %d:%d %s" %(self.created.date(), self.created.time().hour, self.created.time().minute, self.created.time().timezone)
+    def get_createdtime(self, tzoffset):
+        local_time = self.created - datetime.timedelta(hours=int(tzoffset))
+        time = "%s %d:%d" %(local_time.date(), local_time.time().hour, local_time.time().minute)
         return time
 
 # model for a cheer associated with a good thing
