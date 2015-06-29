@@ -184,7 +184,7 @@ function get_stats(user_id) {
                 $('div#word_cloud').prepend(Mustache.render(template, data));
             });
             $.fn.tagcloud.defaults = {
-                size: {start: 14, end: 18, unit: 'pt'},
+                size: {start: 12, end: 18, unit: 'pt'},
                 color: {start: '#777', end: '#777'}
             };
             $(function () {

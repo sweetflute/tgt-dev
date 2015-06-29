@@ -37,6 +37,7 @@ class BaseHandler(webapp2.RequestHandler):
             if cookie:
                 # Okay so user logged in.
                 # Now, check to see if existing user
+
                 user = models.User.get_by_key_name(cookie["uid"])
                 graph = facebook.GraphAPI(cookie["access_token"])
                 if not user:
@@ -226,7 +227,7 @@ class PostHandler(BaseHandler):
             if img:
                 graph.put_photo(image=raw_img,message=good_thing)
             else:
-                graph.put_object('me','feed',message=good_thing)
+                graph.put_object('me','feed',message=good_thing.good_thing)
         return good_thing
 
 # API for saving and serving cheers
@@ -374,6 +375,10 @@ class SettingsHandler(BaseHandler):
         else:
             settings.default_public = False
         settings.put()
+
+        result = settings.template()
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(result))
 
     # get the current user's settings
     def get(self):

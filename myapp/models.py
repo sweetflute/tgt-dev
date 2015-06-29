@@ -66,6 +66,7 @@ class User(db.Model):
     public_user = db.BooleanProperty(default=None) # change default back to false
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
+    # email = db.StringProperty(required=True) # add email field (for what?)
 
 # model for each good thing
 # TODO: update to work with images
@@ -97,6 +98,8 @@ class GoodThing(db.Model):
             'cheered':self.cheered(user_id),
             'mentions':self.get_mentions(),
             'num_mentions':self.num_mentions(),
+            'public':self.is_public(),
+            'created': self.get_createdtime()
             #add img
         }
         return template
@@ -143,6 +146,18 @@ class GoodThing(db.Model):
     # return the number of comments
     def num_comments(self):
         return self.comment_set.filter('deleted =',False).count()
+
+    # check if the post is public or private
+    def is_public(self):
+        if self.public:
+            return "public"
+        else:
+            return "private"
+
+    # format the created time
+    def get_createdtime(self):
+        time = "%s %d:%d %s" %(self.created.date(), self.created.time().hour, self.created.time().minute, self.created.time().timezone)
+        return time
 
 # model for a cheer associated with a good thing
 class Cheer(db.Model):

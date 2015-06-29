@@ -2,10 +2,26 @@
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
     console.log($( "form#settings" ).serialize());
-    $.post( "/settings",$( "form#settings" ).serialize()).done(function() {
+    $.post( "/settings",$( "form#settings" ).serialize()).done(function(data) {
         $('#settings_modal').modal('hide');
+        
+        // Update settings when post done
+        $('input#settings_wall').prop('checked', data.default_fb);
+        $('input#settings_public').prop('checked', data.default_public);
+        if (data.reminder_days >= 0) {
+            $('input#reminder_days').val(data.reminder_days);
+            $('input#send_reminders_true').prop('checked', true).button("refresh");
+            $('input#send_reminders_false').prop('checked', false).button("refresh");
+        } else {
+            $('input#send_reminders_false').prop('checked', true).button("refresh");
+            $('input#send_reminders_true').prop('checked', false).button("refresh");
+        }
     });
-    get_settings();
+    // get_settings();
+});
+
+$(document).on("click","button#close_settings",function(e) {
+  get_settings();
 });
 
 // submit a new post
@@ -182,7 +198,7 @@ function get_stats() {
                 $('div#word_cloud').prepend(Mustache.render(template, data));
             });
             $.fn.tagcloud.defaults = {
-                size: {start: 14, end: 18, unit: 'pt'},
+                size: {start: 12, end: 18, unit: 'pt'},
                 color: {start: '#777', end: '#777'}
             };
             $(function () {

@@ -26,7 +26,7 @@
 </li>
 {% endblock %}
 {% block body %}
-<!-- setings modal -->
+<!-- settings modal -->
 <div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -44,13 +44,13 @@
               </div>
               <hr>
               <div class="form-group">
-                  <label for="settings_wall"><input type='checkbox' name='default_fb' id='settings_wall'/> Post my Good Things to Facebook by default</label>
                   <label for="settings_public"><input type='checkbox' name='default_public' id='settings_public'/> Make my Good Things visible to other 3GT users by default</label>
+                  <label for="settings_wall"><input type='checkbox' name='default_fb' id='settings_wall'/> Post my Good Things to Facebook by default</label>
               </div>
           </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="close_settings">Close</button>
         <button type="button" class="btn btn-default" id="save_settings">Save changes</button>
       </div>
     </div>

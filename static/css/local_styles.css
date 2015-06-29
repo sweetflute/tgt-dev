@@ -5,3 +5,7 @@ body {
 div.post {
   overflow: visible;
 }
+
+#status {
+  color: #999;
+}
