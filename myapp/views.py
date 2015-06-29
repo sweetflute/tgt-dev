@@ -156,6 +156,9 @@ class PostHandler(BaseHandler):
             elif view == 'all':
                 user = models.User.get_by_key_name(user_id)
                 result = [x.template(user_id, tzoffset = tz_offset) for x in good_things if (x.public or x.user.id == user.id)]
+                #add default created_local
+                # for x in good_things:
+                #     x.set_created_local()
             # return a specified user's public posts
             else:
                 profile_user_id = str(self.request.get('view'))
@@ -175,6 +178,8 @@ class PostHandler(BaseHandler):
         reason = self.request.get('reason')
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
+        tz_offset = int(self.request.get('tzoffset'))
+        local_time = datetime.datetime.now() - datetime.timedelta(hours=tz_offset)
         raw_img = self.request.get('img')
         if raw_img != '':
             img = db.Blob(raw_img)
@@ -197,6 +202,7 @@ class PostHandler(BaseHandler):
         good_thing = models.GoodThing(
             good_thing=good_thing_text,
             reason=reason,
+            created_local=local_time,
             user=user,
             public=public,
             img=img,
@@ -408,7 +414,14 @@ class StatHandler(BaseHandler):
             user_id = self.request.get('user_id')
         user = models.User.get_by_key_name(user_id)
         posts = user.goodthing_set.filter('deleted =',False).count()
-        posts_today = user.goodthing_set.filter('created >=',datetime.date.today()).filter('deleted =',False).count()
+
+        tz_offset = int(self.request.get('tzoffset'))
+        today = (datetime.datetime.now() - datetime.timedelta(hours = tz_offset)).date()
+        logging.info("today=" + str(today))
+        posts_today = user.goodthing_set.filter('created_local >=', today).filter('deleted =',False).count()
+        # posts_today = user.goodthing_set.filter('created_local >=',datetime.date.today()).filter('deleted =',False).count()
+
+
         progress = int((float(posts_today)/3)*100)
         if progress > 100:
             progress = 100

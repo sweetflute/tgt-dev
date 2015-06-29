@@ -28,8 +28,9 @@ $(document).on("click","button#close_settings",function(e) {
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
     //console.log($( "#post" ).serialize());
+    var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
-    var data_in = $( "#post" ).serialize() + '&mentions=' + mention_list + '&view=';
+    var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
     console.log(data_in)
     $.post( "/post",data_in)
         .done(function(data){
@@ -191,7 +192,8 @@ function get_comments(comment_list,id) {
 }
 
 function get_stats() {
-    $.post( "/stat",'').done(function (data) {
+    var data_in = '&tzoffset=' + (new Date().getTimezoneOffset())/60;
+    $.post( "/stat",data_in).done(function (data) {
         $('div#progress').css('width',data.progress);
         $('span#progress').text(data.progress + ' Complete');
         $('#good_things_today').text(data.posts_today + ' Good Things Today');

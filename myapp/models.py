@@ -75,6 +75,7 @@ class GoodThing(db.Model):
     good_thing = db.StringProperty(required=True)
     reason = db.StringProperty(default=None)
     created = db.DateTimeProperty(auto_now_add=True)
+    created_local = db.DateTimeProperty(auto_now_add=True)
     user = db.ReferenceProperty(User,required=True)
     public = db.BooleanProperty(default=True)
     wall = db.BooleanProperty(default=False)
@@ -100,7 +101,8 @@ class GoodThing(db.Model):
             'mentions':self.get_mentions(),
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
-            'created': self.get_createdtime(tzoffset)
+            'created': self.get_created(tzoffset),
+            'created_local': self.get_created_local()
             #add img
         }
         return template
@@ -129,7 +131,7 @@ class GoodThing(db.Model):
     # return a list of user names mentioned in this good thing
     def get_mentions(self):
         mentions = self.mention_set.fetch(limit=None)
-        result = [{'name':mention.to_user_name} for mention in mentions]
+        result = [{'name':mention.to_user_name, 'id':mention.to_fb_user_id} for mention in mentions]
         return result
 
     # return the number of mentions
@@ -156,11 +158,19 @@ class GoodThing(db.Model):
             return "private"
 
     # format the created time
-    def get_createdtime(self, tzoffset):
+    def get_created(self, tzoffset):
         local_time = self.created - datetime.timedelta(hours=int(tzoffset))
         time = "%s %d:%d" %(local_time.date(), local_time.time().hour, local_time.time().minute)
         return time
+    
+    # format the local created time
+    def get_created_local(self):
+        time = "%s %d:%d" %(self.created_local.date(), self.created_local.time().hour, self.created_local.time().minute)
+        return time
 
+    # add default created_local
+    def set_created_local(self):
+        self.created_local = self.created
 # model for a cheer associated with a good thing
 class Cheer(db.Model):
     user = db.ReferenceProperty(User,required=True)

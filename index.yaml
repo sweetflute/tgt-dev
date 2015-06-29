@@ -39,3 +39,9 @@ indexes:
   - name: public
   - name: user
   - name: created
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: user
+  - name: created_local
