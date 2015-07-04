@@ -41,6 +41,7 @@ class BaseHandler(webapp2.RequestHandler):
 
                 user = models.User.get_by_key_name(cookie["uid"])
                 graph = facebook.GraphAPI(cookie["access_token"])
+
                 if not user:
                     # Not an existing user so get user info
                     profile = graph.get_object("me")
@@ -156,10 +157,6 @@ class PostHandler(BaseHandler):
             elif view == 'all':
                 user = models.User.get_by_key_name(user_id)
                 result = [x.template(user_id, tzoffset = tz_offset) for x in good_things if (x.public or x.user.id == user.id)]
-                #add default created_local
-                # for x in good_things:
-                #     x.set_created_local()
-            # return a specified user's public posts
             else:
                 profile_user_id = str(self.request.get('view'))
                 profile_user = models.User.get_by_key_name(profile_user_id)
@@ -167,7 +164,7 @@ class PostHandler(BaseHandler):
                 result = [x.template(user_id, tzoffset = tz_offset) for x in good_things]
         # save a post.  separate this into the post() method
         else:
-            result = [self.save_post().template(user_id)]
+            result = [self.save_post().template(user_id, tzoffset = tz_offset)]
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
@@ -202,7 +199,7 @@ class PostHandler(BaseHandler):
         good_thing = models.GoodThing(
             good_thing=good_thing_text,
             reason=reason,
-            created_local=local_time,
+            created_origin=local_time,
             user=user,
             public=public,
             img=img,
@@ -222,10 +219,11 @@ class PostHandler(BaseHandler):
                                 event_id=event_id)
                 else:
                     to_user = None
+                
                 mention = models.Mention(
                     to_user=to_user,
                     good_thing=good_thing,
-                    to_fb_user_id = to_user_id['id'], #may not have to store this...
+                    to_fb_user_id = to_user_id['app_id'], #this is used to tag friends when posting to Facebook
                     to_user_name = to_user_id['name']
                 )
                 mention.put()
@@ -235,7 +233,10 @@ class PostHandler(BaseHandler):
             if img:
                 graph.put_photo(image=raw_img,message=good_thing)
             else:
-                graph.put_object('me','feed',message=good_thing.good_thing)
+                msg_tags =[]
+                if(good_thing.num_mentions != 0):
+                    msg_tags = [x['id'].encode('utf-8') for x in good_thing.get_mentions()]
+                graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
         return good_thing
 
 # API for saving and serving cheers
@@ -418,8 +419,8 @@ class StatHandler(BaseHandler):
         tz_offset = int(self.request.get('tzoffset'))
         today = (datetime.datetime.now() - datetime.timedelta(hours = tz_offset)).date()
         logging.info("today=" + str(today))
-        posts_today = user.goodthing_set.filter('created_local >=', today).filter('deleted =',False).count()
-        # posts_today = user.goodthing_set.filter('created_local >=',datetime.date.today()).filter('deleted =',False).count()
+        posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+        # posts_today = user.goodthing_set.filter('created_origin >=',datetime.date.today()).filter('deleted =',False).count()
 
 
         progress = int((float(posts_today)/3)*100)

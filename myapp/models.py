@@ -75,7 +75,7 @@ class GoodThing(db.Model):
     good_thing = db.StringProperty(required=True)
     reason = db.StringProperty(default=None)
     created = db.DateTimeProperty(auto_now_add=True)
-    created_local = db.DateTimeProperty(auto_now_add=True)
+    created_origin = db.DateTimeProperty(auto_now_add=True)
     user = db.ReferenceProperty(User,required=True)
     public = db.BooleanProperty(default=True)
     wall = db.BooleanProperty(default=False)
@@ -102,7 +102,8 @@ class GoodThing(db.Model):
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
             'created': self.get_created(tzoffset),
-            'created_local': self.get_created_local()
+            'created_origin': self.get_created_origin(),
+            'time_display': self.get_created_shown(tzoffset)
             #add img
         }
         return template
@@ -164,13 +165,39 @@ class GoodThing(db.Model):
         return time
     
     # format the local created time
-    def get_created_local(self):
-        time = "%s %d:%d" %(self.created_local.date(), self.created_local.time().hour, self.created_local.time().minute)
+    def get_created_origin(self):
+        time = "%s %d:%d" %(self.created_origin.date(), self.created_origin.time().hour, self.created_origin.time().minute)
         return time
 
-    # add default created_local
-    def set_created_local(self):
-        self.created_local = self.created
+    # format the created time
+    def get_created_shown(self, tzoffset):
+        org_diff = (datetime.datetime.now() - datetime.timedelta(hours=int(tzoffset))) - (self.created - datetime.timedelta(hours=int(tzoffset)))
+        day_diff = org_diff.days
+        sec_diff = org_diff.seconds
+
+        time_adj = self.created - datetime.timedelta(hours=int(tzoffset))
+        time_display = ""
+        weekday_display = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        logging.info("org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
+
+        if (day_diff > 7):
+            local_date = time_adj.date()
+            local_weekday = local_date.weekday()
+            time_display =  str(local_date) + ", " + weekday_display[local_weekday]
+        elif (day_diff > 1 and day_diff <= 7):
+            time_display = weekday_display[time_adj.date().weekday()]
+        elif (day_diff == 1):
+            time_display = "yesterday"
+        elif (day_diff < 1 and sec_diff > 3600):
+            time_display =  "earlier today"
+        elif (day_diff < 1 and sec_diff > 60 and sec_diff <= 3600):
+            time_display = "an hour ago"
+        elif (day_diff < 1 and sec_diff <= 60):
+            time_display = "a moment ago"
+        
+        logging.info("post_time = " + str(self.created - datetime.timedelta(hours=int(tzoffset))) + ", time_display = " + time_display)
+        return time_display
+
 # model for a cheer associated with a good thing
 class Cheer(db.Model):
     user = db.ReferenceProperty(User,required=True)

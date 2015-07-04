@@ -44,4 +44,4 @@ indexes:
   properties:
   - name: deleted
   - name: user
-  - name: created_local
+  - name: created_origin
