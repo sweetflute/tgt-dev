@@ -1,13 +1,24 @@
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
-    console.log($( "form#settings" ).serialize());
-    $.post( "/settings",$( "form#settings" ).serialize()).done(function(data) {
+    // console.log($( "form#settings" ).serialize());
+    data_in = "reminder_days="
+    if ($('input#send_reminders_true').prop('checked'))
+        data_in += $('input#reminder_days').val();
+    else
+        data_in += -1
+    if($('input#settings_wall').prop('checked'))
+        data_in += "&default_fb=on"
+    if($('input#settings_public').prop('checked'))
+        data_in += "&default_public=on"
+    console.log(data_in)
+    $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
         
         // Update settings when post done
         $('input#settings_wall').prop('checked', data.default_fb);
         $('input#settings_public').prop('checked', data.default_public);
+        console.log(data.reminder_days);
         if (data.reminder_days >= 0) {
             $('input#reminder_days').val(data.reminder_days);
             $('input#send_reminders_true').prop('checked', true).button("refresh");
@@ -28,6 +39,15 @@ $(document).on("click","button#close_settings",function(e) {
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
     //console.log($( "#post" ).serialize());
+    //TODO: check required field
+    $("form#post").find('[required]').each(function(){
+        if($(this).val() == ''){
+            $(this).focus();
+            alert("Good Thing is required!");
+            e.preventDefault();
+        }
+    });
+
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
     var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';

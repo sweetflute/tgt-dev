@@ -31,6 +31,8 @@ app = webapp2.WSGIApplication(
         ('/notify', views.NotificationHandler),
         # handler for user profile
         ('/user/([^/]+)?', views.ProfileHandler),
+        # handler for reminder cron job
+        ('/reminder', views.ReminderHandler),
         # home feed
         ('/*', views.HomeHandler),
     ],

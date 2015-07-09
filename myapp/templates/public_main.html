@@ -36,11 +36,12 @@
       <div class="modal-body">
           <form id='settings' action=''>
               <div class="form-group">
-                  <input type="radio" name="send_reminders_true" id="send_reminders_true" value="send_reminders_true"><label>Send me a reminder email if I have not posted for
-                  <input type='number' name='reminder_days' id='reminder_days'/>
-                  days.</label>
-                  <input type="radio" name="send_reminders_false" id="send_reminders_false" value="send_reminders_false">
-                  <label>Don't send me reminder emails</label>
+                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true">
+                  <label for="send_reminders_true">Send me a reminder email if I have not posted for
+                  <input type='number' name='reminder_days' id='reminder_days' style="width:45px" min="1" max="7"/>
+                  days.</label><br>
+                  <input type="radio" name="send_reminders" id="send_reminders_false" value="send_reminders_false">
+                  <label for="send_reminders_false">Don't send me reminder emails</label>
               </div>
               <hr>
               <div class="form-group">
@@ -71,7 +72,7 @@
                         <!-- the good thing -->
                         <div class="form-group">
                             <label for="good_thing">Good Thing</label>
-                            <input type="text" class="form-control" placeholder='Good Thing' name="good_thing" id="good_thing">
+                            <input type="text" class="form-control" placeholder='Good Thing' name="good_thing" id="good_thing" required="true">
                         </div>
                         <!-- the reason -->
                         <div class="form-group">

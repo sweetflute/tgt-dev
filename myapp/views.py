@@ -11,12 +11,14 @@ import logging
 
 from google.appengine.ext import db
 from webapp2_extras import sessions
+from google.appengine.api import mail
 
 FACEBOOK_APP_ID = app_config.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET = app_config.FACEBOOK_APP_SECRET
 
 # base handler that always checks to make sure the user is signed in and caches
 # user information
+# TODO: handle session expire - ask user to login again
 class BaseHandler(webapp2.RequestHandler):
     """Provides access to the active Facebook user in self.current_user
     The property is lazy-loaded on first access, using the cookie saved
@@ -120,6 +122,8 @@ class HomeHandler(BaseHandler):
         if current_user:
             user_id = str(self.current_user['id'])
             user = models.User.get_by_key_name(user_id)
+
+
             if user.public_user:
                 template = jinja_environment.get_template('public_main.html')
             elif user.public_user is False:
@@ -207,11 +211,14 @@ class PostHandler(BaseHandler):
         )
         good_thing.put()
         # handle mentions here
+        msg_tags=[]
         if self.request.get('mentions') != '':
             mention_list = json.loads(self.request.get('mentions'))
+            logging.info(mention_list)
             for to_user_id in mention_list:
                 if 'app_id' in to_user_id:
                     to_user = models.User.get_by_key_name(str(to_user_id['app_id']))
+                    fb_app_id = to_user_id['app_id']
                     event_id = good_thing.key().id()
                     # handle mention notification
                     self.notify(event_type='mention',
@@ -223,19 +230,18 @@ class PostHandler(BaseHandler):
                 mention = models.Mention(
                     to_user=to_user,
                     good_thing=good_thing,
-                    to_fb_user_id = to_user_id['app_id'], #this is used to tag friends when posting to Facebook
+                    to_fb_user_id = to_user_id['id'],
                     to_user_name = to_user_id['name']
                 )
                 mention.put()
+                msg_tags.append(to_user_id['id'].encode('utf-8'))
         # handle posting to fb
         if wall:
             graph = facebook.GraphAPI(self.current_user['access_token'])
             if img:
                 graph.put_photo(image=raw_img,message=good_thing)
             else:
-                msg_tags =[]
-                if(good_thing.num_mentions != 0):
-                    msg_tags = [x['id'].encode('utf-8') for x in good_thing.get_mentions()]
+                logging.info(msg_tags)
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
         return good_thing
 
@@ -369,10 +375,9 @@ class SettingsHandler(BaseHandler):
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
         settings = user.settings
-        if self.request.get('reminder_days_true') == 'on':
-            reminder_days = self.request.get('reminder_days')
-            if reminder_days != '':
-                settings.reminder_days = int(reminder_days)
+        reminder_days = self.request.get('reminder_days')
+        if( reminder_days != '' and reminder_days >= 1):
+            settings.reminder_days = int(reminder_days)
         else:
             settings.reminder_days = -1
         if self.request.get('default_fb') == 'on':
@@ -472,3 +477,34 @@ jinja_environment = jinja2.Environment(
     autoescape=True,
     extensions=['jinja2.ext.autoescape'],
 )
+
+# send email reminder
+class ReminderHandler(webapp2.RequestHandler):
+    def get(self):
+        logging.info("In ReminderHandler")
+        users = models.User.all()
+        for user in users:
+            # if user.name == "Magi Chung":
+            #     user.email = "sweetflute@gmail.com"
+            #     user.put()
+            reminder_days = int(user.settings.reminder_days)
+            logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
+            if(reminder_days != -1):
+                last_date_to_post = (datetime.datetime.now() - datetime.timedelta(days = reminder_days)).date()
+                num_posts = user.goodthing_set.filter('created_origin >=', last_date_to_post).filter('deleted =',False).count()
+                logging.info("last_date_to_post=" + str(last_date_to_post) + ", num_posts=" + str(num_posts))
+                if(num_posts <= 0):
+                    if (user.name == "Magi Chung"):
+                        message = mail.EmailMessage()
+                        message.subject = "Reminder: Post a good thing to 3gt!" #TOOD: change subject
+                        message.sender = "sweetflute@gmail.com" #TODO: change sender address
+                        message.to = user.email
+                        message.body = "Dear %s, you haven't post your good things for %d days.\n" %(user.name, reminder_days)
+                        message.body += "Post your good thing today at http://tgt-dev.appspot.com/!\n"
+
+                        message.send()
+                    else:
+                        logging.info(user.name + " do not have an eamil in the record.")
+
+
+        

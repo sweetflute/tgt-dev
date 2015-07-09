@@ -67,7 +67,7 @@ class User(db.Model):
     public_user = db.BooleanProperty(default=None) # change default back to false
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
-    # email = db.StringProperty(required=True) # add email field (for what?)
+    email = db.StringProperty() #TODO: required=Trus
 
 # model for each good thing
 # TODO: update to work with images
@@ -178,7 +178,7 @@ class GoodThing(db.Model):
         time_adj = self.created - datetime.timedelta(hours=int(tzoffset))
         time_display = ""
         weekday_display = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        logging.info("org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
+        # logging.info("org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
 
         if (day_diff > 7):
             local_date = time_adj.date()
@@ -190,12 +190,15 @@ class GoodThing(db.Model):
             time_display = "yesterday"
         elif (day_diff < 1 and sec_diff > 3600):
             time_display =  "earlier today"
-        elif (day_diff < 1 and sec_diff > 60 and sec_diff <= 3600):
+        elif (day_diff < 1 and sec_diff >= 3600 and sec_diff <= 5400):
             time_display = "an hour ago"
-        elif (day_diff < 1 and sec_diff <= 60):
+        elif (day_diff < 1 and sec_diff >= 120 and sec_diff < 3600):#TODO: XX minutes ago
+            min_diff = int(sec_diff/60)
+            time_display = str(min_diff) + " minutes ago"    
+        elif (day_diff < 1 and sec_diff < 120):
             time_display = "a moment ago"
         
-        logging.info("post_time = " + str(self.created - datetime.timedelta(hours=int(tzoffset))) + ", time_display = " + time_display)
+        # logging.info("post_time = " + str(self.created - datetime.timedelta(hours=int(tzoffset))) + ", time_display = " + time_display)
         return time_display
 
 # model for a cheer associated with a good thing

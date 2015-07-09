@@ -11,6 +11,10 @@ handlers:
 - url: /.*
   script: main.app
 
+- url: /reminder
+  script: main.app
+  login: admin
+
 libraries:
 - name: jinja2
   version: latest
