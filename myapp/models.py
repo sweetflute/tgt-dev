@@ -171,28 +171,30 @@ class GoodThing(db.Model):
 
     # format the created time
     def get_created_shown(self, tzoffset):
-        org_diff = (datetime.datetime.now() - datetime.timedelta(hours=int(tzoffset))) - (self.created - datetime.timedelta(hours=int(tzoffset)))
-        day_diff = org_diff.days
-        sec_diff = org_diff.seconds
+        local_now = datetime.datetime.now() - datetime.timedelta(hours=int(tzoffset))
+        local_created = self.created - datetime.timedelta(hours=int(tzoffset))
+        day_diff = (local_now.date() - local_created.date()).days
+        sec_diff = (local_now - local_created).seconds
+        if (local_created > (local_now - datetime.timedelta(days=2))):
+            logging.info("local_now=" + str(local_now) + ", local_created=" + str(local_created) + "org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
 
-        time_adj = self.created - datetime.timedelta(hours=int(tzoffset))
+
         time_display = ""
         weekday_display = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         # logging.info("org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
 
         if (day_diff > 7):
-            local_date = time_adj.date()
-            local_weekday = local_date.weekday()
+            local_weekday = local_created.date().weekday()
             time_display =  str(local_date) + ", " + weekday_display[local_weekday]
         elif (day_diff > 1 and day_diff <= 7):
-            time_display = weekday_display[time_adj.date().weekday()]
+            time_display = weekday_display[local_created.date().date().weekday()]
         elif (day_diff == 1):
             time_display = "yesterday"
-        elif (day_diff < 1 and sec_diff > 3600):
+        elif (day_diff < 1 and sec_diff > 5400):
             time_display =  "earlier today"
         elif (day_diff < 1 and sec_diff >= 3600 and sec_diff <= 5400):
             time_display = "an hour ago"
-        elif (day_diff < 1 and sec_diff >= 120 and sec_diff < 3600):#TODO: XX minutes ago
+        elif (day_diff < 1 and sec_diff >= 120 and sec_diff < 3600):
             min_diff = int(sec_diff/60)
             time_display = str(min_diff) + " minutes ago"    
         elif (day_diff < 1 and sec_diff < 120):

@@ -199,7 +199,7 @@ class PostHandler(BaseHandler):
             public = False
             wall = False
             mentions = []
-        print wall, self.request.get('wall')
+        # print wall, self.request.get('wall')
         good_thing = models.GoodThing(
             good_thing=good_thing_text,
             reason=reason,
@@ -214,7 +214,7 @@ class PostHandler(BaseHandler):
         msg_tags=[]
         if self.request.get('mentions') != '':
             mention_list = json.loads(self.request.get('mentions'))
-            logging.info(mention_list)
+            # logging.info(mention_list)
             for to_user_id in mention_list:
                 if 'app_id' in to_user_id:
                     to_user = models.User.get_by_key_name(str(to_user_id['app_id']))
@@ -241,7 +241,7 @@ class PostHandler(BaseHandler):
             if img:
                 graph.put_photo(image=raw_img,message=good_thing)
             else:
-                logging.info(msg_tags)
+                # logging.info(msg_tags)
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
         return good_thing
 
@@ -413,7 +413,7 @@ class PrivacyHandler(webapp2.RequestHandler):
 # any public user, not just current user
 class StatHandler(BaseHandler):
     def post(self):
-        print self.request.get('user_id')
+        # print self.request.get('user_id')
         if self.request.get('user_id') == '':
             user_id = str(self.current_user['id'])
         else:
@@ -484,27 +484,25 @@ class ReminderHandler(webapp2.RequestHandler):
         logging.info("In ReminderHandler")
         users = models.User.all()
         for user in users:
-            # if user.name == "Magi Chung":
-            #     user.email = "sweetflute@gmail.com"
-            #     user.put()
             reminder_days = int(user.settings.reminder_days)
             logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
             if(reminder_days != -1):
                 last_date_to_post = (datetime.datetime.now() - datetime.timedelta(days = reminder_days)).date()
-                num_posts = user.goodthing_set.filter('created_origin >=', last_date_to_post).filter('deleted =',False).count()
+                num_posts = user.goodthing_set.filter('created >=', last_date_to_post).filter('deleted =',False).count()
                 logging.info("last_date_to_post=" + str(last_date_to_post) + ", num_posts=" + str(num_posts))
                 if(num_posts <= 0):
-                    if (user.name == "Magi Chung"):
+                    if (user.email != ""):
                         message = mail.EmailMessage()
                         message.subject = "Reminder: Post a good thing to 3gt!" #TOOD: change subject
                         message.sender = "sweetflute@gmail.com" #TODO: change sender address
                         message.to = user.email
-                        message.body = "Dear %s, you haven't post your good things for %d days.\n" %(user.name, reminder_days)
+                        message.body = "Dear %s, you haven't posted your good things for the past %d days.\n" %(user.name, reminder_days)
                         message.body += "Post your good thing today at http://tgt-dev.appspot.com/!\n"
 
                         message.send()
+                        logging.info("Sent reminder to " + str(message.to))
                     else:
-                        logging.info(user.name + " do not have an eamil in the record.")
+                        logging.info(user.name + " do not have an email in the record.")
 
 
         
