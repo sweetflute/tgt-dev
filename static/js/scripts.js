@@ -50,9 +50,15 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
+    // var img_url = $("#img").file[0];
+    // var data_in = new FormData($("#post"));
+    // data_in.append("img", img_url);
+    // data_in.append("tzoffset", timezone_offset);
+    // data_in.append("mentions", mention_list);
+    // data_in.append("view", "");    
     var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
-    console.log(data_in)
-    $.post( "/post",data_in)
+    console.log(data_in);
+    $.post("/post",data_in)
         .done(function(data){
             $('input#good_thing, input#reason, input#img').val('');
             $('#magic_friend_tagging').magicSuggest().clear();
@@ -63,17 +69,7 @@ $(document).on("click","#submit_good_thing",function(e) {
     return false;
 });
 
-// friend tagging with magicsuggest
-$( document ).ready(function() {
-    var friend_ids = JSON.parse(localStorage['friend_ids']);
-    $("input#magic_friend_tagging").magicSuggest({
-        placeholder: "Tag Friends",
-        allowFreeEntries: false,
-        data: friend_ids,
-        displayField: 'name',
-       // valueField: 'id'
-    });
-});
+
 
 $(document).on("click","a#cheer",function(e) {
     var cheer = $(this)
@@ -144,13 +140,23 @@ $(document).on("click","a#comment",function(e) {
 // on page load
 window.onload = function() {
     $( document ).ready(function() {
-        // get all posts on page load
-        var view = 'view=all';
-        // var timezone_offset = 0 - (new Date().getTimezoneOffset())/60;
-        var timezone_offset = (new Date().getTimezoneOffset())/60;
-        var data_in = view + '&tzoffset=' + timezone_offset
+        
+        load_all_post();
+        change_view();
+        tag_friends();
 
-        $.post( "/post",data_in).done(function(data){
+    });
+};
+
+// get all posts on page load
+function load_all_post(){
+
+        var view = 'view=all';
+        // // var timezone_offset = 0 - (new Date().getTimezoneOffset())/60;
+        // var timezone_offset = (new Date().getTimezoneOffset())/60;
+        // var data_in = view + '&tzoffset=' + timezone_offset
+
+        $.post( "/post", view).done(function(data){
             get_posts(data);
         });
         // get user settings
@@ -161,23 +167,91 @@ window.onload = function() {
         $.get('/notify','').done(function(data) {
             get_notifications(data);
         })
-    });
-};
+}
+
+// $( document ).ready(function() {
+//    change_view();
+//    tag_friends();
+
+//    console.log("local_time.length()=" + $(".local-time").length);
+//    // .forEach(function(){
+//         // $(this).html(localize_time());
+//    // });
+   
+// });
 
 // change views
-$( document ).ready(function() {
+function change_view(){
     $( "a#view_select" ).click(function( event ) {
-        var timezone_offset = (new Date().getTimezoneOffset())/60;
-        var data = 'view=' + $(this).data('view') + '&tzoffset=' + timezone_offset;
-        $.post( "/post",data).done(function (data) {
+        // var timezone_offset = (new Date().getTimezoneOffset())/60;
+        var data = 'view=' + $(this).data('view');
+        $.post( "/post", data).done(function (data) {
             $('ul#good_things').empty();
             get_posts(data);
         });
         return false;
     });
-});
+}
+
+//friend tagging with magicsuggest
+function tag_friends(){
+    var friend_ids = JSON.parse(localStorage['friend_ids']);
+    $("input#magic_friend_tagging").magicSuggest({
+        placeholder: "Tag Friends",
+        allowFreeEntries: false,
+        data: friend_ids,
+        displayField: 'name',
+       // valueField: 'id'
+    });
+}
+
+//adjust created time to local timezone
+function localize_time(created_time){
+    
+    var ms_min = 60*1000;
+    var ms_hour = 60*60*1000;
+
+    var created_time_local = new Date(created_time).getTime() - new Date().getTimezoneOffset()*ms_min
+    var local_date = new Date(created_time_local);
+
+    var today = new Date();
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate()-1);
+
+    var time_diff = new Date().getTime() - created_time_local;
+    console.log(new Date(created_time));
+    console.log(local_date);
+    console.log(new Date());
+    console.log(time_diff);
+ 
 
 
+    var weekday = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var time_display = "";
+
+    if(local_date.getDate() == today.getDate()){
+        if (time_diff > ms_hour){
+            time_display =  "earlier today";
+        }else if (time_diff == ms_hour){
+            time_display = "an hour ago";
+        }else{
+            if (time_diff > ms_min && time_diff < ms_hour){
+                time_display = Math.round(time_diff/ms_min) + " minutes ago";
+            }else{
+                 time_display = "a moment ago";
+            }
+        }
+    }else if (local_date.getDate() == yesterday.getDate()){
+        time_display = "yesterday";
+    }else if(today.getDate() - local_date.getDate() < 7){
+        time_display = weekday[local_date.getDay()];
+    }else{
+        time_display = local_date.getMonth() + "/" + local_date.getDate() + ", " + weekday[local_date.getDay()];
+    }
+
+    return time_display;
+
+}
 // view a user profile
 /*$(document).on("click","a#profile_link",function(e) {
     var url_data = 'view=' + $(this).parents('div#data_container').data('user_id');
@@ -196,6 +270,13 @@ function get_posts(post_list) {
             // template file which contains our greetings template.
             var template = $(templates).filter('#good_thing_tpl').html();
             $('ul#good_things').prepend(Mustache.render(template, data));
+        });
+
+
+        $(".local-time").each(function(){
+            var created_time = $(this).html();
+            $(this).html(localize_time(created_time));
+            $(this).attr("class", ".local-time-done");
         });
     });
 }

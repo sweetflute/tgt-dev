@@ -148,27 +148,30 @@ class PostHandler(BaseHandler):
     def post(self):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
-        tz_offset = self.request.get('tzoffset')
+        # tz_offset = self.request.get('tzoffset')
         # if the client isn't saving a post
         if view != '':
-            good_things = models.GoodThing.all().order('created').filter('deleted =',False)
+            # good_things = models.GoodThing.all().order('created').filter('deleted =',False)
+            # select only this week's post
+            a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
+            good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
             # return just the current user's posts
             if view == 'me':
                 user = models.User.get_by_key_name(user_id)
                 good_things.filter('user =',user)
-                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things]
+                result = [x.template(user_id) for x in good_things]
             # return all public posts and current user's private posts
             elif view == 'all':
                 user = models.User.get_by_key_name(user_id)
-                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things if (x.public or x.user.id == user.id)]
+                result = [x.template(user_id) for x in good_things if (x.public or x.user.id == user.id)]
             else:
                 profile_user_id = str(self.request.get('view'))
                 profile_user = models.User.get_by_key_name(profile_user_id)
                 good_things.filter('user =',profile_user).filter('public =',True)
-                result = [x.template(user_id, tzoffset = tz_offset) for x in good_things]
+                result = [x.template(user_id) for x in good_things]
         # save a post.  separate this into the post() method
         else:
-            result = [self.save_post().template(user_id, tzoffset = tz_offset)]
+            result = [self.save_post().template(user_id)]
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
@@ -243,6 +246,7 @@ class PostHandler(BaseHandler):
             else:
                 # logging.info(msg_tags)
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
+
         return good_thing
 
 # API for saving and serving cheers
@@ -423,10 +427,8 @@ class StatHandler(BaseHandler):
 
         tz_offset = int(self.request.get('tzoffset'))
         today = (datetime.datetime.now() - datetime.timedelta(hours = tz_offset)).date()
-        logging.info("today=" + str(today))
         posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
         # posts_today = user.goodthing_set.filter('created_origin >=',datetime.date.today()).filter('deleted =',False).count()
-
 
         progress = int((float(posts_today)/3)*100)
         if progress > 100:

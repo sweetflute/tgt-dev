@@ -34,6 +34,7 @@ class WordCloud(db.Model):
         replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
         if self.word_dict:
             counter.update(json.loads(self.word_dict))
+            logging.info("self.word_dict exist")
         users = self.user_set.fetch(limit=None)
         for user in users:
             good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
@@ -44,13 +45,29 @@ class WordCloud(db.Model):
         self.word_dict = json.dumps(counter)
         self.upated = datetime.datetime.now()
 
+    #Only do update when posting
+    # def update_word_dict(self):
+    #     counter = Counter()
+    #     replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+    #     if self.word_dict:
+    #         counter.update(json.loads(self.word_dict))
+    #     users = self.user_set.fetch(limit=None)
+    #     for user in users:
+    #         good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
+    #         for good_thing in good_thing_list:
+    #             x = str(good_thing.good_thing).translate(replace_punctuation).lower()
+    #             words = [word for word in x.split(' ') if word not in self.stopwords]
+    #             counter.update(words)
+    #     self.word_dict = json.dumps(counter)
+    #     self.upated = datetime.datetime.now()
+
     # return the 20 most common words as a sorted list of dictionaries
     def get_sorted_word_dict(self):
         if self.word_dict:
             word_dict = json.loads(self.word_dict)
             sorted_dict = OrderedDict(sorted(word_dict.items(), key=lambda t: t[1]))
             result = [{'word':word,'count':sorted_dict[word]} for word in sorted_dict][-20:]
-            print result
+            # print result
             return result
         else:
             return [{'word':"You haven't posted any good things!",'count':1}]
@@ -67,7 +84,7 @@ class User(db.Model):
     public_user = db.BooleanProperty(default=None) # change default back to false
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
-    email = db.StringProperty() #TODO: required=Trus
+    email = db.StringProperty() #TODO: required=True
 
 # model for each good thing
 # TODO: update to work with images
@@ -80,9 +97,9 @@ class GoodThing(db.Model):
     public = db.BooleanProperty(default=True)
     wall = db.BooleanProperty(default=False)
     deleted = db.BooleanProperty(default=False)
-    img = db.BlobProperty()
+    # img = db.BlobProperty()
 
-    def template(self,user_id, tzoffset=0):
+    def template(self,user_id):
         if user_id == self.user.id:
             current_user = True
         else:
@@ -101,9 +118,11 @@ class GoodThing(db.Model):
             'mentions':self.get_mentions(),
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
-            'created': self.get_created(tzoffset),
-            'created_origin': self.get_created_origin(),
-            'time_display': self.get_created_shown(tzoffset)
+            'created': str(self.created),
+            # 'created_origin': self.get_created_origin(),
+            # 'time_display': self.get_created_shown(tzoffset),
+            # 'img_url': self.get_image()
+            # 'local_time_id': self.get_local_time_id()
             #add img
         }
         return template
@@ -157,51 +176,23 @@ class GoodThing(db.Model):
             return "public"
         else:
             return "private"
-
-    # format the created time
-    def get_created(self, tzoffset):
-        local_time = self.created - datetime.timedelta(hours=int(tzoffset))
-        time = "%s %d:%d" %(local_time.date(), local_time.time().hour, local_time.time().minute)
-        return time
     
     # format the local created time
-    def get_created_origin(self):
-        time = "%s %d:%d" %(self.created_origin.date(), self.created_origin.time().hour, self.created_origin.time().minute)
-        return time
+    # def get_created_origin(self):
+    #     # logging.info("created=" + )
+    #     time = "%s %d:%d" %(self.created_origin.date(), self.created_origin.time().hour, self.created_origin.time().minute)
+    #     return time
+    
+    def get_image(self):
+        if self.img:
+            logging.info(self.img.get_serving_url(size=400))
+            return self.img.get_serving_url(size=400)
+        else:
+            return None
 
-    # format the created time
-    def get_created_shown(self, tzoffset):
-        local_now = datetime.datetime.now() - datetime.timedelta(hours=int(tzoffset))
-        local_created = self.created - datetime.timedelta(hours=int(tzoffset))
-        day_diff = (local_now.date() - local_created.date()).days
-        sec_diff = (local_now - local_created).seconds
-        if (local_created > (local_now - datetime.timedelta(days=2))):
-            logging.info("local_now=" + str(local_now) + ", local_created=" + str(local_created) + "org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
+    def get_local_time_id(self):
+        return "local_time" + str(self.key().id())
 
-
-        time_display = ""
-        weekday_display = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        # logging.info("org_diff=" + str(org_diff) + ", day_diff=" + str(day_diff) + ", sec_diff=" + str(sec_diff))
-
-        if (day_diff > 7):
-            local_weekday = local_created.date().weekday()
-            time_display =  str(local_date) + ", " + weekday_display[local_weekday]
-        elif (day_diff > 1 and day_diff <= 7):
-            time_display = weekday_display[local_created.date().date().weekday()]
-        elif (day_diff == 1):
-            time_display = "yesterday"
-        elif (day_diff < 1 and sec_diff > 5400):
-            time_display =  "earlier today"
-        elif (day_diff < 1 and sec_diff >= 3600 and sec_diff <= 5400):
-            time_display = "an hour ago"
-        elif (day_diff < 1 and sec_diff >= 120 and sec_diff < 3600):
-            min_diff = int(sec_diff/60)
-            time_display = str(min_diff) + " minutes ago"    
-        elif (day_diff < 1 and sec_diff < 120):
-            time_display = "a moment ago"
-        
-        # logging.info("post_time = " + str(self.created - datetime.timedelta(hours=int(tzoffset))) + ", time_display = " + time_display)
-        return time_display
 
 # model for a cheer associated with a good thing
 class Cheer(db.Model):
@@ -210,7 +201,7 @@ class Cheer(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
 
 # model for a comment associated with a good thing
-class Comment(db.Model):
+class Comment(db.Model):#TODO: add time and fix timezone issues for comment
     comment_text = db.StringProperty(required=True)
     user = db.ReferenceProperty(User,required=True)
     good_thing = db.ReferenceProperty(GoodThing,required=True)
