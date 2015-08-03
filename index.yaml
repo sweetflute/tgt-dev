@@ -21,6 +21,12 @@ indexes:
   - name: deleted
   - name: created
 
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: created
+    direction: desc
+
 - kind: Comment
   properties:
   - name: deleted

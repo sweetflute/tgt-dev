@@ -12,6 +12,7 @@ import logging
 from google.appengine.ext import db
 from webapp2_extras import sessions
 from google.appengine.api import mail
+from google.appengine.datastore.datastore_query import Cursor
 
 FACEBOOK_APP_ID = app_config.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET = app_config.FACEBOOK_APP_SECRET
@@ -148,27 +149,46 @@ class PostHandler(BaseHandler):
     def post(self):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
+        good_things_cursor = Cursor.from_websafe_string(self.request.get('cursor').encode('utf-8'))
+
         # tz_offset = self.request.get('tzoffset')
         # if the client isn't saving a post
         if view != '':
-            # good_things = models.GoodThing.all().order('created').filter('deleted =',False)
+            all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
+            if (good_things_cursor == ""):
+                good_things_cursor = None
             # select only this week's post
-            a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
-            good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
+            # a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
+            # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
+            
             # return just the current user's posts
             if view == 'me':
                 user = models.User.get_by_key_name(user_id)
-                good_things.filter('user =',user)
-                result = [x.template(user_id) for x in good_things]
+                # good_things.filter('user =',user)
+                good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                good_things_cursor = all_good_things.cursor()
+                result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                logging.info("view == me")
+                # logging.info(result)
             # return all public posts and current user's private posts
             elif view == 'all':
                 user = models.User.get_by_key_name(user_id)
-                result = [x.template(user_id) for x in good_things if (x.public or x.user.id == user.id)]
+                good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
+                good_things_cursor = all_good_things.cursor()
+                result = [x.template(user_id,good_things_cursor) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
+                logging.info("view == all")
+                # logging.info(result)
             else:
                 profile_user_id = str(self.request.get('view'))
                 profile_user = models.User.get_by_key_name(profile_user_id)
-                good_things.filter('user =',profile_user).filter('public =',True)
-                result = [x.template(user_id) for x in good_things]
+                # good_things.filter('user =',profile_user).filter('public =',True)
+                good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                good_things_cursor = all_good_things.cursor()
+                result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                logging.info("view == else")
+                # logging.info(result)
+
+
         # save a post.  separate this into the post() method
         else:
             result = [self.save_post().template(user_id)]
@@ -182,8 +202,9 @@ class PostHandler(BaseHandler):
         reason = self.request.get('reason')
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
-        tz_offset = int(self.request.get('tzoffset'))
-        local_time = datetime.datetime.now() - datetime.timedelta(hours=tz_offset)
+        tz_offset = self.request.get('tzoffset')
+        local_time = datetime.datetime.now() - datetime.timedelta(hours=int(tz_offset))
+
         raw_img = self.request.get('img')
         if raw_img != '':
             img = db.Blob(raw_img)

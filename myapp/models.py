@@ -97,9 +97,9 @@ class GoodThing(db.Model):
     public = db.BooleanProperty(default=True)
     wall = db.BooleanProperty(default=False)
     deleted = db.BooleanProperty(default=False)
-    # img = db.BlobProperty()
+    img = db.BlobProperty()
 
-    def template(self,user_id):
+    def template(self,user_id,cursor=""):
         if user_id == self.user.id:
             current_user = True
         else:
@@ -119,10 +119,8 @@ class GoodThing(db.Model):
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
             'created': str(self.created),
-            # 'created_origin': self.get_created_origin(),
-            # 'time_display': self.get_created_shown(tzoffset),
-            # 'img_url': self.get_image()
-            # 'local_time_id': self.get_local_time_id()
+            'cursor': cursor
+            # 'img_url': self.img
             #add img
         }
         return template
@@ -177,21 +175,13 @@ class GoodThing(db.Model):
         else:
             return "private"
     
-    # format the local created time
-    # def get_created_origin(self):
-    #     # logging.info("created=" + )
-    #     time = "%s %d:%d" %(self.created_origin.date(), self.created_origin.time().hour, self.created_origin.time().minute)
-    #     return time
-    
-    def get_image(self):
-        if self.img:
-            logging.info(self.img.get_serving_url(size=400))
-            return self.img.get_serving_url(size=400)
-        else:
-            return None
+    # def get_image(self):
+    #     if self.img:
+    #         # logging.info(self.img.get_serving_url(size=400))
+    #         return self.img.get_serving_url(size=400)
+    #     else:
+    #         return None
 
-    def get_local_time_id(self):
-        return "local_time" + str(self.key().id())
 
 
 # model for a cheer associated with a good thing

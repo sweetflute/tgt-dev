@@ -1,3 +1,4 @@
+var current_view = 'all';
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
@@ -50,22 +51,53 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
-    // var img_url = $("#img").file[0];
-    // var data_in = new FormData($("#post"));
-    // data_in.append("img", img_url);
-    // data_in.append("tzoffset", timezone_offset);
-    // data_in.append("mentions", mention_list);
-    // data_in.append("view", "");    
-    var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
-    console.log(data_in);
-    $.post("/post",data_in)
-        .done(function(data){
-            $('input#good_thing, input#reason, input#img').val('');
+    var img_file = $("#img")[0].files[0];
+    // alert(img_file.name);
+    var data_in = new FormData(document.querySelector("#post"));
+    // var data_in = new FormData();
+
+    // data_in.append("good_thing", $("#good_thing").html());
+    // data_in.append("reason", $("#reason").html());
+
+    if (img_file != null)
+        data_in.append("img", img_file);
+    data_in.append("tzoffset", timezone_offset);
+    data_in.append("mentions", mention_list);
+    data_in.append("view", "");    
+    // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
+    // alert("after FormData");
+
+    $.ajax({
+      url: "/post",
+      data: data_in,
+      cache: false,
+      processData: false,
+      contentType: false,
+      // mimeType: 'multipart/form-data',
+      type: 'POST',
+    //   beforeSend: function(xhr) { 
+    //     alert("ajax beforesend");
+    //     mime_type = "multipart/form-data, boundary=" + data_in.boundary;
+    //     xhr.setRequestHeader('Content-Type', mime_type);
+    // },
+      success: function(data) {
+        // alert("ajax success");
+        $('input#good_thing, input#reason, input#img').val('');
             $('#magic_friend_tagging').magicSuggest().clear();
             get_settings();
             get_posts(data);
             get_stats();
-        });
+      }
+    });
+
+    // $.post("/post",data_in)
+    //     .done(function(data){
+    //         $('input#good_thing, input#reason, input#img').val('');
+    //         $('#magic_friend_tagging').magicSuggest().clear();
+    //         get_settings();
+    //         get_posts(data);
+    //         get_stats();
+    //     });
     return false;
 });
 
@@ -137,10 +169,36 @@ $(document).on("click","a#comment",function(e) {
     }
 });
 
+// $(document).on("click", "#next", function(){
+//     // var cursor = "";
+//     // if($('#current-cursor').attr('data-name') != null)
+//     //     cursor = $('#current-cursor').attr('data-name');
+//     //     $('#current-cursor').attr('data-name','');
+
+//     var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
+//     $.post( "/post", data_in).done(function (data) {
+//         // $('ul#good_things').empty();
+//         get_posts(data);
+//     });
+// });
+
+
+$(window).scroll(function()
+{
+    if($(window).scrollTop() == $(document).height() - $(window).height())
+    {
+
+        var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
+        $.post( "/post", data_in).done(function (data) {
+            // $('ul#good_things').empty();
+            get_posts(data);
+        });
+    }
+});
+
 // on page load
 window.onload = function() {
-    $( document ).ready(function() {
-        
+    $( document ).ready(function() {        
         load_all_post();
         change_view();
         tag_friends();
@@ -152,11 +210,14 @@ window.onload = function() {
 function load_all_post(){
 
         var view = 'view=all';
-        // // var timezone_offset = 0 - (new Date().getTimezoneOffset())/60;
-        // var timezone_offset = (new Date().getTimezoneOffset())/60;
-        // var data_in = view + '&tzoffset=' + timezone_offset
+        current_view = "all";
+        // var cursor = "";
+        // if($('#current-cursor').attr('data-name') != null)
+        //     cursor = $('#current-cursor').attr('data-name');
+        // alert(cursor);
+        var data_in = view + '&cursor=' + $('#next').attr('data-name');
 
-        $.post( "/post", view).done(function(data){
+        $.post( "/post", data_in).done(function(data){
             get_posts(data);
         });
         // get user settings
@@ -169,22 +230,16 @@ function load_all_post(){
         })
 }
 
-// $( document ).ready(function() {
-//    change_view();
-//    tag_friends();
-
-//    console.log("local_time.length()=" + $(".local-time").length);
-//    // .forEach(function(){
-//         // $(this).html(localize_time());
-//    // });
-   
-// });
 
 // change views
 function change_view(){
     $( "a#view_select" ).click(function( event ) {
         // var timezone_offset = (new Date().getTimezoneOffset())/60;
-        var data = 'view=' + $(this).data('view');
+        current_view = $(this).data('view');
+        // var cursor = "";
+        // if($('#current-cursor').attr('data-name') != null)
+        //     cursor = $('#current-cursor').attr('data-name');
+        var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
         $.post( "/post", data).done(function (data) {
             $('ul#good_things').empty();
             get_posts(data);
@@ -211,20 +266,16 @@ function localize_time(created_time){
     var ms_min = 60*1000;
     var ms_hour = 60*60*1000;
 
-    var created_time_local = new Date(created_time).getTime() - new Date().getTimezoneOffset()*ms_min
+    var cts = created_time.split(/[\s.:-]+/);
+    var created_time_local = new Date(cts[0],parseInt(cts[1]-1),cts[2],cts[3],cts[4],cts[5],cts[6]).getTime() - new Date().getTimezoneOffset()*ms_min
     var local_date = new Date(created_time_local);
+
 
     var today = new Date();
     var yesterday = new Date();
     yesterday.setDate(yesterday.getDate()-1);
 
-    var time_diff = new Date().getTime() - created_time_local;
-    console.log(new Date(created_time));
-    console.log(local_date);
-    console.log(new Date());
-    console.log(time_diff);
- 
-
+    var time_diff = today.getTime() - created_time_local;
 
     var weekday = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var time_display = "";
@@ -243,10 +294,10 @@ function localize_time(created_time){
         }
     }else if (local_date.getDate() == yesterday.getDate()){
         time_display = "yesterday";
-    }else if(today.getDate() - local_date.getDate() < 7){
+    }else if(time_diff > 24*ms_hour && time_diff < 7*24*ms_hour){
         time_display = weekday[local_date.getDay()];
     }else{
-        time_display = local_date.getMonth() + "/" + local_date.getDate() + ", " + weekday[local_date.getDay()];
+        time_display = local_date.getMonth() + 1 + "/" + local_date.getDate() + ", " + weekday[local_date.getDay()];
     }
 
     return time_display;
@@ -269,13 +320,20 @@ function get_posts(post_list) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#good_thing_tpl').html();
-            $('ul#good_things').prepend(Mustache.render(template, data));
+            // $('ul#good_things').prepend(Mustache.render(template, data));
+            $('ul#good_things').append(Mustache.render(template, data));
+
         });
 
 
         $(".local-time").each(function(){
+            console.log("get_posts");
             var created_time = $(this).html();
             $(this).html(localize_time(created_time));
+
+            if($(this).attr('data-name') != null)
+                $('#next').attr('data-name', $(this).attr('data-name'));
+
             $(this).attr("class", ".local-time-done");
         });
     });
