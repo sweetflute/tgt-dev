@@ -63,7 +63,9 @@
         <div class="panel-body">
             <div class="media post">
                 <div class="media-left">
-                    <a href="{{ current_user.profile_url }}">
+                    <!-- <a href="{{ current_user.profile_url }}"> -->
+                    <a href="user/?userid={{ current_user.id }}">
+
                         <img class="media-object" src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square" alt="...">
                     </a>
                 </div>

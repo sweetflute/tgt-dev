@@ -1,5 +1,5 @@
 import json
-import string
+import string, re
 import datetime
 from google.appengine.ext import db
 from collections import Counter,OrderedDict
@@ -24,43 +24,54 @@ class Settings(db.Model):
 # and most recent update time
 class WordCloud(db.Model):
     word_dict = db.TextProperty(default=None)
+    reason_dict = db.TextProperty(default=None)
     updated = db.DateTimeProperty(auto_now_add=True)
+    pv_updated = db.DateTimeProperty(auto_now_add=True)
     stopwords = db.StringListProperty(default=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now'])
 
     # update the word counter.  only load posts since last update time
     # store the counter as json and change the last updated time
-    def update_word_dict(self):
+    def update_word_dict(self, profile_type):
         counter = Counter()
-        replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+        rcounter = Counter()
+        # replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+
         if self.word_dict:
             counter.update(json.loads(self.word_dict))
             logging.info("self.word_dict exist")
         users = self.user_set.fetch(limit=None)
-        for user in users:
-            good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
-            for good_thing in good_thing_list:
-                x = str(good_thing.good_thing).translate(replace_punctuation).lower()
-                words = [word for word in x.split(' ') if word not in self.stopwords]
-                counter.update(words)
-        self.word_dict = json.dumps(counter)
-        self.upated = datetime.datetime.now()
+        if (profile_type == 'public'):
+            for user in users:
+                good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('public =',True).fetch(limit=None)
+                for good_thing in good_thing_list:
+                    # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
+                    # words = [word for word in x.split(' ') if word not in self.stopwords]
 
-    #Only do update when posting
-    # def update_word_dict(self):
-    #     counter = Counter()
-    #     replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
-    #     if self.word_dict:
-    #         counter.update(json.loads(self.word_dict))
-    #     users = self.user_set.fetch(limit=None)
-    #     for user in users:
-    #         good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
-    #         for good_thing in good_thing_list:
-    #             x = str(good_thing.good_thing).translate(replace_punctuation).lower()
-    #             words = [word for word in x.split(' ') if word not in self.stopwords]
-    #             counter.update(words)
-    #     self.word_dict = json.dumps(counter)
-    #     self.upated = datetime.datetime.now()
+                    x = good_thing.good_thing.lower()
+                    words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
 
+                    counter.update(words)
+            self.word_dict = json.dumps(counter)
+            self.upated = datetime.datetime.now()
+        else:
+            for user in users:
+                good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
+                for good_thing in good_thing_list:
+                    # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
+                    # words = [word for word in x.split(' ') if word not in self.stopwords]
+
+                    x = good_thing.good_thing.lower()
+                    y = good_thing.reason.lower()
+                    words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
+                    rwords = [word for word in re.split('[ '+ string.punctuation +']', y) if word not in self.stopwords]
+
+                    counter.update(words)
+                    rcounter.update(rwords)
+            self.word_dict = json.dumps(counter)
+            self.reason_dict = json.dumps(rcounter)
+            self.pv_upated = datetime.datetime.now()
+
+    
     # return the 20 most common words as a sorted list of dictionaries
     def get_sorted_word_dict(self):
         if self.word_dict:
@@ -71,6 +82,18 @@ class WordCloud(db.Model):
             return result
         else:
             return [{'word':"You haven't posted any good things!",'count':1}]
+
+    # return the 20 reason common words as a sorted list of dictionaries
+    def get_sorted_reason_dict(self):
+        if self.reason_dict:
+            reason_dict = json.loads(self.reason_dict)
+            sorted_dict = OrderedDict(sorted(reason_dict.items(), key=lambda t: t[1]))
+            result = [{'word':word,'count':sorted_dict[word]} for word in sorted_dict][-20:]
+            # print result
+            return result
+        else:
+            return [{'word':"You haven't posted any good things!",'count':1}]
+
 
 # model for each user based on facebook login information
 # TODO: add email field

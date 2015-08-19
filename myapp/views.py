@@ -178,6 +178,22 @@ class PostHandler(BaseHandler):
                 result = [x.template(user_id,good_things_cursor) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
                 logging.info("view == all")
                 # logging.info(result)
+            elif view == 'profile':
+                profile_user_id = str(self.request.get('userid'))
+                if (profile_user_id == user_id):
+                    user = models.User.get_by_key_name(user_id)
+                    # good_things.filter('user =',user)
+                    good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things_cursor = all_good_things.cursor()
+                    result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                    logging.info("view == profile_me")
+                else:
+                    user = models.User.get_by_key_name(profile_user_id)
+                    # good_things.filter('user =',user)
+                    good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things_cursor = all_good_things.cursor()
+                    result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                    logging.info("view == profile_others")
             else:
                 profile_user_id = str(self.request.get('view'))
                 profile_user = models.User.get_by_key_name(profile_user_id)
@@ -439,29 +455,46 @@ class PrivacyHandler(webapp2.RequestHandler):
 class StatHandler(BaseHandler):
     def post(self):
         # print self.request.get('user_id')
-        if self.request.get('user_id') == '':
-            user_id = str(self.current_user['id'])
-        else:
-            user_id = self.request.get('user_id')
-        user = models.User.get_by_key_name(user_id)
-        posts = user.goodthing_set.filter('deleted =',False).count()
-
+        view = self.request.get('view')
         tz_offset = int(self.request.get('tzoffset'))
         today = (datetime.datetime.now() - datetime.timedelta(hours = tz_offset)).date()
-        posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+
+        if (view != '' and view == 'profile'):
+            user_profile_id = self.request.get('user_id')
+            user_id = str(self.current_user['id'])
+            if(user_profile_id != user_id):
+                user = models.User.get_by_key_name(user_profile_id)
+                posts = user.goodthing_set.filter('deleted =',False).filter('public =', True).count()
+                posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).filter('public =', True).count()
+                user.word_cloud.update_word_dict('public')
+            else:
+                user = models.User.get_by_key_name(user_id)
+                posts = user.goodthing_set.filter('deleted =',False).count()
+                posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+                user.word_cloud.update_word_dict('private')
+        else:
+            if self.request.get('user_id') == '':
+                user_id = str(self.current_user['id'])
+            else:
+                user_id = self.request.get('user_id')
+            user = models.User.get_by_key_name(user_id)
+            posts = user.goodthing_set.filter('deleted =',False).count()
+            posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+            user.word_cloud.update_word_dict('private')
         # posts_today = user.goodthing_set.filter('created_origin >=',datetime.date.today()).filter('deleted =',False).count()
 
         progress = int((float(posts_today)/3)*100)
         if progress > 100:
             progress = 100
         progress = str(progress) + '%'
-        user.word_cloud.update_word_dict()
         word_cloud = user.word_cloud.get_sorted_word_dict()
+        reason_cloud = user.word_cloud.get_sorted_reason_dict()
         result = {
             'posts_today':posts_today,
             'progress':progress,
             'posts':posts,
-            'word_cloud':word_cloud
+            'word_cloud':word_cloud,
+            'reason_cloud':reason_cloud
         }
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
@@ -484,14 +517,18 @@ class NotificationHandler(BaseHandler):
 
 # serve the profile page for a public user
 class ProfileHandler(BaseHandler):
-    def get(self, user_id):
+    def get(self, userid):
+        user_id = str(self.request.get('userid'))
+        current_user_id = str(self.current_user['id'])
+
         user = models.User.get_by_key_name(user_id)
         if user.public_user:
             template = jinja_environment.get_template('profile.html')
             template_values = {
                 'facebook_app_id':FACEBOOK_APP_ID,
                 'user_id':user_id,
-                'user_name':user.name
+                'user_name':user.name,
+                'current_user_id': current_user_id
             }
         self.response.out.write(template.render(template_values))
 

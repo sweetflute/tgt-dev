@@ -85,7 +85,7 @@ $(document).on("click","#submit_good_thing",function(e) {
         $('input#good_thing, input#reason, input#img').val('');
             $('#magic_friend_tagging').magicSuggest().clear();
             get_settings();
-            get_posts(data);
+            get_posts(data, true);
             get_stats();
       }
     });
@@ -191,7 +191,7 @@ $(window).scroll(function()
         var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
         $.post( "/post", data_in).done(function (data) {
             // $('ul#good_things').empty();
-            get_posts(data);
+            get_posts(data, false);
         });
     }
 });
@@ -218,7 +218,7 @@ function load_all_post(){
         var data_in = view + '&cursor=' + $('#next').attr('data-name');
 
         $.post( "/post", data_in).done(function(data){
-            get_posts(data);
+            get_posts(data, false);
         });
         // get user settings
         get_settings();
@@ -242,7 +242,7 @@ function change_view(){
         var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
         $.post( "/post", data).done(function (data) {
             $('ul#good_things').empty();
-            get_posts(data);
+            get_posts(data,false);
         });
         return false;
     });
@@ -277,10 +277,14 @@ function localize_time(created_time){
 
     var time_diff = today.getTime() - created_time_local;
 
+    // console.log(today);
+    // console.log(local_date);
+    // console.log(time_diff);
+
     var weekday = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var time_display = "";
 
-    if(local_date.getDate() == today.getDate()){
+    if((local_date.getDate() == today.getDate()) && (local_date.getMonth() == today.getMonth())){
         if (time_diff > ms_hour){
             time_display =  "earlier today";
         }else if (time_diff == ms_hour){
@@ -292,7 +296,7 @@ function localize_time(created_time){
                  time_display = "a moment ago";
             }
         }
-    }else if (local_date.getDate() == yesterday.getDate()){
+    }else if ((local_date.getDate() == yesterday.getDate()) && (local_date.getMonth() == yesterday.getMonth())){
         time_display = "yesterday";
     }else if(time_diff > 24*ms_hour && time_diff < 7*24*ms_hour){
         time_display = weekday[local_date.getDay()];
@@ -314,24 +318,25 @@ function localize_time(created_time){
 });*/
 
 // render posts from template and json data
-function get_posts(post_list) {
+function get_posts(post_list, posting) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
         post_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#good_thing_tpl').html();
-            // $('ul#good_things').prepend(Mustache.render(template, data));
-            $('ul#good_things').append(Mustache.render(template, data));
+            if (posting)
+                $('ul#good_things').prepend(Mustache.render(template, data));
+            else
+                $('ul#good_things').append(Mustache.render(template, data));
 
         });
 
 
         $(".local-time").each(function(){
-            console.log("get_posts");
             var created_time = $(this).html();
             $(this).html(localize_time(created_time));
 
-            if($(this).attr('data-name') != null)
+            if($(this).attr('data-name') != null && !posting)
                 $('#next').attr('data-name', $(this).attr('data-name'));
 
             $(this).attr("class", ".local-time-done");

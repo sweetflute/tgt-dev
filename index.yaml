@@ -51,3 +51,24 @@ indexes:
   - name: deleted
   - name: user
   - name: created_origin
+
+- kind: GoodThing
+  properties:
+  - name: public
+  - name: user
+  - name: created
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: public
+  - name: user
+  - name: created
+    direction: desc
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: public
+  - name: user
+  - name: created_origin

@@ -35,16 +35,17 @@
       <div class="modal-body">
           <form id='settings' action=''>
               <div class="form-group">
-                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true"><label>Send me a reminder email if I have not posted for
-                  <input type='number' name='reminder_days' id='reminder_days'/>
-                  days.</label>
+                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true">
+                  <label for="send_reminders_true">Send me a reminder email if I have not posted for
+                  <input type='number' name='reminder_days' id='reminder_days' style="width:45px" min="1" max="7"/>
+                  days.</label><br>
                   <input type="radio" name="send_reminders" id="send_reminders_false" value="send_reminders_false">
-                  <label>Don't send me reminder emails</label>
+                  <label for="send_reminders_false">Don't send me reminder emails</label>
               </div>
               <hr>
               <div class="form-group">
-                  <label for="settings_wall"><input type='checkbox' name='default_fb' id='settings_wall'/> Post my Good Things to Facebook by default</label>
                   <label for="settings_public"><input type='checkbox' name='default_public' id='settings_public'/> Make my Good Things visible to other 3GT users by default</label>
+                  <label for="settings_wall"><input type='checkbox' name='default_fb' id='settings_wall'/> Post my Good Things to Facebook by default</label>
               </div>
           </form>
       </div>
@@ -62,6 +63,7 @@
         </div>
         <ul class="list-group" id='good_things'>
         </ul>
+        <div id="next" data-name="" style="display:none;"></button>
     </div>
 </div>
 {% endblock %}
@@ -72,12 +74,16 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <img src="http://graph.facebook.com/{{ user_id }}/picture?width=250"" alt="..." class="img-rounded img-responsive">
+            <h4>{{user_name}}</h4>
             <hr>
-            <h4 class="text-muted" id="good_things_today"></h4>
             <h4 class="text-muted" id="good_things_total"></h4>
             <hr>
-            <h4>{{user_name}}'s Words Tags</h4>
+            <h4>Words Tags</h4>
             <div id="word_cloud"></div>
+            {% if user_id == current_user_id %}
+            <h4>Reason Tags</h4>
+            <div id="reason_cloud"></div>
+            {% endif %}
         </div>
     </div>
 </div>
