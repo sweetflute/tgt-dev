@@ -14,7 +14,7 @@
                         <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{user_name}}</a></h4>
                     </div>
                     <div id="status">
-                        <span class="local-time" data-name="{{cursor}}">{{created}}</span>
+                        <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
                         <span>{{public}}</span>
                     </div>
                     <div id="content">
@@ -35,7 +35,8 @@
                             {{/mentions}}
                         </ul>
                         {{/num_mentions}}
-                        <a href="#" class="link" id='cheer' data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>({{num_cheers}}) {{#cheered}}uncheer{{/cheered}}{{^cheered}}cheer{{/cheered}}</a>
+                        {{#current_user}}({{num_cheers}})cheer{{/current_user}}
+                        {{^current_user}}<a href="#" class="link" id='cheer' data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>({{num_cheers}}) {{#cheered}}uncheer{{/cheered}}{{^cheered}}cheer{{/cheered}}</a>{{/current_user}}
                         {{#current_user}}<a href="#" class="link" id='delete'>delete</a>{{/current_user}}
                         <a href="#" class="link" data-toggle="off" id='comment'>({{num_comments}}) comments</a>
                     </div>

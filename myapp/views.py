@@ -13,6 +13,9 @@ from google.appengine.ext import db
 from webapp2_extras import sessions
 from google.appengine.api import mail
 from google.appengine.datastore.datastore_query import Cursor
+from google.appengine.ext import blobstore
+# from google.appengine.ext import ndb
+from google.appengine.ext.webapp import blobstore_handlers
 
 FACEBOOK_APP_ID = app_config.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET = app_config.FACEBOOK_APP_SECRET
@@ -71,7 +74,8 @@ class BaseHandler(webapp2.RequestHandler):
                     'profile_url':user.profile_url,
                     'id':user.id,
                     'access_token':user.access_token,
-                    'public_user':user.public_user,
+                    # 'public_user':user.public_user,
+                    'public_user':user.user_type,
                     'friends_list':graph.get_connections("me", "friends")
                 }
                 return self.session.get("user")
@@ -125,10 +129,15 @@ class HomeHandler(BaseHandler):
             user = models.User.get_by_key_name(user_id)
 
 
-            if user.public_user:
+            # if user.public_user:
+            if user.user_type == 2:
                 template = jinja_environment.get_template('public_main.html')
-            elif user.public_user is False:
+            # elif user.public_user is private user:
+            elif user.user_type == 1:
                 template = jinja_environment.get_template('private_main.html')
+            # elif user.public_user is placebo:
+            elif user.user_type == 0:
+                template = jinja_environment.get_template('memory_main.html')
             else:
                 self.redirect('/intro')
                 return None
@@ -143,66 +152,79 @@ class HomeHandler(BaseHandler):
             }
         self.response.out.write(template.render(template_values))
 
-# API for saving and serving posts
-class PostHandler(BaseHandler):
-    # this should be turned into a get() method just for serving posts
+
+class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
     def post(self):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
-        good_things_cursor = Cursor.from_websafe_string(self.request.get('cursor').encode('utf-8'))
+        cursor_str = self.request.get('cursor')
+        # logging.info(cursor_str)
+        if(cursor_str != ""):
+            good_things_cursor = Cursor.from_websafe_string(cursor_str.encode('utf-8'))
+        else:
+            good_things_cursor = None
 
         # tz_offset = self.request.get('tzoffset')
         # if the client isn't saving a post
         if view != '':
             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
-            if (good_things_cursor == ""):
-                good_things_cursor = None
+            # if (good_things_cursor == ""):
+            #     good_things_cursor = None
             # select only this week's post
             # a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
             # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
             
-            # return just the current user's posts
-            if view == 'me':
-                user = models.User.get_by_key_name(user_id)
-                # good_things.filter('user =',user)
+            user = models.User.get_by_key_name(user_id)
+            upload_url = blobstore.create_upload_url('/post')
+            # if (user.public_user == False):
+            if (user.user_type != 2):
                 good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
                 good_things_cursor = all_good_things.cursor()
-                result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-                logging.info("view == me")
-                # logging.info(result)
-            # return all public posts and current user's private posts
-            elif view == 'all':
-                user = models.User.get_by_key_name(user_id)
-                good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
-                good_things_cursor = all_good_things.cursor()
-                result = [x.template(user_id,good_things_cursor) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
-                logging.info("view == all")
-                # logging.info(result)
-            elif view == 'profile':
-                profile_user_id = str(self.request.get('userid'))
-                if (profile_user_id == user_id):
+                result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things]#[::-1]
+                logging.info("private user")
+            else:
+                # return just the current user's posts
+                if view == 'me':
                     user = models.User.get_by_key_name(user_id)
                     # good_things.filter('user =',user)
                     good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
                     good_things_cursor = all_good_things.cursor()
-                    result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-                    logging.info("view == profile_me")
+                    result = [x.template(user_id,good_things_cursor,upload_url) for x in good_things]#[::-1]
+                    logging.info("view == me")
+                    # logging.info(result)
+                # return all public posts and current user's private posts
+                elif view == 'all':
+                    user = models.User.get_by_key_name(user_id)
+                    good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things_cursor = all_good_things.cursor()
+                    result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
+                    logging.info("view == all")
+                    # logging.info(result)
+                elif view == 'profile':
+                    profile_user_id = str(self.request.get('userid'))
+                    if (profile_user_id == user_id):
+                        user = models.User.get_by_key_name(user_id)
+                        # good_things.filter('user =',user)
+                        good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                        good_things_cursor = all_good_things.cursor()
+                        result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                        logging.info("view == profile_me")
+                    else:
+                        user = models.User.get_by_key_name(profile_user_id)
+                        # good_things.filter('user =',user)
+                        good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                        good_things_cursor = all_good_things.cursor()
+                        result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+                        logging.info("view == profile_others")
                 else:
-                    user = models.User.get_by_key_name(profile_user_id)
-                    # good_things.filter('user =',user)
-                    good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                    profile_user_id = str(self.request.get('view'))
+                    profile_user = models.User.get_by_key_name(profile_user_id)
+                    # good_things.filter('user =',profile_user).filter('public =',True)
+                    good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
                     good_things_cursor = all_good_things.cursor()
                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-                    logging.info("view == profile_others")
-            else:
-                profile_user_id = str(self.request.get('view'))
-                profile_user = models.User.get_by_key_name(profile_user_id)
-                # good_things.filter('user =',profile_user).filter('public =',True)
-                good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
-                good_things_cursor = all_good_things.cursor()
-                result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-                logging.info("view == else")
-                # logging.info(result)
+                    logging.info("view == else")
+                    # logging.info(result)
 
 
         # save a post.  separate this into the post() method
@@ -221,12 +243,15 @@ class PostHandler(BaseHandler):
         tz_offset = self.request.get('tzoffset')
         local_time = datetime.datetime.now() - datetime.timedelta(hours=int(tz_offset))
 
-        raw_img = self.request.get('img')
-        if raw_img != '':
-            img = db.Blob(raw_img)
+
+        upload = self.get_uploads()[0];
+        # raw_img = self.request.get('img')
+        if upload != '':
+            img_key = upload.key()
         else:
-            img = None
-        if user.public_user:
+            img_key = None
+        # if user.public_user:
+        if user.user_type == 2:
             if self.request.get('wall') == 'on':
                 wall = True
             else:
@@ -246,8 +271,8 @@ class PostHandler(BaseHandler):
             created_origin=local_time,
             user=user,
             public=public,
-            img=img,
-            wall=wall
+            wall=wall,
+            blob_key = img_key
         )
         good_thing.put()
         # handle mentions here
@@ -285,6 +310,163 @@ class PostHandler(BaseHandler):
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
 
         return good_thing
+
+# API for saving and serving posts
+# class PostHandler(BaseHandler):
+#     # this should be turned into a get() method just for serving posts
+#     def post(self):
+#         user_id = str(self.current_user['id'])
+#         view = self.request.get('view')
+#         cursor_str = self.request.get('cursor')
+#         # logging.info(cursor_str)
+#         if(cursor_str != ""):
+#             good_things_cursor = Cursor.from_websafe_string(cursor_str.encode('utf-8'))
+#         else:
+#             good_things_cursor = None
+
+#         # tz_offset = self.request.get('tzoffset')
+#         # if the client isn't saving a post
+#         if view != '':
+#             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
+#             # if (good_things_cursor == ""):
+#             #     good_things_cursor = None
+#             # select only this week's post
+#             # a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
+#             # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
+            
+#             user = models.User.get_by_key_name(user_id)
+#             # if (user.public_user == False):
+#             if (user.user_type != 2):
+#                 good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+#                 good_things_cursor = all_good_things.cursor()
+#                 result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+#                 logging.info("private user")
+#             else:
+#                 # return just the current user's posts
+#                 if view == 'me':
+#                     user = models.User.get_by_key_name(user_id)
+#                     # good_things.filter('user =',user)
+#                     good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+#                     good_things_cursor = all_good_things.cursor()
+#                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+#                     logging.info("view == me")
+#                     # logging.info(result)
+#                 # return all public posts and current user's private posts
+#                 elif view == 'all':
+#                     user = models.User.get_by_key_name(user_id)
+#                     good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
+#                     good_things_cursor = all_good_things.cursor()
+#                     result = [x.template(user_id,good_things_cursor) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
+#                     logging.info("view == all")
+#                     # logging.info(result)
+#                 elif view == 'profile':
+#                     profile_user_id = str(self.request.get('userid'))
+#                     if (profile_user_id == user_id):
+#                         user = models.User.get_by_key_name(user_id)
+#                         # good_things.filter('user =',user)
+#                         good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+#                         good_things_cursor = all_good_things.cursor()
+#                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+#                         logging.info("view == profile_me")
+#                     else:
+#                         user = models.User.get_by_key_name(profile_user_id)
+#                         # good_things.filter('user =',user)
+#                         good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+#                         good_things_cursor = all_good_things.cursor()
+#                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+#                         logging.info("view == profile_others")
+#                 else:
+#                     profile_user_id = str(self.request.get('view'))
+#                     profile_user = models.User.get_by_key_name(profile_user_id)
+#                     # good_things.filter('user =',profile_user).filter('public =',True)
+#                     good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+#                     good_things_cursor = all_good_things.cursor()
+#                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+#                     logging.info("view == else")
+#                     # logging.info(result)
+
+
+#         # save a post.  separate this into the post() method
+#         else:
+#             result = [self.save_post().template(user_id)]
+#         self.response.headers['Content-Type'] = 'application/json'
+#         self.response.out.write(json.dumps(result))
+
+#     # save a post to the datastore and return that post.  this should be turned
+#     # into the post() method
+#     def save_post(self):
+#         good_thing_text = self.request.get('good_thing')
+#         reason = self.request.get('reason')
+#         user_id = str(self.current_user['id'])
+#         user = models.User.get_by_key_name(user_id)
+#         tz_offset = self.request.get('tzoffset')
+#         local_time = datetime.datetime.now() - datetime.timedelta(hours=int(tz_offset))
+
+#         raw_img = self.request.get('img')
+#         if raw_img != '':
+#             img = db.Blob(raw_img)
+#         else:
+#             img = None
+#         # if user.public_user:
+#         if user.user_type == 2:
+#             if self.request.get('wall') == 'on':
+#                 wall = True
+#             else:
+#                 wall = False
+#             if self.request.get('public') == 'on':
+#                 public = True
+#             else:
+#                 public = False
+#         else:
+#             public = False
+#             wall = False
+#             mentions = []
+#         # print wall, self.request.get('wall')
+#         good_thing = models.GoodThing(
+#             good_thing=good_thing_text,
+#             reason=reason,
+#             created_origin=local_time,
+#             user=user,
+#             public=public,
+#             img=img,
+#             wall=wall
+#         )
+#         good_thing.put()
+#         # handle mentions here
+#         msg_tags=[]
+#         if self.request.get('mentions') != '':
+#             mention_list = json.loads(self.request.get('mentions'))
+#             # logging.info(mention_list)
+#             for to_user_id in mention_list:
+#                 if 'app_id' in to_user_id:
+#                     to_user = models.User.get_by_key_name(str(to_user_id['app_id']))
+#                     fb_app_id = to_user_id['app_id']
+#                     event_id = good_thing.key().id()
+#                     # handle mention notification
+#                     self.notify(event_type='mention',
+#                                 to_user=to_user,
+#                                 event_id=event_id)
+#                 else:
+#                     to_user = None
+                
+#                 mention = models.Mention(
+#                     to_user=to_user,
+#                     good_thing=good_thing,
+#                     to_fb_user_id = to_user_id['id'],
+#                     to_user_name = to_user_id['name']
+#                 )
+#                 mention.put()
+#                 msg_tags.append(to_user_id['id'].encode('utf-8'))
+#         # handle posting to fb
+#         if wall:
+#             graph = facebook.GraphAPI(self.current_user['access_token'])
+#             if img:
+#                 graph.put_photo(image=raw_img,message=good_thing)
+#             else:
+#                 # logging.info(msg_tags)
+#                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
+
+#         return good_thing
 
 # API for saving and serving cheers
 class CheerHandler(BaseHandler):
@@ -395,18 +577,23 @@ class IntroHandler(BaseHandler):
         user = models.User.get_by_key_name(user_id)
         # public version of the app
         if self.request.get('public_user') == 'public':
-            user.public_user = True
+            # user.public_user = True
+            user.user_type = 2
         # private version of the app
         elif self.request.get('public_user') == 'private':
-            user.public_user = False
+            # user.public_user = False
+            user.user_type = 1
+        # placebo version of the app
+        elif self.request.get('public_user') == 'placebo':
+            user.user_type = 0
         # randomly assign the user to the public or the private version
         elif self.request.get('public_user') == 'assign':
-            user.public_user = random.choice([True, False])
+            user.user_type = random.choice([0, 1, 2])
         # if the user doesn't choose an option, don't assign a public/private
         # value.  app will redirect to this handler before allowing user to
         # view the home page
         else:
-            user.public_user = None
+            user.user_type = None
         user.put()
 
 # API for updating a user's settings
@@ -489,12 +676,14 @@ class StatHandler(BaseHandler):
         progress = str(progress) + '%'
         word_cloud = user.word_cloud.get_sorted_word_dict()
         reason_cloud = user.word_cloud.get_sorted_reason_dict()
+        friend_cloud = user.word_cloud.get_sorted_friend_dict()
         result = {
             'posts_today':posts_today,
             'progress':progress,
             'posts':posts,
             'word_cloud':word_cloud,
-            'reason_cloud':reason_cloud
+            'reason_cloud':reason_cloud,
+            'friend_cloud':friend_cloud
         }
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
@@ -522,8 +711,18 @@ class ProfileHandler(BaseHandler):
         current_user_id = str(self.current_user['id'])
 
         user = models.User.get_by_key_name(user_id)
-        if user.public_user:
+        if (user.user_type == 2):
+            logging.info("public profile")
             template = jinja_environment.get_template('profile.html')
+            template_values = {
+                'facebook_app_id':FACEBOOK_APP_ID,
+                'user_id':user_id,
+                'user_name':user.name,
+                'current_user_id': current_user_id
+            }
+        elif (user_id == current_user_id):
+            logging.info("entering private user's profile")
+            template = jinja_environment.get_template('private_profile.html')
             template_values = {
                 'facebook_app_id':FACEBOOK_APP_ID,
                 'user_id':user_id,
@@ -544,6 +743,14 @@ class ReminderHandler(webapp2.RequestHandler):
         logging.info("In ReminderHandler")
         users = models.User.all()
         for user in users:
+            # if (user.public_user == True):
+            #     user.user_type = 2
+            # else:
+            #     user.user_type = 1
+            # user.put()
+            # if (user.name == "Magi Chung"):
+            #     user.user_type = 0
+            #     user.put()
             reminder_days = int(user.settings.reminder_days)
             logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
             if(reminder_days != -1):

@@ -383,6 +383,7 @@ function get_stats() {
                 $('#word_cloud a').tagcloud();
             });
 
+            $('div#reason_cloud').empty();
             data.reason_cloud.forEach(function(data) {
                 var template = $(templates).filter('#word_cloud_tpl').html();
                 $('div#reason_cloud').prepend(Mustache.render(template, data));
@@ -393,6 +394,19 @@ function get_stats() {
             };
             $(function () {
                 $('#reason_cloud a').tagcloud();
+            });
+
+            $('div#friend_cloud').empty();
+            data.friend_cloud.forEach(function(data) {
+                var template = $(templates).filter('#word_cloud_tpl').html();
+                $('div#friend_cloud').prepend(Mustache.render(template, data));
+            });
+            $.fn.tagcloud.defaults = {
+                size: {start: 12, end: 18, unit: 'pt'},
+                color: {start: '#777', end: '#777'}
+            };
+            $(function () {
+                $('#friend_cloud a').tagcloud();
             });
         });
     });

@@ -1,4 +1,4 @@
-var current_view = 'all';
+f// var current_view = 'all';
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
@@ -38,87 +38,84 @@ $(document).on("click","button#close_settings",function(e) {
 
 // submit a new post
 // clear form on success
-$(document).on("click","#submit_good_thing",function(e) {
-    console.log($( "#post" ).serialize());
-    //TODO: check required field
-    $("form#post").find('[required]').each(function(){
-        if($(this).val() == ''){
-            $(this).focus();
-            alert("Good Thing is required!");
-            e.preventDefault();
-        }
-    });
+// $(document).on("click","#submit_good_thing",function(e) {
+//     //console.log($( "#post" ).serialize());
+//     //TODO: check required field
+//     $("form#post").find('[required]').each(function(){
+//         if($(this).val() == ''){
+//             $(this).focus();
+//             alert("Good Thing is required!");
+//             e.preventDefault();
+//         }
+//     });
 
-    var timezone_offset = (new Date().getTimezoneOffset())/60;
-    var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
-    // alert("before img_file");
-    var img_file = $("#img")[0].files[0];
-    // alert(img_file.name);
-    // alert("before FormData");
+//     var timezone_offset = (new Date().getTimezoneOffset())/60;
+//     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
+//     var img_file = $("#img")[0].files[0];
+//     // alert(img_file.name);
+//     var data_in = new FormData(document.querySelector("#post"));
+//     // var data_in = new FormData();
 
-    var data_in = new FormData(document.querySelector("#post"));
-    // var data_in = new FormData();
+//     // data_in.append("good_thing", $("#good_thing").html());
+//     // data_in.append("reason", $("#reason").html());
 
-    data_in.append("good_thing", $("#good_thing").html());
-    // data_in.append("reason", $("#reason").html());
+//     if (img_file != null)
+//         data_in.append("img", img_file);
+//     data_in.append("tzoffset", timezone_offset);
+//     data_in.append("mentions", mention_list);
+//     data_in.append("view", "");    
+//     // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
+//     // alert("after FormData");
 
-    if (img_file != null)
-        data_in.append("img", img_file);
-    data_in.append("tzoffset", timezone_offset);
-    data_in.append("mentions", mention_list);
-    data_in.append("view", "");
-    // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
-    // alert("after FormData");
+//     $.ajax({
+//       url: "/post",
+//       data: data_in,
+//       cache: false,
+//       processData: false,
+//       contentType: false,
+//       // mimeType: 'multipart/form-data',
+//       type: 'POST',
+//     //   beforeSend: function(xhr) { 
+//     //     alert("ajax beforesend");
+//     //     mime_type = "multipart/form-data, boundary=" + data_in.boundary;
+//     //     xhr.setRequestHeader('Content-Type', mime_type);
+//     // },
+//       success: function(data) {
+//         // alert("ajax success");
+//         $('input#good_thing, input#reason, input#img').val('');
+//             $('#magic_friend_tagging').magicSuggest().clear();
+//             get_settings();
+//             get_posts(data, true);
+//             get_stats();
+//       }
+//     });
 
-    $.ajax({
-      url: "/post",
-      data: data_in,
-      cache: false,
-      processData: false,
-      contentType: false,
-      // mimeType: 'multipart/form-data',
-      type: 'POST',
-    //   beforeSend: function(xhr) { 
-    //     alert("ajax beforesend");
-    //     mime_type = "multipart/form-data, boundary=" + data_in.boundary;
-    //     xhr.setRequestHeader('Content-Type', mime_type);
-    // },
-      success: function(data) {
-        // alert("ajax success");
-        $('input#good_thing, input#img').val('');
-            // $('#magic_friend_tagging').magicSuggest().clear();
-            get_settings();
-            get_posts(data, true);
-            get_stats();
-      }
-    });
-
-    // $.post("/post",data_in)
-    //     .done(function(data){
-    //         $('input#good_thing, input#reason, input#img').val('');
-    //         $('#magic_friend_tagging').magicSuggest().clear();
-    //         get_settings();
-    //         get_posts(data);
-    //         get_stats();
-    //     });
-    return false;
-});
+//     // $.post("/post",data_in)
+//     //     .done(function(data){
+//     //         $('input#good_thing, input#reason, input#img').val('');
+//     //         $('#magic_friend_tagging').magicSuggest().clear();
+//     //         get_settings();
+//     //         get_posts(data);
+//     //         get_stats();
+//     //     });
+//     return false;
+// });
 
 
 
-$(document).on("click","a#cheer",function(e) {
-    var cheer = $(this)
-    var url_data = 'good_thing=' + cheer.parents('div#data_container').data('id');
-        $.post( "/cheer",url_data).done(function(data){
-            if (data.cheered) {
-                var result = '(' + data.cheers + ') uncheer';
-            } else {
-                var result = '(' + data.cheers + ') cheer';
-            }
-            cheer.text(result);
-        });
-        return false;
-});
+// $(document).on("click","a#cheer",function(e) {
+//     var cheer = $(this)
+//     var url_data = 'good_thing=' + cheer.parents('div#data_container').data('id');
+//         $.post( "/cheer",url_data).done(function(data){
+//             if (data.cheered) {
+//                 var result = '(' + data.cheers + ') uncheer';
+//             } else {
+//                 var result = '(' + data.cheers + ') cheer';
+//             }
+//             cheer.text(result);
+//         });
+//         return false;
+// });
 
 
 // delete a post or comment
@@ -142,7 +139,7 @@ $(document).on("click","a#delete",function(e) {
     return false;
 });
 
-// // save a comment
+// save a comment
 // $(document).on("submit","form#comment",function(e) {
 //     var good_thing = $(this);
 //     var url_data = $( this ).serialize() + '&good_thing=' + $( this ).parents('div#data_container').data('id');
@@ -154,7 +151,7 @@ $(document).on("click","a#delete",function(e) {
 //     return false;
 // });
 
-// // get all comments
+// get all comments
 // $(document).on("click","a#comment",function(e) {
 //     var good_thing = $(this);
 //     if (good_thing.data('toggle') === 'off') {
@@ -190,8 +187,10 @@ $(window).scroll(function()
 {
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
-
-        var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
+        if($('#next').attr('data-name') != null)
+            cursor = $('#next').attr('data-name');
+        var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+        var data_in = "view=profile&cursor=" + cursor + '&userid=' + results[1];
         $.post( "/post", data_in).done(function (data) {
             // $('ul#good_things').empty();
             get_posts(data, false);
@@ -201,24 +200,30 @@ $(window).scroll(function()
 
 // on page load
 window.onload = function() {
-    $( document ).ready(function() {        
+    $( document ).ready(function() {
+        alert("private profile is ready");      
         load_all_post();
-        change_view();
-        tag_friends();
+        // change_view();
+        // tag_friends();
 
     });
 };
 
 // get all posts on page load
 function load_all_post(){
+        console.log("load_all_post");
 
-        var view = 'view=all';
-        current_view = "all";
+        var view = 'view=profile';
+        // current_view = "profile";
         var cursor = "";
         if($('#next').attr('data-name') != null)
             cursor = $('#next').attr('data-name');
-        var data_in = view + '&cursor=' + cursor;
-        console.log(data_in);
+        alert(cursor);
+        // var data_in = view + '&cursor=' + $('#next').attr('data-name');
+        var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+        var data_in = view + '&cursor=' + cursor + '&userid=' + results[1];
+
+        console.log("load_all_posts:" + data_in);
 
         $.post( "/post", data_in).done(function(data){
             get_posts(data, false);
@@ -228,40 +233,40 @@ function load_all_post(){
         // get user stats
         get_stats();
         // get unread notifications
-        $.get('/notify','').done(function(data) {
-            get_notifications(data);
-        })
+        // $.get('/notify','').done(function(data) {
+        //     get_notifications(data);
+        // })
 }
 
 
 // change views
-function change_view(){
-    $( "a#view_select" ).click(function( event ) {
-        // var timezone_offset = (new Date().getTimezoneOffset())/60;
-        current_view = $(this).data('view');
-        // var cursor = "";
-        // if($('#current-cursor').attr('data-name') != null)
-        //     cursor = $('#current-cursor').attr('data-name');
-        var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
-        $.post( "/post", data).done(function (data) {
-            $('ul#good_things').empty();
-            get_posts(data,false);
-        });
-        return false;
-    });
-}
+// function change_view(){
+//     $( "a#view_select" ).click(function( event ) {
+//         // var timezone_offset = (new Date().getTimezoneOffset())/60;
+//         current_view = $(this).data('view');
+//         var cursor = "";
+//         if($('#next').attr('data-name') != null)
+//             cursor = ('#next').attr('data-name');
+//         var data = 'view=' + current_view + '&cursor=' + cursor;
+//         $.post( "/post", data).done(function (data) {
+//             $('ul#good_things').empty();
+//             get_posts(data,false);
+//         });
+//         return false;
+//     });
+// }
 
 //friend tagging with magicsuggest
-function tag_friends(){
-    var friend_ids = JSON.parse(localStorage['friend_ids']);
-    $("input#magic_friend_tagging").magicSuggest({
-        placeholder: "Tag Friends",
-        allowFreeEntries: false,
-        data: friend_ids,
-        displayField: 'name',
-       // valueField: 'id'
-    });
-}
+// function tag_friends(){
+//     var friend_ids = JSON.parse(localStorage['friend_ids']);
+//     $("input#magic_friend_tagging").magicSuggest({
+//         placeholder: "Tag Friends",
+//         allowFreeEntries: false,
+//         data: friend_ids,
+//         displayField: 'name',
+//        // valueField: 'id'
+//     });
+// }
 
 //adjust created time to local timezone
 function localize_time(created_time){
@@ -322,7 +327,7 @@ function localize_time(created_time){
 
 // render posts from template and json data
 function get_posts(post_list, posting) {
-    $.get('static/templates/private_good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/private_good_thing_tpl.html', function(templates) {
         post_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
@@ -348,7 +353,7 @@ function get_posts(post_list, posting) {
 }
 
 // function get_comments(comment_list,id) {
-//     $.get('static/templates/private_good_thing_tpl.html', function(templates) {
+//     $.get('../static/templates/good_thing_tpl.html', function(templates) {
 //         comment_list.forEach(function(data) {
 //             // Fetch the <script /> block from the loaded external
 //             // template file which contains our greetings template.
@@ -359,13 +364,14 @@ function get_posts(post_list, posting) {
 // }
 
 function get_stats() {
-    var data_in = '&tzoffset=' + (new Date().getTimezoneOffset())/60;
+    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+    var data_in = 'view=profile&user_id=' + results[1]+ '&tzoffset=' + (new Date().getTimezoneOffset())/60;
     $.post( "/stat",data_in).done(function (data) {
         $('div#progress').css('width',data.progress);
         $('span#progress').text(data.progress + ' Complete');
         $('#good_things_today').text(data.posts_today + ' Good Things Today');
         $('#good_things_total').text(data.posts + ' Total Good Things');
-        $.get('static/templates/good_thing_tpl.html', function(templates) {
+        $.get('../static/templates/good_thing_tpl.html', function(templates) {
             $('div#word_cloud').empty();
             data.word_cloud.forEach(function(data) {
                 var template = $(templates).filter('#word_cloud_tpl').html();
@@ -426,7 +432,7 @@ function get_settings() {
 }
 
 // function get_notifications(notification_list) {
-//     $.get('static/templates/good_thing_tpl.html', function(templates) {
+//     $.get('../static/templates/good_thing_tpl.html', function(templates) {
 //         if (notification_list.length > 0) {
 //             notification_list.forEach(function(data) {
 //                 var template;
@@ -520,9 +526,9 @@ function logout() {
 }
 
 // notification click listener
-$(document).on("click","a#notification_link",function(e) {
-    $('html, body').animate({
-        scrollTop: $( $(this).attr('href') ).offset().top -70
-    }, 500);
-    return false;
-});
+// $(document).on("click","a#notification_link",function(e) {
+//     $('html, body').animate({
+//         scrollTop: $( $(this).attr('href') ).offset().top -70
+//     }, 500);
+//     return false;
+// });

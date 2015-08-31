@@ -3,6 +3,8 @@ import string, re
 import datetime
 from google.appengine.ext import db
 from collections import Counter,OrderedDict
+from google.appengine.ext.blobstore import blobstore
+from google.appengine.api import images
 import logging
 
 # model for user's settings
@@ -25,21 +27,29 @@ class Settings(db.Model):
 class WordCloud(db.Model):
     word_dict = db.TextProperty(default=None)
     reason_dict = db.TextProperty(default=None)
+    friend_dict = db.TextProperty(default=None)
     updated = db.DateTimeProperty(auto_now_add=True)
     pv_updated = db.DateTimeProperty(auto_now_add=True)
-    stopwords = db.StringListProperty(default=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now'])
+    stopwords = db.StringListProperty(default=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now', 'today', 'yesterday', 'good', 'great', 'nice'])
 
     # update the word counter.  only load posts since last update time
     # store the counter as json and change the last updated time
     def update_word_dict(self, profile_type):
         counter = Counter()
         rcounter = Counter()
+        fcounter = Counter()
         # replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+
+        # logging.info(self.stopwords)
+        self.stopwords += ['today', 'yesterday', 'good', 'great', 'nice']
+
+        # logging.info(self.stopwords)
 
         if self.word_dict:
             counter.update(json.loads(self.word_dict))
             logging.info("self.word_dict exist")
         users = self.user_set.fetch(limit=None)
+
         if (profile_type == 'public'):
             for user in users:
                 good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('public =',True).fetch(limit=None)
@@ -53,6 +63,7 @@ class WordCloud(db.Model):
                     counter.update(words)
             self.word_dict = json.dumps(counter)
             self.upated = datetime.datetime.now()
+
         else:
             for user in users:
                 good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
@@ -62,13 +73,22 @@ class WordCloud(db.Model):
 
                     x = good_thing.good_thing.lower()
                     y = good_thing.reason.lower()
+                    z = good_thing.get_mentions()
+
                     words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
                     rwords = [word for word in re.split('[ '+ string.punctuation +']', y) if word not in self.stopwords]
+                    fnames = [mention['name'] for mention in z]
 
+                    # logging.info(z)
+                    # logging.info(fnames)
+                    
                     counter.update(words)
                     rcounter.update(rwords)
+                    fcounter.update(fnames)
+
             self.word_dict = json.dumps(counter)
             self.reason_dict = json.dumps(rcounter)
+            self.friend_dict = json.dumps(fcounter)
             self.pv_upated = datetime.datetime.now()
 
     
@@ -94,6 +114,17 @@ class WordCloud(db.Model):
         else:
             return [{'word':"You haven't posted any good things!",'count':1}]
 
+    # return the 10 most common tagged friends
+    def get_sorted_friend_dict(self):
+        if self.friend_dict:
+            friend_dict = json.loads(self.friend_dict)
+            sorted_dict = OrderedDict(sorted(friend_dict.items(), key=lambda t: t[1]))
+            result = [{'word':word,'count':sorted_dict[word]} for word in sorted_dict][-10:]
+            # print result
+            return result
+        else:
+            return [{'word':"You haven't tagged any friends!",'count':1}]
+
 
 # model for each user based on facebook login information
 # TODO: add email field
@@ -104,7 +135,8 @@ class User(db.Model):
     name = db.StringProperty(required=True)
     profile_url = db.StringProperty(required=True)
     access_token = db.StringProperty(required=True)
-    public_user = db.BooleanProperty(default=None) # change default back to false
+    # public_user = db.BooleanProperty(default=None) # change default back to false
+    user_type = db.IntegerProperty(default=0) #0:placebo 1:private 2:public
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
     email = db.StringProperty() #TODO: required=True
@@ -120,9 +152,10 @@ class GoodThing(db.Model):
     public = db.BooleanProperty(default=True)
     wall = db.BooleanProperty(default=False)
     deleted = db.BooleanProperty(default=False)
-    img = db.BlobProperty()
+    blob_key = blobstore.BlobReferenceProperty()
+    # img = db.BlobProperty()
 
-    def template(self,user_id,cursor=""):
+    def template(self,user_id,cursor="", upload_url=""):
         if user_id == self.user.id:
             current_user = True
         else:
@@ -142,8 +175,9 @@ class GoodThing(db.Model):
             'num_mentions':self.num_mentions(),
             'public':self.is_public(),
             'created': str(self.created),
-            'cursor': cursor
-            # 'img_url': self.img
+            'cursor': cursor,
+            'upload_url': upload_url,
+            'img_url': self.get_img_url()
             #add img
         }
         return template
@@ -198,12 +232,14 @@ class GoodThing(db.Model):
         else:
             return "private"
     
-    # def get_image(self):
-    #     if self.img:
-    #         # logging.info(self.img.get_serving_url(size=400))
-    #         return self.img.get_serving_url(size=400)
-    #     else:
-    #         return None
+    def get_img_url(self):
+        if (self.blob_key is not None):
+            logging.info(images.get_serving_url(self.blob_key, size=400))
+            return images.get_serving_url(self.blob_key, size=400)
+        else:
+            return None
+
+
 
 
 

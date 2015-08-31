@@ -85,8 +85,8 @@ $(document).on("click","#submit_good_thing",function(e) {
     // },
       success: function(data) {
         // alert("ajax success");
-        $('input#good_thing, input#img').val('');
-            // $('#magic_friend_tagging').magicSuggest().clear();
+        $('textarea#good_thing, input#img').val('');
+            $('#magic_friend_tagging').magicSuggest().clear();
             get_settings();
             get_posts(data, true);
             get_stats();
@@ -122,25 +122,25 @@ $(document).on("click","a#cheer",function(e) {
 
 
 // delete a post or comment
-$(document).on("click","a#delete",function(e) {
-    var id = $(this).parents('div#data_container').data('id');
-    var type = $(this).parents('div#data_container').data('type');
-    var url_data = 'id=' + id + '&type=' + type;
-    $.post( "/delete",url_data).done(function(data){
-        if (type == 'comment') {
-            console.log('deleting a comment')
-            var result = data.num_comments + ' comments'
-            $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
-            $('div[data-id="'+id+'"]').remove();
-        } else {
-            console.log('deleting a good thing');
-            console.log($('div[data-id="'+id+'"]').parents('li#good_thing'));
-            $('div[data-id="'+id+'"]').parents('li#good_thing').remove();
-            get_stats();
-        }
-    });
-    return false;
-});
+// $(document).on("click","a#delete",function(e) {
+//     var id = $(this).parents('div#data_container').data('id');
+//     var type = $(this).parents('div#data_container').data('type');
+//     var url_data = 'id=' + id + '&type=' + type;
+//     $.post( "/delete",url_data).done(function(data){
+//         if (type == 'comment') {
+//             console.log('deleting a comment')
+//             var result = data.num_comments + ' comments'
+//             $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
+//             $('div[data-id="'+id+'"]').remove();
+//         } else {
+//             console.log('deleting a good thing');
+//             console.log($('div[data-id="'+id+'"]').parents('li#good_thing'));
+//             $('div[data-id="'+id+'"]').parents('li#good_thing').remove();
+//             get_stats();
+//         }
+//     });
+//     return false;
+// });
 
 // // save a comment
 // $(document).on("submit","form#comment",function(e) {
@@ -363,8 +363,8 @@ function get_stats() {
     $.post( "/stat",data_in).done(function (data) {
         $('div#progress').css('width',data.progress);
         $('span#progress').text(data.progress + ' Complete');
-        $('#good_things_today').text(data.posts_today + ' Good Things Today');
-        $('#good_things_total').text(data.posts + ' Total Good Things');
+        $('#good_things_today').text(data.posts_today + ' Memories Today');
+        $('#good_things_total').text(data.posts + ' Total Memories');
         $.get('static/templates/good_thing_tpl.html', function(templates) {
             $('div#word_cloud').empty();
             data.word_cloud.forEach(function(data) {
@@ -377,19 +377,6 @@ function get_stats() {
             };
             $(function () {
                 $('#word_cloud a').tagcloud();
-            });
-
-            $('div#reason_cloud').empty();
-            data.reason_cloud.forEach(function(data) {
-                var template = $(templates).filter('#word_cloud_tpl').html();
-                $('div#reason_cloud').prepend(Mustache.render(template, data));
-            });
-            $.fn.tagcloud.defaults = {
-                size: {start: 12, end: 18, unit: 'pt'},
-                color: {start: '#777', end: '#777'}
-            };
-            $(function () {
-                $('#reason_cloud a').tagcloud();
             });
 
             $('div#friend_cloud').empty();

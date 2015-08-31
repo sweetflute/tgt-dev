@@ -52,6 +52,8 @@ $(document).on("click","#submit_good_thing",function(e) {
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
     var img_file = $("#img")[0].files[0];
+    var upload_url = $("#img").attr('data-url');
+    console.log(upload_url)
     // alert(img_file.name);
     var data_in = new FormData(document.querySelector("#post"));
     // var data_in = new FormData();
@@ -68,12 +70,13 @@ $(document).on("click","#submit_good_thing",function(e) {
     // alert("after FormData");
 
     $.ajax({
-      url: "/post",
+      // url: "/post",
+      url: upload_url,
       data: data_in,
       cache: false,
       processData: false,
       contentType: false,
-      // mimeType: 'multipart/form-data',
+      enctype: 'multipart/form-data',
       type: 'POST',
     //   beforeSend: function(xhr) { 
     //     alert("ajax beforesend");
@@ -339,8 +342,12 @@ function get_posts(post_list, posting) {
             if($(this).attr('data-name') != null && !posting)
                 $('#next').attr('data-name', $(this).attr('data-name'));
 
+             if($(this).attr('data-url') != null)
+                $('#img').attr('data-url', $(this).attr('data-url'));
+
             $(this).attr("class", ".local-time-done");
         });
+
     });
 }
 
@@ -374,6 +381,33 @@ function get_stats() {
             };
             $(function () {
                 $('#word_cloud a').tagcloud();
+            });
+
+            $('div#reason_cloud').empty();
+            
+            data.reason_cloud.forEach(function(data) {
+                var template = $(templates).filter('#word_cloud_tpl').html();
+                $('div#reason_cloud').prepend(Mustache.render(template, data));
+            });
+            $.fn.tagcloud.defaults = {
+                size: {start: 12, end: 18, unit: 'pt'},
+                color: {start: '#777', end: '#777'}
+            };
+            $(function () {
+                $('#reason_cloud a').tagcloud();
+            });
+
+            $('div#friend_cloud').empty();
+            data.friend_cloud.forEach(function(data) {
+                var template = $(templates).filter('#word_cloud_tpl').html();
+                $('div#friend_cloud').prepend(Mustache.render(template, data));
+            });
+            $.fn.tagcloud.defaults = {
+                size: {start: 12, end: 18, unit: 'pt'},
+                color: {start: '#777', end: '#777'}
+            };
+            $(function () {
+                $('#friend_cloud a').tagcloud();
             });
         });
     });
