@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% block head %}
-<link href="http://tgt-dev.appspot.com/static/css/magicsuggest-min.css" rel="stylesheet">
-<script src="http://tgt-dev.appspot.com/static/js/magicsuggest-min.js"></script>
-<script src='http://tgt-dev.appspot.com/static/js/jquery.tagcloud.js'></script>
-<script src='http://tgt-dev.appspot.com/static/js/scripts.js'></script>
+<link href="/static/css/magicsuggest-min.css" rel="stylesheet">
+<script src="/static/js/magicsuggest-min.js"></script>
+<script src='/static/js/jquery.tagcloud.js'></script>
+<script src='/static/js/scripts.js'></script>
 {% endblock %}
 {% block nav_buttons %}
 <li>
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "notification_icon">
+        <div class="tgt_notify">
+            <div class="glyphicon glyphicon-globe" aria-hidden="true"></div>
+            <div id="notification_count">1</div>
+        </div>
     </a>
     <ul class="dropdown-menu" id='notifications'>
     </ul>
@@ -38,7 +41,9 @@
                   <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true">
                   <label for="send_reminders_true">Send me a reminder email if I have not posted for
                   <input type='number' name='reminder_days' id='reminder_days' style="width:45px" min="1" max="7"/>
-                  days.</label><br>
+                  days.</label><br/>
+                  <label for="email_setting">Email:</label>
+                  <input type='text' name ="email_setting" id='email_setting' class="form-control"/><br/>
                   <input type="radio" name="send_reminders" id="send_reminders_false" value="send_reminders_false">
                   <label for="send_reminders_false">Don't send me reminder emails</label>
               </div>
@@ -81,9 +86,18 @@
                             <input type="text" class="form-control" placeholder='Reason' name="reason" id="reason"/>
                         </div>
                         <!-- upload and image -->
+
                         <div class="form-group">
                             <label for="img">Image</label>
-                            <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img" data-url=""/>
+                            <!-- <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img" data-url=""/> -->
+                            <div class="input-group">
+                              <span class="input-group-btn">
+                                  <span class="btn btn-info btn-file">
+                                      Browse&hellip; <input type="file" name="img" id="img" multiple>
+                                  </span>
+                              </span>
+                              <input id="img_text" type="text" class="form-control" readonly>
+                          </div>
                         </div>
                         <!-- tag friends with magicsuggest -->
                         <div class="form-group">
@@ -97,6 +111,7 @@
                             <input type="checkbox" id="settings_wall" name="wall"> Post to your facebook wall
                         </label>
                         <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
+                        <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
                     </form>
                 </div>
             </div>

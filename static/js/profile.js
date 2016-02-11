@@ -12,6 +12,7 @@ $(document).on("click","button#save_settings",function(e) {
         data_in += "&default_fb=on"
     if($('input#settings_public').prop('checked'))
         data_in += "&default_public=on"
+    data_in += "&email=" + $('input#email_setting').val();
     console.log(data_in)
     $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
@@ -417,6 +418,7 @@ function get_settings() {
         .done(function(data) {
             $('input#settings_wall').prop('checked', data.default_fb);
             $('input#settings_public').prop('checked', data.default_public);
+            $('input#email_setting').val(data.email);
             if (data.reminder_days >= 0) {
                 $('input#reminder_days').val(data.reminder_days);
                 $('input#send_reminders_true').prop('checked', true).button("refresh");

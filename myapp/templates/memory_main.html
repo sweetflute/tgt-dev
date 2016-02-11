@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block head %}
-<link href="http://tgt-dev.appspot.com/static/css/magicsuggest-min.css" rel="stylesheet">
-<script src="http://tgt-dev.appspot.com/static/js/magicsuggest-min.js"></script>
-<script src='http://tgt-dev.appspot.com/static/js/memory_scripts.js'></script>
-<script src='http://tgt-dev.appspot.com/static/js/jquery.tagcloud.js'></script>
+<link href="/static/css/magicsuggest-min.css" rel="stylesheet">
+<script src="/static/js/magicsuggest-min.js"></script>
+<script src='/static/js/memory_scripts.js'></script>
+<script src='/static/js/jquery.tagcloud.js'></script>
 {% endblock %}
 {% block nav_buttons %}
 <li>
@@ -28,9 +28,12 @@
       <div class="modal-body">
           <form id='settings' action=''>
               <div class="form-group">
-                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true"><label>Send me a reminder email if I have not posted for
-                  <input type='number' name='reminder_days' id='reminder_days'/>
-                  days.</label>
+                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true">
+                  <label for="send_reminders_true">Send me a reminder email if I have not posted for
+                  <input type='number' name='reminder_days' id='reminder_days' style="width:45px" min="1" max="7"/>
+                  days.</label><br/>
+                  <label for="email_setting">Email:</label>
+                  <input type='text' name ="email_setting" id='email_setting' class="form-control"/><br/>
                   <input type="radio" name="send_reminders" id="send_reminders_false" value="send_reminders_false">
                   <label>Don't send me reminder emails</label>
               </div>
@@ -63,7 +66,15 @@
                         <!-- upload and image -->
                         <div class="form-group">
                             <label for="img">Image</label>
-                             <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img"/>
+                            <!-- <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img" data-url=""/> -->
+                            <div class="input-group">
+                              <span class="input-group-btn">
+                                  <span class="btn btn-info btn-file">
+                                      Browse&hellip; <input type="file" name="img" id="img" multiple>
+                                  </span>
+                              </span>
+                              <input id="img_text" type="text" class="form-control" readonly>
+                          </div>
                         </div>
                         <!-- tag friends with magicsuggest -->
                         <div class="form-group">
@@ -71,6 +82,7 @@
                             <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
                         </div>
                         <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
+                        <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
                     </form>
                 </div>
             </div>

@@ -18,7 +18,7 @@ class Settings(db.Model):
         template = {
             'reminder_days':self.reminder_days,
             'default_fb':self.default_fb,
-            'default_public':self.default_public
+            'default_public':self.default_public,
         }
         return template
 
@@ -136,15 +136,86 @@ class User(db.Model):
     profile_url = db.StringProperty(required=True)
     access_token = db.StringProperty(required=True)
     # public_user = db.BooleanProperty(default=None) # change default back to false
-    user_type = db.IntegerProperty(default=0) #0:placebo 1:private 2:public
+    user_type = db.IntegerProperty(default=-1) #0:placebo 1:private 2:public
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
     email = db.StringProperty() #TODO: required=True
 
+# model for each survey with unique survey id
+class Survey(db.Model):
+    # id = db.StringProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    email = db.StringProperty()
+    age = db.StringProperty()
+    gender = db.StringProperty()
+    IPIP_1 = db.StringProperty()
+    IPIP_2 = db.StringProperty()
+    IPIP_3 = db.StringProperty()
+    IPIP_4 = db.StringProperty()
+    IPIP_5 = db.StringProperty()
+    IPIP_6 = db.StringProperty()
+    IPIP_7 = db.StringProperty()
+    IPIP_8 = db.StringProperty()
+    IPIP_9 = db.StringProperty()
+    IPIP_10 = db.StringProperty()
+    IPIP_11 = db.StringProperty()
+    IPIP_12 = db.StringProperty()
+    IPIP_13 = db.StringProperty()
+    IPIP_14 = db.StringProperty()
+    IPIP_15 = db.StringProperty()
+    IPIP_16 = db.StringProperty()
+    IPIP_17 = db.StringProperty()
+    IPIP_18 = db.StringProperty()
+    IPIP_19 = db.StringProperty()
+    IPIP_20 = db.StringProperty()
+    CESD_1 = db.StringProperty()
+    CESD_2 = db.StringProperty()
+    CESD_3 = db.StringProperty()
+    CESD_4 = db.StringProperty()
+    CESD_5 = db.StringProperty()
+    CESD_6 = db.StringProperty()
+    CESD_7 = db.StringProperty()
+    CESD_8 = db.StringProperty()
+    CESD_9 = db.StringProperty()
+    CESD_10 = db.StringProperty()
+    CESD_11 = db.StringProperty()
+    CESD_12 = db.StringProperty()
+    CESD_13 = db.StringProperty()
+    CESD_14 = db.StringProperty()
+    CESD_15 = db.StringProperty()
+    CESD_16 = db.StringProperty()
+    CESD_17 = db.StringProperty()
+    CESD_18 = db.StringProperty()
+    CESD_19 = db.StringProperty()
+    CESD_20 = db.StringProperty()
+    PERMA_1 = db.StringProperty()
+    PERMA_2 = db.StringProperty()
+    PERMA_3 = db.StringProperty()
+    PERMA_4 = db.StringProperty()
+    PERMA_5 = db.StringProperty()
+    PERMA_6 = db.StringProperty()
+    PERMA_7 = db.StringProperty()
+    PERMA_8 = db.StringProperty()
+    PERMA_9 = db.StringProperty()
+    PERMA_10 = db.StringProperty()
+    PERMA_11 = db.StringProperty()
+    PERMA_12 = db.StringProperty()
+    PERMA_13 = db.StringProperty()
+    PERMA_14 = db.StringProperty()
+    PERMA_15 = db.StringProperty()
+    PERMA_16 = db.StringProperty()
+    PERMA_17 = db.StringProperty()
+    PERMA_18 = db.StringProperty()
+    PERMA_19 = db.StringProperty()
+    PERMA_20 = db.StringProperty()
+    PERMA_21 = db.StringProperty()
+    PERMA_22 = db.StringProperty()
+    PERMA_23 = db.StringProperty()
+
 # model for each good thing
 # TODO: update to work with images
 class GoodThing(db.Model):
-    good_thing = db.StringProperty(required=True)
+    good_thing = db.StringProperty(required=True,  multiline=True)
     reason = db.StringProperty(default=None)
     created = db.DateTimeProperty(auto_now_add=True)
     created_origin = db.DateTimeProperty(auto_now_add=True)
@@ -154,6 +225,8 @@ class GoodThing(db.Model):
     deleted = db.BooleanProperty(default=False)
     blob_key = blobstore.BlobReferenceProperty()
     # img = db.BlobProperty()
+    memory = db.BooleanProperty(default=False)
+    # mentions_no = db.IntegerProperty(default=0)
 
     def template(self,user_id,cursor="", upload_url=""):
         if user_id == self.user.id:
@@ -206,7 +279,12 @@ class GoodThing(db.Model):
     # return a list of user names mentioned in this good thing
     def get_mentions(self):
         mentions = self.mention_set.fetch(limit=None)
+        # print "get_mentions: len(mentions) = " + str(len(mentions)) + ", mentions_no = " + str(self.mentions_no)
+        # if (self.mentions_no != 0):
+            # while(len(mentions) < self.mentions_no):
+                # mentions = self.mention_set.fetch(limit=None)  
         result = [{'name':mention.to_user_name, 'id':mention.to_fb_user_id} for mention in mentions]
+        # print "get_mentions:" + str(result)
         return result
 
     # return the number of mentions
@@ -233,6 +311,7 @@ class GoodThing(db.Model):
             return "private"
     
     def get_img_url(self):
+        # logging.info("get_img_url")
         if (self.blob_key is not None):
             logging.info(images.get_serving_url(self.blob_key, size=400))
             return images.get_serving_url(self.blob_key, size=400)

@@ -1,4 +1,13 @@
 var current_view = 'all';
+var old_cursor = '';
+
+$(document).on('change', '.btn-file :file', function() {
+  var input = $(this),
+      numFiles = input.get(0).files ? input.get(0).files.length : 1,
+      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+  input.trigger('fileselect', [numFiles, label]);
+});
+
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
@@ -12,6 +21,7 @@ $(document).on("click","button#save_settings",function(e) {
         data_in += "&default_fb=on"
     if($('input#settings_public').prop('checked'))
         data_in += "&default_public=on"
+    data_in += "&email=" + $('input#email_setting').val();
     console.log(data_in)
     $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
@@ -51,15 +61,13 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
+    console.log(mention_list)
     var img_file = $("#img")[0].files[0];
     var upload_url = $("#img").attr('data-url');
-    console.log(upload_url)
+    // console.log(upload_url)
     // alert(img_file.name);
     var data_in = new FormData(document.querySelector("#post"));
-    // var data_in = new FormData();
-
-    // data_in.append("good_thing", $("#good_thing").html());
-    // data_in.append("reason", $("#reason").html());
+ 
 
     if (img_file != null)
         data_in.append("img", img_file);
@@ -69,6 +77,9 @@ $(document).on("click","#submit_good_thing",function(e) {
     // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
     // alert("after FormData");
 
+    $("#submit_good_thing").css("display","none");
+    $("#posting").css("display","inline");
+    
     $.ajax({
       // url: "/post",
       url: upload_url,
@@ -85,11 +96,14 @@ $(document).on("click","#submit_good_thing",function(e) {
     // },
       success: function(data) {
         // alert("ajax success");
-        $('input#good_thing, input#reason, input#img').val('');
-            $('#magic_friend_tagging').magicSuggest().clear();
-            get_settings();
-            get_posts(data, true);
-            get_stats();
+        $('input#good_thing, input#reason, input#img, input#img_text').val('');
+        $('#magic_friend_tagging').magicSuggest().clear();
+        get_settings();
+        get_posts(data, true);
+        get_stats();
+
+        $("#submit_good_thing").css("display","block");
+        $("#posting").css("display","none");
       }
     });
 
@@ -172,6 +186,11 @@ $(document).on("click","a#comment",function(e) {
     }
 });
 
+// reset notification
+$(document).on("click","#notification_icon",function(e) {
+    $('#notification_count').html(0);
+    $('#notification_count').css("opacity", 0);
+});
 // $(document).on("click", "#next", function(){
 //     // var cursor = "";
 //     // if($('#current-cursor').attr('data-name') != null)
@@ -190,12 +209,17 @@ $(window).scroll(function()
 {
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
-
-        var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
-        $.post( "/post", data_in).done(function (data) {
-            // $('ul#good_things').empty();
-            get_posts(data, false);
-        });
+        console.log("scholl=" + $('#next').attr('data-name'));
+        // console.log("old_cursor=" + old_cursor);
+        // if(old_cursor != $('#next').attr('data-name')){
+        if($('#next').attr('data-name') != ""){
+            var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
+            console.log("scholl:" + data_in);
+            $.post( "/post", data_in).done(function (data) {
+                // $('ul#good_things').empty();
+                get_posts(data, false);
+            });
+        }
     }
 });
 
@@ -205,9 +229,24 @@ window.onload = function() {
         load_all_post();
         change_view();
         tag_friends();
+        save_email();
+
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+        
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+            
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }
+            
+        });
 
     });
 };
+
 
 // get all posts on page load
 function load_all_post(){
@@ -310,6 +349,17 @@ function localize_time(created_time){
     return time_display;
 
 }
+
+function save_email(){
+    email = Cookies.get('liame');
+    if(email != null){
+        Cookies.remove('liame');
+        data_in = "reminder_days=-1&defult_fb=off&default_public=on&email=" + email;
+        alert(data_in);
+        $.post( "/settings",data_in);
+    }
+}
+
 // view a user profile
 /*$(document).on("click","a#profile_link",function(e) {
     var url_data = 'view=' + $(this).parents('div#data_container').data('user_id');
@@ -323,31 +373,43 @@ function localize_time(created_time){
 // render posts from template and json data
 function get_posts(post_list, posting) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
-        post_list.forEach(function(data) {
-            // Fetch the <script /> block from the loaded external
-            // template file which contains our greetings template.
-            var template = $(templates).filter('#good_thing_tpl').html();
-            if (posting)
-                $('ul#good_things').prepend(Mustache.render(template, data));
-            else
-                $('ul#good_things').append(Mustache.render(template, data));
+        console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
 
-        });
+        if(post_list.length == 1 && Object.keys(post_list[0]).length == 2){
+            $('#img').attr('data-url', post_list[0].upload_url);
+            $('#next').attr('data-url', post_list[0].cursor);
+        }else{
+            post_list.forEach(function(data) {
+                // Fetch the <script /> block from the loaded external
+                // template file which contains our greetings template.
+                var template = $(templates).filter('#good_thing_tpl').html();
+                if (posting)
+                    $('ul#good_things').prepend(Mustache.render(template, data));
+                else
+                    $('ul#good_things').append(Mustache.render(template, data));
+
+            });
 
 
-        $(".local-time").each(function(){
-            var created_time = $(this).html();
-            $(this).html(localize_time(created_time));
+            $(".local-time").each(function(index){
+                var created_time = $(this).html();
+                $(this).html(localize_time(created_time));
 
-            if($(this).attr('data-name') != null && !posting)
-                $('#next').attr('data-name', $(this).attr('data-name'));
+                if($(this).attr('data-name') != null && !posting){
+                    // console.log($('#next').attr('data-name'));
+                    old_cursor = $('#next').attr('data-name');
+                    $('#next').attr('data-name', $(this).attr('data-name'));
+                    // console.log($('#next').attr('data-name'));
+                    
+                }
 
-             if($(this).attr('data-url') != null)
-                $('#img').attr('data-url', $(this).attr('data-url'));
+                if (index == 1)
+                 if($(this).attr('data-url') != null)
+                    $('#img').attr('data-url', $(this).attr('data-url'));
 
-            $(this).attr("class", ".local-time-done");
-        });
-
+                $(this).attr("class", ".local-time-done");
+            });
+        }
     });
 }
 
@@ -418,6 +480,7 @@ function get_settings() {
         .done(function(data) {
             $('input#settings_wall').prop('checked', data.default_fb);
             $('input#settings_public').prop('checked', data.default_public);
+            $('input#email_setting').val(data.email);
             if (data.reminder_days >= 0) {
                 $('input#reminder_days').val(data.reminder_days);
                 $('input#send_reminders_true').prop('checked', true).button("refresh");
@@ -433,6 +496,8 @@ function get_settings() {
 function get_notifications(notification_list) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
         if (notification_list.length > 0) {
+            $('#notification_count').html(notification_list.length);
+            $('#notification_count').css("opacity", 1);
             notification_list.forEach(function(data) {
                 var template;
                 if (data.event_type === 'comment') {
@@ -445,6 +510,7 @@ function get_notifications(notification_list) {
                 $('ul#notifications').prepend(Mustache.render(template, data));
             });
         } else {
+            $('#notification_count').css("opacity", 0);
             var template = $(templates).filter('#blank_notification_tpl').html();
             $('ul#notifications').prepend(Mustache.render(template));
         }

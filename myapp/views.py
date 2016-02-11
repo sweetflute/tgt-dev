@@ -8,6 +8,10 @@ import app_config
 import json
 import datetime
 import logging
+import quopri
+import random
+import math
+import string
 
 from google.appengine.ext import db
 from webapp2_extras import sessions
@@ -127,6 +131,18 @@ class HomeHandler(BaseHandler):
         if current_user:
             user_id = str(self.current_user['id'])
             user = models.User.get_by_key_name(user_id)
+            # user_type = self.request.get('user_type')
+            user_type = self.request.cookies.get('user_type')
+            logging.info("user_type in cookies:")
+            logging.info(user_type)
+            logging.info("user.user_type=" + str(user.user_type))
+
+            if user.user_type == -1:
+                if (user_type != "" and user_type != None):
+                    user.user_type = int(user_type)
+                else:
+                    user.user_type = int(math.floor(random.random()*3))
+            user.put()
 
 
             # if user.public_user:
@@ -138,9 +154,9 @@ class HomeHandler(BaseHandler):
             # elif user.public_user is placebo:
             elif user.user_type == 0:
                 template = jinja_environment.get_template('memory_main.html')
-            else:
-                self.redirect('/intro')
-                return None
+            # else:
+            #     template = jinja_environment.get_template('landing.html')
+                # return None
             template_values = {
                 'facebook_app_id':FACEBOOK_APP_ID,
                 'current_user':current_user,
@@ -148,9 +164,178 @@ class HomeHandler(BaseHandler):
         else:
             template = jinja_environment.get_template('landing.html')
             template_values = {
-                'facebook_app_id':FACEBOOK_APP_ID,
+                # 'facebook_app_id':FACEBOOK_APP_ID,
+                # 'public_user':4,
             }
         self.response.out.write(template.render(template_values))
+
+# intro page for first time users
+class IntroHandler(BaseHandler):
+    # serve the intro page
+    def get(self):
+        current_user = self.current_user
+        if(current_user):
+            self.redirect('/')
+        else:
+            template = jinja_environment.get_template('intro.html')
+            template_values = {
+            #         'facebook_app_id':FACEBOOK_APP_ID,
+            #         'current_user':current_user,
+            }
+            self.response.out.write(template.render(template_values))
+
+    # update the public/private field after the user has passed through the intro
+    # screen.
+class LandingHandler(BaseHandler):
+    def get(self):
+        # public_user = self.request.get('public_user') 
+        user_type = int(math.floor(random.random()*3))
+        current_user = self.current_user
+        if current_user:
+            user_id = str(self.current_user['id'])
+            user = models.User.get_by_key_name(user_id)
+            if user.user_type == -1:
+                user.user_type = user_type
+                user.put()
+        template_values = {
+            'public_user':user_type,
+        }
+ 
+        logging.info("public_user=" + str(user_type))
+        template = jinja_environment.get_template('landing.html')
+        self.response.set_cookie('user_type', str(user_type), max_age=360)
+        self.response.out.write(template.render(template_values))
+
+class SurveyHandler(BaseHandler):
+    def get(self):
+        template_values = {
+        }
+        logging.info("survey page")
+        template = jinja_environment.get_template('survey.html')
+        self.response.out.write(template.render(template_values))
+    def post(self):
+        survey_type = self.request.get('type')
+        logging.info("survey_type=" + survey_type)
+
+        # submit email
+        if(survey_type == '0'):
+            email = self.request.get('email')
+            if (email != None and email != ''):
+                survey_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                survey_id += ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(6)])
+                logging.info("survey_id:" + survey_id)
+                # survey = models.Survey.get_by_key_name(survey_id)
+                survey = models.Survey(
+                            key_name=survey_id,
+                            email=email
+                            )
+                survey.put()
+
+                result = {"survey_id":survey_id}
+                # template = jinja_environment.get_template('intro.html')
+                # self.response.out.write(template.render(template_values))
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.out.write(json.dumps(result))
+       # submit demographic
+        elif (survey_type == '1'):
+            logging.info("survey_type=1")
+            survey_id = self.request.get('survey_id')
+            survey = models.Survey.get_by_key_name(survey_id)
+            logging.info("survey_id=" + survey_id)
+
+            survey.age = self.request.get('survey-age')
+            survey.gender = self.request.get('survey-gender')
+            logging.info("age=" + survey.age)
+            logging.info("gender=" + survey.gender)
+            survey.put()
+
+
+        # submit ipip
+        elif (survey_type == '2'):
+            survey_id = self.request.get('survey_id')
+            survey = models.Survey.get_by_key_name(survey_id)
+
+            survey.IPIP_1 = self.request.get('IPIP-1')
+            survey.IPIP_2 = self.request.get('IPIP-2')
+            survey.IPIP_3 = self.request.get('IPIP-3')
+            survey.IPIP_4 = self.request.get('IPIP-4')
+            survey.IPIP_5 = self.request.get('IPIP-5')
+            survey.IPIP_6 = self.request.get('IPIP-6')
+            survey.IPIP_7 = self.request.get('IPIP-7')
+            survey.IPIP_8 = self.request.get('IPIP-8')
+            survey.IPIP_9 = self.request.get('IPIP-9')
+            survey.IPIP_10 = self.request.get('IPIP-10')
+            survey.IPIP_11 = self.request.get('IPIP-11')
+            survey.IPIP_12 = self.request.get('IPIP-12')
+            survey.IPIP_13 = self.request.get('IPIP-13')
+            survey.IPIP_14 = self.request.get('IPIP-14')
+            survey.IPIP_15 = self.request.get('IPIP-15')
+            survey.IPIP_16 = self.request.get('IPIP-16')
+            survey.IPIP_17 = self.request.get('IPIP-17')
+            survey.IPIP_18 = self.request.get('IPIP-18')
+            survey.IPIP_19 = self.request.get('IPIP-19')
+            survey.IPIP_20 = self.request.get('IPIP-20')
+            
+            survey.put()
+            
+        # submit ces-d
+        elif (survey_type == '3'):
+            survey_id = self.request.get('survey_id')
+            survey = models.Survey.get_by_key_name(survey_id)
+
+            survey.CESD_1 = self.request.get('CESD-1')
+            survey.CESD_2 = self.request.get('CESD-2')
+            survey.CESD_3 = self.request.get('CESD-3')
+            survey.CESD_4 = self.request.get('CESD-4')
+            survey.CESD_5 = self.request.get('CESD-5')
+            survey.CESD_6 = self.request.get('CESD-6')
+            survey.CESD_7 = self.request.get('CESD-7')
+            survey.CESD_8 = self.request.get('CESD-8')
+            survey.CESD_9 = self.request.get('CESD-9')
+            survey.CESD_10 = self.request.get('CESD-10')
+            survey.CESD_11 = self.request.get('CESD-11')
+            survey.CESD_12 = self.request.get('CESD-12')
+            survey.CESD_13 = self.request.get('CESD-13')
+            survey.CESD_14 = self.request.get('CESD-14')
+            survey.CESD_15 = self.request.get('CESD-15')
+            survey.CESD_16 = self.request.get('CESD-16')
+            survey.CESD_17 = self.request.get('CESD-17')
+            survey.CESD_18 = self.request.get('CESD-18')
+            survey.CESD_19 = self.request.get('CESD-19')
+            survey.CESD_20 = self.request.get('CESD-20')
+            
+            survey.put()
+
+        elif (survey_type == '4'):
+            survey_id = self.request.get('survey_id')
+            survey = models.Survey.get_by_key_name(survey_id)
+
+            survey.PERMA_1 = self.request.get('PERMA-1')
+            survey.PERMA_2 = self.request.get('PERMA-2')
+            survey.PERMA_3 = self.request.get('PERMA-3')
+            survey.PERMA_4 = self.request.get('PERMA-4')
+            survey.PERMA_5 = self.request.get('PERMA-5')
+            survey.PERMA_6 = self.request.get('PERMA-6')
+            survey.PERMA_7 = self.request.get('PERMA-7')
+            survey.PERMA_8 = self.request.get('PERMA-8')
+            survey.PERMA_9 = self.request.get('PERMA-9')
+            survey.PERMA_10 = self.request.get('PERMA-10')
+            survey.PERMA_11 = self.request.get('PERMA-11')
+            survey.PERMA_12 = self.request.get('PERMA-12')
+            survey.PERMA_13 = self.request.get('PERMA-13')
+            survey.PERMA_14 = self.request.get('PERMA-14')
+            survey.PERMA_15 = self.request.get('PERMA-15')
+            survey.PERMA_16 = self.request.get('PERMA-16')
+            survey.PERMA_17 = self.request.get('PERMA-17')
+            survey.PERMA_18 = self.request.get('PERMA-18')
+            survey.PERMA_19 = self.request.get('PERMA-19')
+            survey.PERMA_20 = self.request.get('PERMA-20')
+            survey.PERMA_21 = self.request.get('PERMA-21')
+            survey.PERMA_22 = self.request.get('PERMA-22')
+            survey.PERMA_23 = self.request.get('PERMA-23')
+            
+            survey.put()
+
 
 
 class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
@@ -158,7 +343,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
         cursor_str = self.request.get('cursor')
-        # logging.info(cursor_str)
+        logging.info("good_things_cursor=" + cursor_str)
         if(cursor_str != ""):
             good_things_cursor = Cursor.from_websafe_string(cursor_str.encode('utf-8'))
         else:
@@ -166,6 +351,8 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
 
         # tz_offset = self.request.get('tzoffset')
         # if the client isn't saving a post
+        upload_url = blobstore.create_upload_url('/post')
+        logging.info("in the post, view=" + view)
         if view != '':
             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
             # if (good_things_cursor == ""):
@@ -175,19 +362,27 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
             # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
             
             user = models.User.get_by_key_name(user_id)
-            upload_url = blobstore.create_upload_url('/post')
             # if (user.public_user == False):
             if (user.user_type != 2):
-                good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                if(user.user_type == 0):
+                    #placebo user
+                    good_things = all_good_things.filter('user =',user).filter('memory =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                    logging.info("placebo user")
+                else:
+                    #private user
+                    good_things = all_good_things.filter('user =',user).filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
+                    logging.info("private user")
                 good_things_cursor = all_good_things.cursor()
                 result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things]#[::-1]
-                logging.info("private user")
-            else:
+                # logging.info(upload_url)
+                logging.info(result)
+            else: 
+                #public user
                 # return just the current user's posts
                 if view == 'me':
                     user = models.User.get_by_key_name(user_id)
                     # good_things.filter('user =',user)
-                    good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things = all_good_things.filter('user =',user).filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
                     good_things_cursor = all_good_things.cursor()
                     result = [x.template(user_id,good_things_cursor,upload_url) for x in good_things]#[::-1]
                     logging.info("view == me")
@@ -195,7 +390,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                 # return all public posts and current user's private posts
                 elif view == 'all':
                     user = models.User.get_by_key_name(user_id)
-                    good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things = all_good_things.filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
                     good_things_cursor = all_good_things.cursor()
                     result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
                     logging.info("view == all")
@@ -205,14 +400,14 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     if (profile_user_id == user_id):
                         user = models.User.get_by_key_name(user_id)
                         # good_things.filter('user =',user)
-                        good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+                        good_things = all_good_things.filter('memory =',False).filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
                         good_things_cursor = all_good_things.cursor()
                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
                         logging.info("view == profile_me")
                     else:
                         user = models.User.get_by_key_name(profile_user_id)
                         # good_things.filter('user =',user)
-                        good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                        good_things = all_good_things.filter('memory =',False).filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
                         good_things_cursor = all_good_things.cursor()
                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
                         logging.info("view == profile_others")
@@ -220,34 +415,46 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     profile_user_id = str(self.request.get('view'))
                     profile_user = models.User.get_by_key_name(profile_user_id)
                     # good_things.filter('user =',profile_user).filter('public =',True)
-                    good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+                    good_things = all_good_things.filter('user =',profile_user).filter('public =',True).filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
                     good_things_cursor = all_good_things.cursor()
                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
                     logging.info("view == else")
                     # logging.info(result)
-
-
+            # logging.info("result=" + str(result))
+            if (len(result) == 0):
+                result = [{'upload_url': upload_url, 'cursor': good_things_cursor}]
+                # logging.info("no post: upload_url=" + str(result
         # save a post.  separate this into the post() method
         else:
-            result = [self.save_post().template(user_id)]
+            # logging.info("save a post")
+            result = [self.save_post().template(user_id, good_things_cursor, upload_url)]
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
     # save a post to the datastore and return that post.  this should be turned
     # into the post() method
     def save_post(self):
+        logging.info("save_post")
         good_thing_text = self.request.get('good_thing')
+        # logging.info(good_thing_text)
         reason = self.request.get('reason')
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
+        #check if is_memory
+        if user.user_type == 0:
+            is_memory = True
+        else:
+            is_memory = False
+        logging.info("is_memory=" + str(is_memory))
         tz_offset = self.request.get('tzoffset')
         local_time = datetime.datetime.now() - datetime.timedelta(hours=int(tz_offset))
 
+        upload = self.get_uploads()
 
-        upload = self.get_uploads()[0];
+
         # raw_img = self.request.get('img')
-        if upload != '':
-            img_key = upload.key()
+        if len(upload) != 0:
+            img_key = upload[0].key()
         else:
             img_key = None
         # if user.public_user:
@@ -272,14 +479,18 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
             user=user,
             public=public,
             wall=wall,
-            blob_key = img_key
+            memory=is_memory,
+            blob_key = img_key,
         )
         good_thing.put()
         # handle mentions here
         msg_tags=[]
         if self.request.get('mentions') != '':
-            mention_list = json.loads(self.request.get('mentions'))
-            # logging.info(mention_list)
+            # logging.info(self.request.get('mentions'))
+            # mention_list = json.loads(str(self.request.get('mentions')))
+            mention_list = json.loads(quopri.decodestring(str(self.request.get('mentions'))))
+           
+            logging.info(mention_list)
             for to_user_id in mention_list:
                 if 'app_id' in to_user_id:
                     to_user = models.User.get_by_key_name(str(to_user_id['app_id']))
@@ -298,17 +509,20 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     to_fb_user_id = to_user_id['id'],
                     to_user_name = to_user_id['name']
                 )
+                # print "mention to_user_id:" + str(to_user_id['name'])
                 mention.put()
                 msg_tags.append(to_user_id['id'].encode('utf-8'))
         # handle posting to fb
         if wall:
             graph = facebook.GraphAPI(self.current_user['access_token'])
-            if img:
+            if img_key:
                 graph.put_photo(image=raw_img,message=good_thing)
             else:
                 # logging.info(msg_tags)
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
 
+
+        # print "before return good thing"
         return good_thing
 
 # API for saving and serving posts
@@ -558,43 +772,6 @@ class LogoutHandler(BaseHandler):
 
         self.redirect('/')
 
-# intro page for first time users
-class IntroHandler(BaseHandler):
-    # serve the intro page
-    def get(self):
-        current_user = self.current_user
-        template = jinja_environment.get_template('intro.html')
-        template_values = {
-                'facebook_app_id':FACEBOOK_APP_ID,
-                'current_user':current_user,
-        }
-        self.response.out.write(template.render(template_values))
-
-    # update the public/private field after the user has passed through the intro
-    # screen.
-    def post(self):
-        user_id = str(self.current_user['id'])
-        user = models.User.get_by_key_name(user_id)
-        # public version of the app
-        if self.request.get('public_user') == 'public':
-            # user.public_user = True
-            user.user_type = 2
-        # private version of the app
-        elif self.request.get('public_user') == 'private':
-            # user.public_user = False
-            user.user_type = 1
-        # placebo version of the app
-        elif self.request.get('public_user') == 'placebo':
-            user.user_type = 0
-        # randomly assign the user to the public or the private version
-        elif self.request.get('public_user') == 'assign':
-            user.user_type = random.choice([0, 1, 2])
-        # if the user doesn't choose an option, don't assign a public/private
-        # value.  app will redirect to this handler before allowing user to
-        # view the home page
-        else:
-            user.user_type = None
-        user.put()
 
 # API for updating a user's settings
 class SettingsHandler(BaseHandler):
@@ -604,7 +781,8 @@ class SettingsHandler(BaseHandler):
         user = models.User.get_by_key_name(user_id)
         settings = user.settings
         reminder_days = self.request.get('reminder_days')
-        if( reminder_days != '' and reminder_days >= 1):
+        email = self.request.get('email')
+        if reminder_days != '' and reminder_days >= 1:
             settings.reminder_days = int(reminder_days)
         else:
             settings.reminder_days = -1
@@ -616,9 +794,14 @@ class SettingsHandler(BaseHandler):
             settings.default_public = True
         else:
             settings.default_public = False
+
+        if email != None and email != '':
+            user.email = email
+            user.put()
         settings.put()
 
         result = settings.template()
+        result['email'] = str(user.email)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
@@ -627,6 +810,8 @@ class SettingsHandler(BaseHandler):
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
         result = user.settings.template()
+        result['email'] = user.email
+        logging.info(result)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
@@ -738,7 +923,7 @@ jinja_environment = jinja2.Environment(
 )
 
 # send email reminder
-class ReminderHandler(webapp2.RequestHandler):
+class ReminderHandler(BaseHandler):
     def get(self):
         logging.info("In ReminderHandler")
         users = models.User.all()
@@ -748,8 +933,8 @@ class ReminderHandler(webapp2.RequestHandler):
             # else:
             #     user.user_type = 1
             # user.put()
-            # if (user.name == "Magi Chung"):
-            #     user.user_type = 0
+            # if (user.name == "Elena Agapie"):
+            #     user.user_type = 2
             #     user.put()
             reminder_days = int(user.settings.reminder_days)
             logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
@@ -758,7 +943,7 @@ class ReminderHandler(webapp2.RequestHandler):
                 num_posts = user.goodthing_set.filter('created >=', last_date_to_post).filter('deleted =',False).count()
                 logging.info("last_date_to_post=" + str(last_date_to_post) + ", num_posts=" + str(num_posts))
                 if(num_posts <= 0):
-                    if (user.email != ""):
+                    if (user.email != "" and user.email is not None):
                         message = mail.EmailMessage()
                         message.subject = "Reminder: Post a good thing to 3gt!" #TOOD: change subject
                         message.sender = "sweetflute@gmail.com" #TODO: change sender address
@@ -771,5 +956,34 @@ class ReminderHandler(webapp2.RequestHandler):
                     else:
                         logging.info(user.name + " do not have an email in the record.")
 
+# change user type
+class AdminHandler(BaseHandler):
+    def get(self):
+        current_user = self.current_user
+        template = jinja_environment.get_template('admin.html')
+        template_values = {
+                'facebook_app_id':FACEBOOK_APP_ID,
+                'current_user':current_user,
+        }
+        self.response.out.write(template.render(template_values))
+
+    # update the public/private field after the user has passed through the intro
+    # screen.
+    def post(self):
+        user_id = str(self.current_user['id'])
+        user = models.User.get_by_key_name(user_id)
+        logging.info("user_type=" + str(self.request.get('user_type')))
+        # public version of the app
+        if self.request.get('user_type') == 'public':
+            # user.public_user = True
+            user.user_type = 2
+        # private version of the app
+        elif self.request.get('user_type') == 'private':
+            # user.public_user = False
+            user.user_type = 1
+        # placebo version of the app
+        elif self.request.get('user_type') == 'placebo':
+            user.user_type = 0
+        user.put()
 
         

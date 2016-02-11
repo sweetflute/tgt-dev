@@ -1,0 +1,1814 @@
+{% extends "base.html" %}
+{% block head %}
+<script src='static/js/survey.js'></script>
+{% endblock %}
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <!-- General Introduction -->
+                    <div class="alert alert-info" role="alert">
+                        We are conducting a research study on how people may use health and wellness applications. We would like to know your information for categorization purpose. All the information will be kept confidential.
+                    </div>
+                    <!-- Validation Error Message -->
+                    <div class='d-error alert alert-danger' role="alert"><span></span></div>
+                    <!-- Demographics Question -->
+                    <blockquote>
+                        <form id="demographic-form">
+                        <ol>
+                            <li><label>what is your age?</label>
+                                <input id="survey-age" name="survey-age" type="number" style="width:45px" min="18" max="100" required="required"/>
+                            </li>
+                            <li><label>What is your gender?</label><br/>
+                                <input type="radio" name="survey-gender" id="survey-gender-male" value="0" required="required"/>
+                                <label for="survey-gender-male">Male</label><br/>
+                                <input type="radio" name="survey-gender" id="survey-gender-female" value="1"/>
+                                <label for="survey-gender-female">Female</label><br/>
+                                <input type="radio" name="survey-gender" id="survey-gender-other" value="2"/>
+                                <label for="survey-gender-other">Other</label><br/>
+                                <input type="radio" name="survey-gender" id="survey-gender-no" value="3"/>
+                                <label for="survey-gender-no">Prefer not to say</label><br/>
+                            </li>
+                        </ol>
+                        <input type="button" class="btn btn-info" id="to-survey1" value="Next"/>
+                    </form>
+                    </blockquote>
+
+
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <!-- first accordion -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    Survey 1/3
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <!-- Survey 1 Description -->
+                                    <div class="alert alert-info" role="alert">
+                                        <p>For the following parts, there are phrases describing people's behaviors. Please use the rating scale below to describe how accurately each statement describes you. Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age. So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence. Please read each statement carefully, and then fill in the bubble that corresponds to the number on the scale.</p><br>
+                                        <ol>
+                                            <li>Rarely or none of the time (less than 1 day)</li>
+                                            <li>Some or a little of the time (1-2days)</li>
+                                            <li>Occasionally or a moderate amount of the time (3-4 days)</li>
+                                            <li>Most or all of the time (5-7 days)</li>
+                                        </ol>
+                                    </div>
+                                    <!-- End of Survey 1 Description -->
+                                    <!-- Validation Error Message -->
+                                    <div class='ipip-error alert alert-danger' role="alert"><span></span></div>
+                                    <!-- Survey 1 Question -->
+                                    <blockquote>
+                                        <form id="ipip-form">
+                                            <ol>
+                                                <!-- IPIP-1 -->
+                                                <li> <label>I am the life of the party.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-1-1" name="IPIP-1" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-1-2" name="IPIP-1" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-1-3" name="IPIP-1" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-1-4" name="IPIP-1" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-1-5" name="IPIP-1" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-2 -->
+                                                <li> <label>I sympathize with others' feelings.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-2-1" name="IPIP-2" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-2-2" name="IPIP-2" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-2-3" name="IPIP-2" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-2-4" name="IPIP-2" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-2-5" name="IPIP-2" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-3 -->
+                                                <li> <label>I get chores done right away.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-3-1" name="IPIP-3" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-3-2" name="IPIP-3" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-3-3" name="IPIP-3" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-3-4" name="IPIP-3" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-3-5" name="IPIP-3" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-4 -->
+                                                <li> <label>I have frequent mood swings.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-4-1" name="IPIP-4" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-4-2" name="IPIP-4" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-4-3" name="IPIP-4" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-4-4" name="IPIP-4" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-4-5" name="IPIP-4" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-5 -->
+                                                <li> <label>I have a vivid imagination.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-5-1" name="IPIP-5" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-5-2" name="IPIP-5" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-5-3" name="IPIP-5" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-5-4" name="IPIP-5" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-5-5" name="IPIP-5" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-6 -->
+                                                <li> <label>I don't talk a lot.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-6-1" name="IPIP-6" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-6-2" name="IPIP-6" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-6-3" name="IPIP-6" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-6-4" name="IPIP-6" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-6-5" name="IPIP-6" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-7 -->
+                                                <li> <label>I am not interested in other people's problems.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-7-1" name="IPIP-7" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-7-2" name="IPIP-7" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-7-3" name="IPIP-7" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-7-4" name="IPIP-7" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-7-5" name="IPIP-7" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-8 -->
+                                                <li> <label>I often forget to put things back in their proper place.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-8-1" name="IPIP-8" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-8-2" name="IPIP-8" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-8-3" name="IPIP-8" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-8-4" name="IPIP-8" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-8-5" name="IPIP-8" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-9 -->
+                                                <li> <label>I am relaxed most of the time.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-9-1" name="IPIP-9" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-9-2" name="IPIP-9" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-9-3" name="IPIP-9" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-9-4" name="IPIP-9" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-9-5" name="IPIP-9" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-10 -->
+                                                <li> <label>I am not interested in abstract ideas.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-10-1" name="IPIP-10" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-10-2" name="IPIP-10" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-10-3" name="IPIP-10" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-10-4" name="IPIP-10" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-10-5" name="IPIP-10" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-11 -->
+                                                <li> <label>I talk to a lot of different people at parties.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-11-1" name="IPIP-11" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-11-2" name="IPIP-11" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-11-3" name="IPIP-11" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-11-4" name="IPIP-11" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-11-5" name="IPIP-11" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-12 -->
+                                                <li> <label>I feel others' emotions.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-12-1" name="IPIP-12" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-12-2" name="IPIP-12" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-12-3" name="IPIP-12" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-12-4" name="IPIP-12" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-12-5" name="IPIP-12" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-13 -->
+                                                <li><label>I like order.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-13-1" name="IPIP-13" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-13-2" name="IPIP-13" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-13-3" name="IPIP-13" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-13-4" name="IPIP-13" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-13-5" name="IPIP-13" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-14 -->
+                                                <li><label>I get upset easily.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-14-1" name="IPIP-14" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-14-2" name="IPIP-14" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-14-3" name="IPIP-14" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-14-4" name="IPIP-14" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-14-5" name="IPIP-14" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-15 -->
+                                                <li><label>I have difficulty understanding abstract ideas.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-15-1" name="IPIP-15" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-15-2" name="IPIP-15" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-15-3" name="IPIP-15" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-15-4" name="IPIP-15" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-15-5" name="IPIP-15" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-16 -->
+                                                <li><label>I keep in the background.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-16-1" name="IPIP-16" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-16-2" name="IPIP-16" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-16-3" name="IPIP-16" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-16-4" name="IPIP-16" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-16-5" name="IPIP-16" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-17 -->
+                                                <li><label>I am not really interested in others.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-17-1" name="IPIP-17" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-17-2" name="IPIP-17" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-17-3" name="IPIP-17" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-17-4" name="IPIP-17" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-17-5" name="IPIP-17" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-18 -->
+                                                <li><label>I make a mess of things.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-18-1" name="IPIP-18" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-18-2" name="IPIP-18" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-18-3" name="IPIP-18" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-18-4" name="IPIP-18" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-18-5" name="IPIP-18" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-19 -->
+                                                <li><label>I seldom feel blue.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-19-1" name="IPIP-19" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-19-2" name="IPIP-19" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-19-3" name="IPIP-19" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-19-4" name="IPIP-19" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-19-5" name="IPIP-19" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- IPIP-20 -->
+                                                <li><label>I do not have a good imagination.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
+                                                            <input type="radio" id="IPIP-20-1" name="IPIP-20" value="1" required/> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
+                                                            <input type="radio" id="IPIP-20-2" name="IPIP-20" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
+                                                            <input type="radio" id="IPIP-20-3" name="IPIP-20" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
+                                                            <input type="radio" id="IPIP-20-4" name="IPIP-20" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
+                                                            <input type="radio" id="IPIP-20-5" name="IPIP-20" value="5" /> 5
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            </ol>
+                                            <input type="button" class="btn btn-info" id="to-survey2" value="Next"/>
+                                        </form>
+                                    </blockquote>
+                                    <!-- End of Survey 1 Question -->
+                                </div> 
+                            </div>
+                        </div>
+                        <!-- end of first accordion -->
+                        <!-- second accordion -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Survey 2/3
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    <!-- Survey 2 Description -->
+                                    <div class="alert alert-info" role="alert">
+                                        <p>For each statement, please rate the best describes how you have been feeling <strong>in the past week.</strong></p><br>
+                                        <ol start="0">
+                                            <li>Rarely or none of the time (less than 1 day)</li>
+                                            <li>Some or a little of the time (1-2days)</li>
+                                            <li>Occasionally or a moderate amount of the time (3-4 days)</li>
+                                            <li>Most or all of the time (5-7 days)</li>
+                                        </ol>
+                                    </div>
+                                    <!-- End of Survey 2 Description -->
+                                    <!-- Validation Error Message -->
+                                    <div class='cesd-error alert alert-danger' role="alert"><span></span></div>
+                                    <!-- Survey 2 Question -->
+                                    <blockquote>
+                                        <form id="cesd-form">
+                                            <ol>
+                                                <!-- cesd-1 -->
+                                                <li><label>I was bothered by things that usually don’t bother me.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-1-0" name="CESD-1" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-1-1" name="CESD-1" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-1-2" name="CESD-1" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-1-3" name="CESD-1" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-2 -->
+                                                <li><label>I did not feel like eating; my appetite was poor.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-2-0" name="CESD-2" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-2-1" name="CESD-2" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-2-2" name="CESD-2" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-2-3" name="CESD-2" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-3 -->
+                                                <li><label>I felt that I could not shake off the blues, even with the help from family or friends.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-3-0" name="CESD-3" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-3-1" name="CESD-3" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-3-2" name="CESD-3" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-3-3" name="CESD-3" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-4 -->
+                                                <li><label>I felt that I was just as good as other people.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-4-0" name="CESD-4" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-4-1" name="CESD-4" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-4-2" name="CESD-4" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-4-3" name="CESD-4" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-5 -->
+                                                <li><label>I had trouble keeping my mind on what I was doing.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-5-0" name="CESD-5" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-5-1" name="CESD-5" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-5-2" name="CESD-5" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-5-3" name="CESD-5" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-6 -->
+                                                <li><label>I felt depressed.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-6-0" name="CESD-6" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-6-1" name="CESD-6" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-6-2" name="CESD-6" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-6-3" name="CESD-6" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-7 -->
+                                                <li><label>I felt that everything I did was an effort.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-7-0" name="CESD-7" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-7-1" name="CESD-7" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-7-2" name="CESD-7" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-7-3" name="CESD-7" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-8 -->
+                                                <li><label>I felt hopeful about the future.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-8-0" name="CESD-8" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-8-1" name="CESD-8" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-8-2" name="CESD-8" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-8-3" name="CESD-8" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-9 -->
+                                                <li><label>I thought my life had been a failure.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-9-0" name="CESD-9" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-9-1" name="CESD-9" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-9-2" name="CESD-9" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-9-3" name="CESD-9" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li> 
+                                                <!-- cesd-10 -->
+                                                <li><label>I felt fearful.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-10-0" name="CESD-10" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-10-1" name="CESD-10" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-10-2" name="CESD-10" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-10-3" name="CESD-10" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-11 -->
+                                                <li><label>My sleep was restless.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-11-0" name="CESD-11" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-11-1" name="CESD-11" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-11-2" name="CESD-11" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-11-3" name="CESD-11" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-12 -->
+                                                <li><label>I was happy.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-12-0" name="CESD-12" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-12-1" name="CESD-12" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-12-2" name="CESD-12" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-12-3" name="CESD-12" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-13 -->
+                                                <li><label>I talked less than usual.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-13-0" name="CESD-13" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-13-1" name="CESD-13" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-13-2" name="CESD-13" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-13-3" name="CESD-13" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-14 -->
+                                                <li><label>I felt lonely.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-14-0" name="CESD-14" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-14-1" name="CESD-14" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-14-2" name="CESD-14" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-14-3" name="CESD-14" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-15 -->
+                                                <li><label>People were unfriendly.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-15-0" name="CESD-15" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-15-1" name="CESD-15" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-15-2" name="CESD-15" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-15-3" name="CESD-15" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-16 -->
+                                                <li><label>I enjoyed life.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-16-0" name="CESD-16" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-16-1" name="CESD-16" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-16-2" name="CESD-16" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-16-3" name="CESD-16" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-17 -->
+                                                <li><label>I had crying spells.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-17-0" name="CESD-17" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-17-1" name="CESD-17" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-17-2" name="CESD-17" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-17-3" name="CESD-17" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-18 -->
+                                                <li><label>I felt sad.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-18-0" name="CESD-18" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-18-1" name="CESD-18" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-18-2" name="CESD-18" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-18-3" name="CESD-18" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-19 -->
+                                                <li><label>I felt that people dislike me.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-19-0" name="CESD-19" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-19-1" name="CESD-19" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-19-2" name="CESD-19" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-19-3" name="CESD-19" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <!-- cesd-20 -->
+                                                <li><label>I could not get “going”.</label><br/>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
+                                                            <input type="radio" id="CESD-20-0" name="CESD-20" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Some or a little of the time (1-2days)">
+                                                            <input type="radio" id="CESD-20-1" name="CESD-20" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Occasionally or a moderate amount of the time (3-4 days)">
+                                                            <input type="radio" id="CESD-20-2" name="CESD-20" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default" data-toggle="tooltip" title="Most or all of the time (5-7 days)">
+                                                            <input type="radio" id="CESD-20-3" name="CESD-20" value="3" /> 3
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            </ol>
+                                            <input type="button" class="btn btn-info" id="to-survey3" value="Next"/>
+                                        </form>
+                                    </blockquote>
+                                    <!-- End of Survey 2 Question --> 
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of second accordion -->
+                        <!-- third accordion -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Survey 3/3
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    <!-- Survey 3 Description -->
+                                    <div class="alert alert-info" role="alert">
+                                        <p>Please read each of the following questions and then select the point on the scale that you feel best describes you.</p>
+                                    </div>
+                                    <!-- End of Survey 3 Description -->
+                                    <!-- Validation Error Message -->
+                                    <div class='perma-error alert alert-danger' role="alert"><span></span></div>
+                                    <!-- Survey 3 Question -->
+                                    <blockquote>
+                                        <form id="perma-form">
+                                            <ol>
+                                                <!-- PERMA-1 -->
+                                                <li><label>How much of the time do you feel you are making progress towards accomplishing your goals?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-0" name="PERMA-1" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-1" name="PERMA-1" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-2" name="PERMA-1" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-3" name="PERMA-1" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-4" name="PERMA-1" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-5" name="PERMA-1" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-6" name="PERMA-1" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-7" name="PERMA-1" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-8" name="PERMA-1" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-9" name="PERMA-1" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-1-10" name="PERMA-1" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-2 -->
+                                                <li><label>How often do you become absorbed in what you are doing?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-0" name="PERMA-2" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-1" name="PERMA-2" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-2" name="PERMA-2" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-3" name="PERMA-2" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-4" name="PERMA-2" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-5" name="PERMA-2" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-6" name="PERMA-2" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-7" name="PERMA-2" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-8" name="PERMA-2" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-9" name="PERMA-2" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-2-10" name="PERMA-2" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-3 -->
+                                                <li><label>In general, how often do you feel joyful?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-0" name="PERMA-3" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-1" name="PERMA-3" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-2" name="PERMA-3" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-3" name="PERMA-3" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-4" name="PERMA-3" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-5" name="PERMA-3" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-6" name="PERMA-3" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-7" name="PERMA-3" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-8" name="PERMA-3" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-9" name="PERMA-3" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-3-10" name="PERMA-3" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-4 -->
+                                                <li><label>In general, how often do you feel anxious?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-0" name="PERMA-4" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-1" name="PERMA-4" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-2" name="PERMA-4" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-3" name="PERMA-4" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-4" name="PERMA-4" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-5" name="PERMA-4" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-6" name="PERMA-4" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-7" name="PERMA-4" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-8" name="PERMA-4" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-9" name="PERMA-4" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-4-10" name="PERMA-4" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-5 -->
+                                                <li><label>How often do you achieve the important goals you have set for yourself?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-0" name="PERMA-5" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-1" name="PERMA-5" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-2" name="PERMA-5" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-3" name="PERMA-5" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-4" name="PERMA-5" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-5" name="PERMA-5" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-6" name="PERMA-5" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-7" name="PERMA-5" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-8" name="PERMA-5" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-9" name="PERMA-5" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-5-10" name="PERMA-5" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-6 -->
+                                                <li><label>In general, how would you say your health is?</label><br/>
+                                                    <label class="scale">terrible</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-0" name="PERMA-6" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-1" name="PERMA-6" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-2" name="PERMA-6" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-3" name="PERMA-6" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-4" name="PERMA-6" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-5" name="PERMA-6" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-6" name="PERMA-6" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-7" name="PERMA-6" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-8" name="PERMA-6" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-9" name="PERMA-6" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-6-10" name="PERMA-6" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">excellent</label>
+                                                </li>
+                                                <!-- PERMA-7 -->
+                                                <li><label>In general, to what extent do you lead a purposeful and meaningful life?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-0" name="PERMA-7" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-1" name="PERMA-7" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-2" name="PERMA-7" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-3" name="PERMA-7" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-4" name="PERMA-7" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-5" name="PERMA-7" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-6" name="PERMA-7" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-7" name="PERMA-7" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-8" name="PERMA-7" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-9" name="PERMA-7" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-7-10" name="PERMA-7" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-8 -->
+                                                <li><label>To what extent do you receive help and support from others when you need it?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-0" name="PERMA-8" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-1" name="PERMA-8" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-2" name="PERMA-8" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-3" name="PERMA-8" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-4" name="PERMA-8" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-5" name="PERMA-8" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-6" name="PERMA-8" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-7" name="PERMA-8" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-8" name="PERMA-8" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-9" name="PERMA-8" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-8-10" name="PERMA-8" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-9 -->
+                                                <li><label>In general, to what extent do you feel that what you do in your life is valuable and worthwhile?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-0" name="PERMA-9" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-1" name="PERMA-9" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-2" name="PERMA-9" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-3" name="PERMA-9" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-4" name="PERMA-9" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-5" name="PERMA-9" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-6" name="PERMA-9" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-7" name="PERMA-9" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-8" name="PERMA-9" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-9" name="PERMA-9" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-9-10" name="PERMA-9" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li> 
+                                                <!-- PERMA-10 -->
+                                                <li><label>In general, to what extent do you feel excited and interested in things?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-0" name="PERMA-10" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-1" name="PERMA-10" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-2" name="PERMA-10" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-3" name="PERMA-10" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-4" name="PERMA-10" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-5" name="PERMA-10" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-6" name="PERMA-10" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-7" name="PERMA-10" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-8" name="PERMA-10" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-9" name="PERMA-10" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-10-10" name="PERMA-10" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-11 -->
+                                                <li><label>How lonely do you feel in your daily life?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-0" name="PERMA-11" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-1" name="PERMA-11" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-2" name="PERMA-11" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-3" name="PERMA-11" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-4" name="PERMA-11" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-5" name="PERMA-11" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-6" name="PERMA-11" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-7" name="PERMA-11" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-8" name="PERMA-11" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-9" name="PERMA-11" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-11-10" name="PERMA-11" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-12 -->
+                                                <li><label>How satisfied are you with your current physical health?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-0" name="PERMA-12" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-1" name="PERMA-12" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-2" name="PERMA-12" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-3" name="PERMA-12" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-4" name="PERMA-12" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-5" name="PERMA-12" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-6" name="PERMA-12" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-7" name="PERMA-12" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-8" name="PERMA-12" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-9" name="PERMA-12" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-12-10" name="PERMA-12" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-13 -->
+                                                <li><label>In general, how often do you feel positive?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-0" name="PERMA-13" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-1" name="PERMA-13" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-2" name="PERMA-13" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-3" name="PERMA-13" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-4" name="PERMA-13" value="4" required/> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-5" name="PERMA-13" value="5" required/> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-6" name="PERMA-13" value="6" required/> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-7" name="PERMA-13" value="7" required/> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-8" name="PERMA-13" value="8" required/> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-9" name="PERMA-13" value="9" required/> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-13-10" name="PERMA-13" value="10" required/> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-14 -->
+                                                <li><label>In general, how often do you feel angry?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-0" name="PERMA-14" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-1" name="PERMA-14" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-2" name="PERMA-14" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-3" name="PERMA-14" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-4" name="PERMA-14" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-5" name="PERMA-14" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-6" name="PERMA-14" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-7" name="PERMA-14" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-8" name="PERMA-14" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-9" name="PERMA-14" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-14-10" name="PERMA-14" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-15 -->
+                                                <li><label>How often are you able to handle your responsibilities?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-0" name="PERMA-15" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-1" name="PERMA-15" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-2" name="PERMA-15" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-3" name="PERMA-15" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-4" name="PERMA-15" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-5" name="PERMA-15" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-6" name="PERMA-15" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-7" name="PERMA-15" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-8" name="PERMA-15" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-9" name="PERMA-15" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-15-10" name="PERMA-15" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-16 -->
+                                                <li><label>In general, how often do you feel sad?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-0" name="PERMA-16" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-1" name="PERMA-16" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-2" name="PERMA-16" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-3" name="PERMA-16" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-4" name="PERMA-16" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-5" name="PERMA-16" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-6" name="PERMA-16" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-7" name="PERMA-16" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-8" name="PERMA-16" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-9" name="PERMA-16" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-16-10" name="PERMA-16" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-17 -->
+                                                <li><label>How often do you lose track of time while doing something you enjoy?</label><br/>
+                                                    <label class="scale">never</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-0" name="PERMA-17" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-1" name="PERMA-17" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-2" name="PERMA-17" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-3" name="PERMA-17" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-4" name="PERMA-17" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-5" name="PERMA-17" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-6" name="PERMA-17" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-7" name="PERMA-17" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-8" name="PERMA-17" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-9" name="PERMA-17" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-17-10" name="PERMA-17" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">always</label>
+                                                </li>
+                                                <!-- PERMA-18 -->
+                                                <li><label>Compared to others of your same age and sex, how is your health?</label><br/>
+                                                    <label class="scale">terrible</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-0" name="PERMA-18" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-1" name="PERMA-18" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-2" name="PERMA-18" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-3" name="PERMA-18" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-4" name="PERMA-18" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-5" name="PERMA-18" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-6" name="PERMA-18" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-7" name="PERMA-18" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-8" name="PERMA-18" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-9" name="PERMA-18" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-18-10" name="PERMA-18" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">excellent</label>
+                                                </li>
+                                                <!-- PERMA-19 -->
+                                                <li><label>To what extent do you feel loved?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-0" name="PERMA-19" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-1" name="PERMA-19" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-2" name="PERMA-19" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-3" name="PERMA-19" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-4" name="PERMA-19" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-5" name="PERMA-19" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-6" name="PERMA-19" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-7" name="PERMA-19" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-8" name="PERMA-19" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-9" name="PERMA-19" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-19-10" name="PERMA-19" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-20 -->
+                                                <li><label>To what extent do you generally feel you have a sense of direction in your life?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-0" name="PERMA-20" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-1" name="PERMA-20" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-2" name="PERMA-20" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-3" name="PERMA-20" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-4" name="PERMA-20" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-5" name="PERMA-20" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-6" name="PERMA-20" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-7" name="PERMA-20" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-8" name="PERMA-20" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-9" name="PERMA-20" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-20-10" name="PERMA-20" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-21 -->
+                                                <li><label>How satisfied are you with your personal relationships?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-0" name="PERMA-21" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-1" name="PERMA-21" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-2" name="PERMA-21" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-3" name="PERMA-21" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-4" name="PERMA-21" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-5" name="PERMA-21" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-6" name="PERMA-21" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-7" name="PERMA-21" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-8" name="PERMA-21" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-9" name="PERMA-21" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-21-10" name="PERMA-21" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-22 -->
+                                                <li><label>In general, to what extent do you feel contented?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-0" name="PERMA-22" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-1" name="PERMA-22" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-2" name="PERMA-22" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-3" name="PERMA-22" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-4" name="PERMA-22" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-5" name="PERMA-22" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-6" name="PERMA-22" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-7" name="PERMA-22" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-8" name="PERMA-22" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-9" name="PERMA-22" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-22-10" name="PERMA-22" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                                <!-- PERMA-23 -->
+                                                <li><label>Taking all things together, how happy would you say you are?</label><br/>
+                                                    <label class="scale">not at all</label>
+                                                    <div class="btn-group" data-toggle="buttons">
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-0" name="PERMA-23" value="0" required/> 0
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-1" name="PERMA-23" value="1" /> 1
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-2" name="PERMA-23" value="2" /> 2
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-3" name="PERMA-23" value="3" /> 3
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-4" name="PERMA-23" value="4" /> 4
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-5" name="PERMA-23" value="5" /> 5
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-6" name="PERMA-23" value="6" /> 6
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-7" name="PERMA-23" value="7" /> 7
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-8" name="PERMA-23" value="8" /> 8
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-9" name="PERMA-23" value="9" /> 9
+                                                        </label>
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" id="PERMA-23-10" name="PERMA-23" value="10" /> 10
+                                                        </label>
+                                                    </div>
+                                                    <label class="scale">completely</label>
+                                                </li>
+                                            </ol>
+                                            <input type="button" class="btn btn-info" id="submit-survey" value="Submit"/>
+                                        </form>    
+                                    </blockquote>
+                                    <!-- End of Survey 3 Question -->  
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of third accordion -->         
+                    </div>
+                    <!-- end of the accordion/panel group -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

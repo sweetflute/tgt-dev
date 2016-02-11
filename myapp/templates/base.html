@@ -4,11 +4,14 @@
 <head>
     <title>3GT DEV</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://tgt-dev.appspot.com/static/css/local_styles.css">
+    <link rel="stylesheet" href="/static/css/local_styles.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src='http://tgt-dev.appspot.com/static/js/moustache.js'></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.2.8/jquery.form-validator.min.js"></script> -->
+    <script src='/static/js/moustache.js'></script>
+    <script src='/static/js/js.cookie.js'></script>
     {% block head %}
     {% endblock %}
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -44,11 +47,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h5 class="text-center text-muted">3 Good Things | Developed by Jim Maddock | <a href='/privacy'>privacy policy</a></h6>
+                    <h5 class="text-center text-muted">3 Good Things | <a href='/privacy'>privacy policy</a></h6>
                 </div>
             </div>
         </div>
     </nav>
     {% endblock %}
+</body>
 </html>
 {% endautoescape %}

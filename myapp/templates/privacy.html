@@ -1,1 +1,27 @@
-<p>This is a devlepment application for the University of Washington's Three Good Things study.  User data (name, profile picture, friends) collected by this application is used only for authentication purposes.  Additionally the application can post to the user's facebook wall, but only with express permission.</p>
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                	<blockquote>
+                        <p>We will keep the study information collected by this application confidential. The application would not post on your Facebook wall unless you specifically choose so.
+                      	We will assign a participant code to the study information. The master list of the codes and identifiers will be kept separate from the interview and survey data and will be destroyed within 12 months of data collection. We may want to show portions of this data when we communicate the results of our research. We may share this information at conferences, in university classes, in meetings with companies and individuals with whom we work, and in books or other written forms.</p>
+                    </blockquote>
+                    <blockquote>
+                        <p>Taking part in this study is voluntary. You can end your participation in the study at any time. If you have questions about the research, please contact Christina Chung at cfchung@uw.edu. If you have questions about your rights as a research subject, you can call the UW Human Subjects Division at (206) 543-0098.</p>
+                    </blockquote>
+                    <div class="alert alert-warning" role="alert">
+                        <p><em>Please note that we cannot ensure the confidentiality of information sent via e-mail.</em></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

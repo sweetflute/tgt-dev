@@ -20,7 +20,7 @@
                     <div id="content">
                         {{#img_url}}<p><img src="{{img_url}}"/></p>{{/img_url}}
                         <p>{{good_thing}}</p>
-                        {{#current_user}}<p>{{reason}}</p>{{/current_user}}
+                        {{#current_user}}<p id="content_reason">{{reason}}</p>{{/current_user}}
                     </div>
                     <div id="control">
                         <form id='comment'>
@@ -35,7 +35,7 @@
                             {{/mentions}}
                         </ul>
                         {{/num_mentions}}
-                        {{#current_user}}({{num_cheers}})cheer{{/current_user}}
+                        {{#current_user}}<span id='cheer'>({{num_cheers}})cheer</span>{{/current_user}}
                         {{^current_user}}<a href="#" class="link" id='cheer' data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>({{num_cheers}}) {{#cheered}}uncheer{{/cheered}}{{^cheered}}cheer{{/cheered}}</a>{{/current_user}}
                         {{#current_user}}<a href="#" class="link" id='delete'>delete</a>{{/current_user}}
                         <a href="#" class="link" data-toggle="off" id='comment'>({{num_comments}}) comments</a>

@@ -1,90 +1,123 @@
 {% extends "base.html" %}
 {% block head %}
-<script src='http://tgt-dev.appspot.com/static/js/intro.js'></script>
-{% endblock %}
-{% block nav_buttons %}
-<li>
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-    </a>
-    <ul class="dropdown-menu" id='notifications'></ul>
-</li>
-<li>
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-    </a>
-    <ul class="dropdown-menu">
-        <li><a href="http://tgt-dev.appspot.com/logout" id="logout">Logout</a></li>
-    </ul>
-</li>
+<script src='/static/js/intro.js'></script>
 {% endblock %}
 {% block body %}
-<!-- settings modal -->
-<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title"> Settings</h4>
-      </div>
-      <div class="modal-body">
-          <form id='settings' action=''>
-              <div class="form-group">
-                  <label for="reminder_days">Reminder Days</label>
-                  <input type='number' name='reminder_days' id='reminder_days'/>
-              </div>
-              <div class="form-group">
-                  <label for="settings_wall">Default Post to FB</label>
-                  <input type='checkbox' name='default_fb' id='settings_wall'/>
-              </div>
-              <div class="form-group">
-                  <label for="settings_public">Default Public</label>
-                  <input type='checkbox' name='default_public' id='settings_public'/>
-              </div>
-          </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-default" id="save_settings">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-md-6 col-sm-8 col-xs-12">
-    <!-- input for posting a good thing -->
-    <div class="panel panel-default" id="my_good_thing">
-        <div class="panel-body">
-            <div class="media post">
-                <div class="media-left">
-                    <a href="{{ current_user.profile_url }}">
-                        <img class="media-object" src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square" alt="...">
-                    </a>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-header">
+                        <h2 class="text-center">UNIVERSITY OF WASHINGTON<br/>WEB INFORMATION FORM</h2>
+                    </div>
                 </div>
-                <div class="media-body post">
-                    <form id="public_user" action=''>
-                        <label>
-                            <input type="radio" name="public_user" id="public_user" value="public" checked>
-                              Public User
-                        </label>
-                        <label>
-                            <input type="radio" name="public_user" id="public_user" value="private">
-                                Private User
-                        </label>
-                        <button type="submit" class="btn btn-default" id="submit_public_user">Create Account</button>
-                        <button class="btn btn-default" id="assign_public_user">Assign Account</button>
-                    </form>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p class="text-center">
+                        Chia-Fang (Christina) Chung<br/>
+                        PhD Student<br/>
+                        Human Centered Design & Engineering<br/>
+                        cfchung@uw.edu
+                    </p>
                 </div>
+                <div class="col-sm-6">
+                    <p class="text-center">
+                        Sean A. Munson<br/>
+                        Assistant Professor<br/>
+                        Human Centered Design & Engineering<br/>
+                        smunson@uw.edu
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-warning" role="alert">
+                        <p><em>Please note that we cannot ensure the confidentiality of information sent via e-mail.</em></p>
+                    </div>
+                    <blockquote>
+                        <h3>INVESTIGATORS’ STATEMENT</h3>
+                        <p>We are asking you to be in a research study. The purpose of this information form is to give you the information you will need to help you decide whether to be in the study. Please read the form carefully. You may ask questions about the purpose of the research, what we would ask you to do, the possible risks and benefits, your rights as a volunteer, and anything else about the research or this form that is not clear. When all your questions have been answered, you can decide if you want to be in the study. This process is called “informed consent.”</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>PURPOSE OF THE STUDY</h3>
+                        <p>The purpose of the study is to help understand how sharing information to social network affects people’s behavior when they use health and wellness applications.</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>STUDY PROCEDURES</h3>
+                        <p>If you choose to participate, we will ask you to use a wellness application online for six months. You will be randomly assigned to one of three interface designs regarding to social sharing. We will also ask you to fill out a survey before, during, and after you use the application. We might or might not conduct a post-interview with you.</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>RISKS, STRESS, OR DISCOMFORT</h3>
+                        <p>Some people may feel social pressure while sharing their wellness information with other people using the same application or on Facebook. Some participants may also have unpleasant feeling comparing your shared content with others. Some participants may feel that their privacy may be invaded or they are being judged because their use of application will be recorded and analyzed for the purpose of this study. We discuss these privacy concerns in the Other Information section of this consent form.</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>BENEFITS OF THE STUDY</h3>
+                        <p>We hope that the results of this study will help people design solutions to social sharing features of health and wellness applications. While we hope the experience of using this application will be enjoyable, you may not directly benefit from taking part in this research study.</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>OTHER INFORMATION</h3>
+                        <p>Taking part in this study is voluntary. You can end your participation in the study at any time.</p>
+                        <p>We will keep the study information confidential. We will assign a participant code to each survey and interview transcript. The master list of the codes and identifiers will be kept separate from the interview and survey data and will be destroyed within 12 months of data collection. We may want to show portions of this data when we communicate the results of our research. We may share this information at conferences, in university classes, in meetings with companies and individuals with whom we work, and in books or other written forms.</p>
+                        <p>You will be enrolled into a lottery one of ten Amazon.com gift cards (one $500 grand prize and five $100 gift cards) each time you complete a follow-up survey. The drawing will be conducted within one weeks of the end of our data collection, and no later than 15 September 2016. Christina Chung will conduct the drawing at Sieg Hall on the University of Washington Seattle campus. The winner of the lottery will be notified via email on the day of the drawing. We will delete all stored email addresses after the gift cards have been awarded. You may skip any part of the study and remain eligible for the drawing.</p>
+                    </blockquote>
+                    <blockquote>
+                        <h3>PARTICIPANT’S STATEMENT</h3>
+                        <p>If you have questions about the research, please contact Christina Chung at cfchung@uw.edu. If you have questions about your rights as a research subject, you can call the UW Human Subjects Division at (206) 543-0098. If you would like a copy of this information form, you can download a PDF or save this web page by choosing “file --> Save as”.</p>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Do you want to continue?</h3>
+                </div>
+            </div>
+            <div class="row" id="enroll-form">
+                <div class="col-sm-6">
+                    <button id="yes-btn" type="button" class="btn btn-success btn-lg btn-block">Yes, I want to continue the study.</button>
+                </div>
+                <div class="col-sm-6">
+                    <button id="no-btn" type="button" class="btn btn-default btn-lg btn-block">No, I want to quit now.</button>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 40px;">
+                <form id="email-form">
+                <!-- <div class="col-sm-12" style="background-color:#EEE;">
+                    <div class="row"> -->
+                        <div class="col-sm-4 text-right" style="height:34px;line-height:34px;">
+                            <label for="email-field" class="control-label" id="email-label">Please input your email:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="email" id="email-field" class="form-control" placeholder="Enter a valid Emaill address" required="required"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="button" id="email-btn" class="btn btn-block btn-success" value="Submit"/>
+                        </div>
+                </form>
+                   <!--  </div>
+                </div> -->
             </div>
         </div>
     </div>
-{% endblock %}
+</div>
 
-{% block profile %}
-<!-- profile sidebar -->
-<div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <img src="http://graph.facebook.com/{{ current_user.id }}/picture?width=250"" alt="..." class="img-rounded img-responsive">
-        </div>
+<div class="modal fade" tabindex="-1" role="dialog" id= "exit-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Exit the study</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to exit the study?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="exit-btn">Exit</button>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

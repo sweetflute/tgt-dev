@@ -33,6 +33,12 @@ app = webapp2.WSGIApplication(
         ('/user/([^/]+)?', views.ProfileHandler),
         # handler for reminder cron job
         ('/reminder', views.ReminderHandler),
+        # handler for temproray change user type
+        ('/admin', views.AdminHandler),
+        # landing page
+        ('/landing', views.LandingHandler),
+        # survey page
+        ('/survey', views.SurveyHandler),
         # home feed
         ('/*', views.HomeHandler),
     ],

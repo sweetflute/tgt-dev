@@ -72,3 +72,17 @@ indexes:
   - name: public
   - name: user
   - name: created_origin
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: memory
+  - name: user
+  - name: created
+    direction: desc
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: memory
+  - name: created
+    direction: desc

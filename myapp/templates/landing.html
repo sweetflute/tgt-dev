@@ -1,16 +1,220 @@
 {% extends "base.html" %}
 {% block head %}
-<script src='http://tgt-dev.appspot.com/static/js/landing.js'></script>
+<script src='/static/js/landing.js'></script>
 {% endblock %}
 {% block nav_buttons %}
-<li>
-    <fb:login-button autologoutlink="true" scope="publish_actions, user_friends"></fb:login-button>
+<li style="margin-top:15px">
+    <fb:login-button autologoutlink="true" data-size= "large" scope="publish_actions, user_friends"></fb:login-button>
 </li>
 {% endblock %}
 {% block body %}
-<div id="good things" class="span8">
-    <p>Landing Page</p>
+{% if public_user == 0 %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="landing-title">Let's see how this works!</h1>
+                    <!-- <h3><span class="label label-default">Sign in with Facebook and start recording your memories.</span></h3> -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="tutorial-slider-memory" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#tutorial-slider-memory" data-slide-to="0" class="active"></li>
+                            <li data-target="#tutorial-slider-memory" data-slide-to="1"></li>
+                            <li data-target="#tutorial-slider-memory" data-slide-to="2"></li>
+                            <li data-target="#tutorial-slider-memory" data-slide-to="3"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active carousel-next-memory">
+                                <img src="/static/slides/slides_memories-01.png" />
+                            </div>
+                            <div class="item carousel-next-memory">
+                                <img src="/static/slides/slides_memories-02.png" />
+                            </div>
+                            <div class="item carousel-next-memory">
+                                 <img src="/static/slides/slides_memories-03.png" />
+                            </div>
+                            <div class="item fb-login">
+                                <img src="/static/slides/slides_memories-04.png" />
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#tutorial-slider-memory" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#tutorial-slider-memory" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif public_user == 1 %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="landing-title">Let's see how this works!</h1>
+                    <!-- <h3><span class="label label-default">Sign in with Facebook and start recording your good thing.</span></h3> -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="tutorial-slider-private" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#tutorial-slider-private" data-slide-to="0" class="active"></li>
+                            <li data-target="#tutorial-slider-private" data-slide-to="1"></li>
+                            <li data-target="#tutorial-slider-private" data-slide-to="2"></li>
+                            <li data-target="#tutorial-slider-private" data-slide-to="3"></li>
+                            <li data-target="#tutorial-slider-private" data-slide-to="4"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active carousel-next-private">
+                                <img src="/static/slides/slides_private-01.png" />
+                            </div>
+                            <div class="item carousel-next-private">
+                                <img src="/static/slides/slides_private-02.png" />
+                            </div>
+                            <div class="item carousel-next-private">
+                                <img src="/static/slides/slides_private-03.png" />
+                            </div>
+                            <div class="item carousel-next-private">
+                                <img src="/static/slides/slides_private-04.png" />
+                            </div>
+                            <div class="item fb-login">
+                                <img src="/static/slides/slides_private-05.png" />
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#tutorial-slider-private" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#tutorial-slider-private" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif public_user == 2 %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="landing-title">Let's see how this works!</h1>
+                   <!--  <h3><span class="label label-default">Sign in with Facebook and start recording your good things.</span></h3> -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="tutorial-slider-public" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#tutorial-slider-public" data-slide-to="0" class="active"></li>
+                            <li data-target="#tutorial-slider-public" data-slide-to="1"></li>
+                            <li data-target="#tutorial-slider-public" data-slide-to="2"></li>
+                            <li data-target="#tutorial-slider-public" data-slide-to="3"></li>
+                            <li data-target="#tutorial-slider-public" data-slide-to="4"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active carousel-next-public">
+                                <img src="/static/slides/slides_public-01.png" />
+                            </div>
+                            <div class="item carousel-next-public">
+                                <img src="/static/slides/slides_public-02.png" />
+                            </div>
+                            <div class="item carousel-next-public">
+                                <img src="/static/slides/slides_public-03.png" />
+                            </div>
+                            <div class="item carousel-next-public">
+                                <img src="/static/slides/slides_public-04.png" />
+                            </div>
+                            <div class="item fb-login">
+                                <img src="/static/slides/slides_public-05.png" />
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#tutorial-slider-public" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#tutorial-slider-public" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <!-- <div class="row">
+                <div class="col-sm-12">
+                    <h3><span class="label label-default">Public</span></h3>
+                </div>
+            </div> -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="tutorial-slider" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#tutorial-slider" data-slide-to="0" class="active"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active fb-login">
+                                <img src="/static/slides/slides_general-01.png" />
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <!-- <a class="left carousel-control" href="#tutorial-slider" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#tutorial-slider" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- <div id="good things" class="span4">
+    <div><img class= "img-responsive" src="/static/slides/slides_public-05.png"/></div>
     <ul class="media-list" id='good_things'>
     </ul>
-</div>
+</div> -->
 {% endblock %}

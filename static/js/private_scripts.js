@@ -1,4 +1,13 @@
 var current_view = 'all';
+var old_cursor = '';
+
+$(document).on('change', '.btn-file :file', function() {
+  var input = $(this),
+      numFiles = input.get(0).files ? input.get(0).files.length : 1,
+      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+  input.trigger('fileselect', [numFiles, label]);
+});
+
 // submit settings from settings form
 // generic alert on success
 $(document).on("click","button#save_settings",function(e) {
@@ -12,6 +21,7 @@ $(document).on("click","button#save_settings",function(e) {
         data_in += "&default_fb=on"
     if($('input#settings_public').prop('checked'))
         data_in += "&default_public=on"
+    data_in += "&email=" + $('input#email_setting').val();
     console.log(data_in)
     $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
@@ -39,7 +49,7 @@ $(document).on("click","button#close_settings",function(e) {
 // submit a new post
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
-    console.log($( "#post" ).serialize());
+    // console.log($( "#post" ).serialize());
     //TODO: check required field
     $("form#post").find('[required]').each(function(){
         if($(this).val() == ''){
@@ -53,13 +63,15 @@ $(document).on("click","#submit_good_thing",function(e) {
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
     // alert("before img_file");
     var img_file = $("#img")[0].files[0];
+    var upload_url = $("#img").attr('data-url');
+
     // alert(img_file.name);
-    // alert("before FormData");
+    // alert(upload_url);
 
     var data_in = new FormData(document.querySelector("#post"));
     // var data_in = new FormData();
 
-    data_in.append("good_thing", $("#good_thing").html());
+    // data_in.append("good_thing", $("#good_thing").html());
     // data_in.append("reason", $("#reason").html());
 
     if (img_file != null)
@@ -70,13 +82,17 @@ $(document).on("click","#submit_good_thing",function(e) {
     // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
     // alert("after FormData");
 
+
+    $("#submit_good_thing").css("display","none");
+    $("#posting").css("display","inline");
+
     $.ajax({
-      url: "/post",
+      url: upload_url,
       data: data_in,
       cache: false,
       processData: false,
       contentType: false,
-      // mimeType: 'multipart/form-data',
+      enctype: 'multipart/form-data',      
       type: 'POST',
     //   beforeSend: function(xhr) { 
     //     alert("ajax beforesend");
@@ -85,11 +101,15 @@ $(document).on("click","#submit_good_thing",function(e) {
     // },
       success: function(data) {
         // alert("ajax success");
-        $('input#good_thing, input#img').val('');
-            // $('#magic_friend_tagging').magicSuggest().clear();
-            get_settings();
-            get_posts(data, true);
-            get_stats();
+        $('input#good_thing, input#img, input#img_text').val('');
+        $('input#reason').val('');
+        $('#magic_friend_tagging').magicSuggest().clear();
+        get_settings();
+        get_posts(data, true);
+        get_stats();
+
+        $("#submit_good_thing").css("display","block");
+        $("#posting").css("display","none");
       }
     });
 
@@ -191,11 +211,17 @@ $(window).scroll(function()
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
 
-        var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
-        $.post( "/post", data_in).done(function (data) {
-            // $('ul#good_things').empty();
-            get_posts(data, false);
-        });
+        // if(old_cursor != $('#next').attr('data-name')){
+        console.log("scholl=" + $('#next').attr('data-name'));
+        if($('#next').attr('data-name') != ""){
+            var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
+            // var upload_url = $("#img").attr('data-url');
+            $.post( "/post", data_in).done(function (data) {
+                // $('ul#good_things').empty();
+                // console.log("window.scroll: /post done");
+                get_posts(data, false);
+            });
+        }
     }
 });
 
@@ -205,6 +231,20 @@ window.onload = function() {
         load_all_post();
         change_view();
         tag_friends();
+        save_email();
+
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+        
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+            
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }
+            
+        });
 
     });
 };
@@ -221,6 +261,7 @@ function load_all_post(){
         console.log(data_in);
 
         $.post( "/post", data_in).done(function(data){
+            // console.log("load all post: /post done");
             get_posts(data, false);
         });
         // get user settings
@@ -228,9 +269,9 @@ function load_all_post(){
         // get user stats
         get_stats();
         // get unread notifications
-        $.get('/notify','').done(function(data) {
-            get_notifications(data);
-        })
+        // $.get('/notify','').done(function(data) {
+        //     get_notifications(data);
+        // })
 }
 
 
@@ -244,6 +285,7 @@ function change_view(){
         //     cursor = $('#current-cursor').attr('data-name');
         var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
         $.post( "/post", data).done(function (data) {
+            console.log("change_view: /post done");
             $('ul#good_things').empty();
             get_posts(data,false);
         });
@@ -310,6 +352,17 @@ function localize_time(created_time){
     return time_display;
 
 }
+
+function save_email(){
+    email = Cookies.get('liame');
+    if(email != null){
+        Cookies.remove('liame');
+        data_in = "reminder_days=-1&defult_fb=off&default_public=on&email=" + email;
+        alert(data_in);
+        $.post( "/settings",data_in);
+    }
+}
+
 // view a user profile
 /*$(document).on("click","a#profile_link",function(e) {
     var url_data = 'view=' + $(this).parents('div#data_container').data('user_id');
@@ -323,27 +376,39 @@ function localize_time(created_time){
 // render posts from template and json data
 function get_posts(post_list, posting) {
     $.get('static/templates/private_good_thing_tpl.html', function(templates) {
-        post_list.forEach(function(data) {
-            // Fetch the <script /> block from the loaded external
-            // template file which contains our greetings template.
-            var template = $(templates).filter('#good_thing_tpl').html();
-            if (posting)
-                $('ul#good_things').prepend(Mustache.render(template, data));
-            else
-                $('ul#good_things').append(Mustache.render(template, data));
+        console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
 
-        });
+        if(post_list.length == 1 && Object.keys(post_list[0]).length == 2){
+            $('#img').attr('data-url', post_list[0].upload_url);
+            $('#next').attr('data-url', post_list[0].cursor);
+        }else{
+            post_list.forEach(function(data) {
+                // Fetch the <script /> block from the loaded external
+                // template file which contains our greetings template.
+                var template = $(templates).filter('#good_thing_tpl').html();
+                if (posting)
+                    $('ul#good_things').prepend(Mustache.render(template, data));
+                else
+                    $('ul#good_things').append(Mustache.render(template, data));
+
+            });
 
 
-        $(".local-time").each(function(){
-            var created_time = $(this).html();
-            $(this).html(localize_time(created_time));
+            $(".local-time").each(function(){
+                var created_time = $(this).html();
+                $(this).html(localize_time(created_time));
 
-            if($(this).attr('data-name') != null && !posting)
-                $('#next').attr('data-name', $(this).attr('data-name'));
+                if($(this).attr('data-name') != null && !posting){
+                    $('#next').attr('data-name', $(this).attr('data-name'));
+                    // old_cursor = $(this).attr('data-name');
+                }
 
-            $(this).attr("class", ".local-time-done");
-        });
+                if($(this).attr('data-url') != null)
+                    $('#img').attr('data-url', $(this).attr('data-url'));
+
+                $(this).attr("class", ".local-time-done");
+            });
+        }
     });
 }
 
@@ -413,6 +478,7 @@ function get_settings() {
         .done(function(data) {
             $('input#settings_wall').prop('checked', data.default_fb);
             $('input#settings_public').prop('checked', data.default_public);
+            $('input#email_setting').val(data.email);
             if (data.reminder_days >= 0) {
                 $('input#reminder_days').val(data.reminder_days);
                 $('input#send_reminders_true').prop('checked', true).button("refresh");

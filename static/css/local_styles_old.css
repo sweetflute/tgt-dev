@@ -1,0 +1,33 @@
+body { 
+  padding-bottom: 50px;
+  padding-top: 70px; 
+}
+div.post {
+  overflow: visible;
+}
+
+#status {
+  color: #999;
+}
+
+.tgt_notify .glyphicon {
+	font-size:22px;
+}
+
+#notification_count {
+	width:12px;
+    height: 12px;
+    position: absolute;
+    top: -3px;
+    right: -4px;
+    line-height: 12px;
+    font-size:8px;
+    color: white;
+    background-color: red;
+    text-align: center;
+
+}
+
+.tgt_notify {
+	position: relative;
+}
