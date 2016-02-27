@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block head %}
 <script src='static/js/survey.js'></script>
+<script src='static/js/jquery-ui.min.js'></script>
+<link rel="stylesheet" href="static/css/jquery-ui.min.css">
 {% endblock %}
 {% block body %}
 
@@ -43,7 +45,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseOne">
                                     Survey 1/3
                                     </a>
                                 </h4>
@@ -54,10 +56,11 @@
                                     <div class="alert alert-info" role="alert">
                                         <p>For the following parts, there are phrases describing people's behaviors. Please use the rating scale below to describe how accurately each statement describes you. Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age. So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence. Please read each statement carefully, and then fill in the bubble that corresponds to the number on the scale.</p><br>
                                         <ol>
-                                            <li>Rarely or none of the time (less than 1 day)</li>
-                                            <li>Some or a little of the time (1-2days)</li>
-                                            <li>Occasionally or a moderate amount of the time (3-4 days)</li>
-                                            <li>Most or all of the time (5-7 days)</li>
+                                            <li>Very Inaccurate </li>
+                                            <li>Moderately Inaccurate</li>
+                                            <li>Neither Inaccurate nor Accurate </li>
+                                            <li>Moderately Accurate </li>
+                                            <li>Very Accurate</li>
                                         </ol>
                                     </div>
                                     <!-- End of Survey 1 Description -->
@@ -69,6 +72,7 @@
                                             <ol>
                                                 <!-- IPIP-1 -->
                                                 <li> <label>I am the life of the party.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-1-1" name="IPIP-1" value="1" required/> 1
@@ -86,9 +90,11 @@
                                                             <input type="radio" id="IPIP-1-5" name="IPIP-1" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-2 -->
                                                 <li> <label>I sympathize with others' feelings.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-2-1" name="IPIP-2" value="1" required/> 1
@@ -106,9 +112,11 @@
                                                             <input type="radio" id="IPIP-2-5" name="IPIP-2" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-3 -->
                                                 <li> <label>I get chores done right away.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-3-1" name="IPIP-3" value="1" required/> 1
@@ -126,9 +134,11 @@
                                                             <input type="radio" id="IPIP-3-5" name="IPIP-3" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-4 -->
                                                 <li> <label>I have frequent mood swings.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-4-1" name="IPIP-4" value="1" required/> 1
@@ -146,9 +156,11 @@
                                                             <input type="radio" id="IPIP-4-5" name="IPIP-4" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-5 -->
                                                 <li> <label>I have a vivid imagination.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-5-1" name="IPIP-5" value="1" required/> 1
@@ -166,9 +178,11 @@
                                                             <input type="radio" id="IPIP-5-5" name="IPIP-5" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-6 -->
                                                 <li> <label>I don't talk a lot.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-6-1" name="IPIP-6" value="1" required/> 1
@@ -186,9 +200,11 @@
                                                             <input type="radio" id="IPIP-6-5" name="IPIP-6" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-7 -->
                                                 <li> <label>I am not interested in other people's problems.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-7-1" name="IPIP-7" value="1" required/> 1
@@ -206,9 +222,11 @@
                                                             <input type="radio" id="IPIP-7-5" name="IPIP-7" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-8 -->
                                                 <li> <label>I often forget to put things back in their proper place.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-8-1" name="IPIP-8" value="1" required/> 1
@@ -226,9 +244,11 @@
                                                             <input type="radio" id="IPIP-8-5" name="IPIP-8" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-9 -->
                                                 <li> <label>I am relaxed most of the time.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-9-1" name="IPIP-9" value="1" required/> 1
@@ -246,9 +266,11 @@
                                                             <input type="radio" id="IPIP-9-5" name="IPIP-9" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-10 -->
                                                 <li> <label>I am not interested in abstract ideas.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-10-1" name="IPIP-10" value="1" required/> 1
@@ -266,9 +288,11 @@
                                                             <input type="radio" id="IPIP-10-5" name="IPIP-10" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-11 -->
                                                 <li> <label>I talk to a lot of different people at parties.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-11-1" name="IPIP-11" value="1" required/> 1
@@ -286,9 +310,11 @@
                                                             <input type="radio" id="IPIP-11-5" name="IPIP-11" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-12 -->
                                                 <li> <label>I feel others' emotions.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-12-1" name="IPIP-12" value="1" required/> 1
@@ -306,9 +332,11 @@
                                                             <input type="radio" id="IPIP-12-5" name="IPIP-12" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-13 -->
                                                 <li><label>I like order.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-13-1" name="IPIP-13" value="1" required/> 1
@@ -326,9 +354,11 @@
                                                             <input type="radio" id="IPIP-13-5" name="IPIP-13" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-14 -->
                                                 <li><label>I get upset easily.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-14-1" name="IPIP-14" value="1" required/> 1
@@ -346,9 +376,11 @@
                                                             <input type="radio" id="IPIP-14-5" name="IPIP-14" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-15 -->
                                                 <li><label>I have difficulty understanding abstract ideas.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-15-1" name="IPIP-15" value="1" required/> 1
@@ -366,9 +398,11 @@
                                                             <input type="radio" id="IPIP-15-5" name="IPIP-15" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-16 -->
                                                 <li><label>I keep in the background.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-16-1" name="IPIP-16" value="1" required/> 1
@@ -386,9 +420,11 @@
                                                             <input type="radio" id="IPIP-16-5" name="IPIP-16" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-17 -->
                                                 <li><label>I am not really interested in others.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-17-1" name="IPIP-17" value="1" required/> 1
@@ -406,9 +442,11 @@
                                                             <input type="radio" id="IPIP-17-5" name="IPIP-17" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-18 -->
                                                 <li><label>I make a mess of things.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-18-1" name="IPIP-18" value="1" required/> 1
@@ -426,9 +464,11 @@
                                                             <input type="radio" id="IPIP-18-5" name="IPIP-18" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-19 -->
                                                 <li><label>I seldom feel blue.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-19-1" name="IPIP-19" value="1" required/> 1
@@ -446,9 +486,11 @@
                                                             <input type="radio" id="IPIP-19-5" name="IPIP-19" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                                 <!-- IPIP-20 -->
                                                 <li><label>I do not have a good imagination.</label><br/>
+                                                    <label class="scale">Very Inaccurate</label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
                                                             <input type="radio" id="IPIP-20-1" name="IPIP-20" value="1" required/> 1
@@ -466,6 +508,7 @@
                                                             <input type="radio" id="IPIP-20-5" name="IPIP-20" value="5" /> 5
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Very Accurate</label>
                                                 </li>
                                             </ol>
                                             <input type="button" class="btn btn-info" id="to-survey2" value="Next"/>
@@ -480,7 +523,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingTwo">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseTwo">
                                     Survey 2/3
                                     </a>
                                 </h4>
@@ -506,6 +549,7 @@
                                             <ol>
                                                 <!-- cesd-1 -->
                                                 <li><label>I was bothered by things that usually don’t bother me.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-1-0" name="CESD-1" value="0" required/> 0
@@ -520,9 +564,11 @@
                                                             <input type="radio" id="CESD-1-3" name="CESD-1" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-2 -->
                                                 <li><label>I did not feel like eating; my appetite was poor.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-2-0" name="CESD-2" value="0" required/> 0
@@ -537,9 +583,11 @@
                                                             <input type="radio" id="CESD-2-3" name="CESD-2" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-3 -->
                                                 <li><label>I felt that I could not shake off the blues, even with the help from family or friends.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-3-0" name="CESD-3" value="0" required/> 0
@@ -554,9 +602,11 @@
                                                             <input type="radio" id="CESD-3-3" name="CESD-3" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-4 -->
                                                 <li><label>I felt that I was just as good as other people.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-4-0" name="CESD-4" value="0" required/> 0
@@ -571,9 +621,11 @@
                                                             <input type="radio" id="CESD-4-3" name="CESD-4" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-5 -->
                                                 <li><label>I had trouble keeping my mind on what I was doing.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-5-0" name="CESD-5" value="0" required/> 0
@@ -588,9 +640,11 @@
                                                             <input type="radio" id="CESD-5-3" name="CESD-5" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-6 -->
                                                 <li><label>I felt depressed.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-6-0" name="CESD-6" value="0" required/> 0
@@ -605,9 +659,11 @@
                                                             <input type="radio" id="CESD-6-3" name="CESD-6" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                     <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-7 -->
                                                 <li><label>I felt that everything I did was an effort.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-7-0" name="CESD-7" value="0" required/> 0
@@ -622,9 +678,11 @@
                                                             <input type="radio" id="CESD-7-3" name="CESD-7" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-8 -->
                                                 <li><label>I felt hopeful about the future.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-8-0" name="CESD-8" value="0" required/> 0
@@ -639,9 +697,11 @@
                                                             <input type="radio" id="CESD-8-3" name="CESD-8" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-9 -->
                                                 <li><label>I thought my life had been a failure.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-9-0" name="CESD-9" value="0" required/> 0
@@ -656,9 +716,11 @@
                                                             <input type="radio" id="CESD-9-3" name="CESD-9" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li> 
                                                 <!-- cesd-10 -->
                                                 <li><label>I felt fearful.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-10-0" name="CESD-10" value="0" required/> 0
@@ -673,9 +735,11 @@
                                                             <input type="radio" id="CESD-10-3" name="CESD-10" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-11 -->
                                                 <li><label>My sleep was restless.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-11-0" name="CESD-11" value="0" required/> 0
@@ -690,9 +754,11 @@
                                                             <input type="radio" id="CESD-11-3" name="CESD-11" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-12 -->
                                                 <li><label>I was happy.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-12-0" name="CESD-12" value="0" required/> 0
@@ -707,9 +773,11 @@
                                                             <input type="radio" id="CESD-12-3" name="CESD-12" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-13 -->
                                                 <li><label>I talked less than usual.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-13-0" name="CESD-13" value="0" required/> 0
@@ -724,9 +792,11 @@
                                                             <input type="radio" id="CESD-13-3" name="CESD-13" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-14 -->
                                                 <li><label>I felt lonely.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-14-0" name="CESD-14" value="0" required/> 0
@@ -741,9 +811,11 @@
                                                             <input type="radio" id="CESD-14-3" name="CESD-14" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-15 -->
                                                 <li><label>People were unfriendly.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-15-0" name="CESD-15" value="0" required/> 0
@@ -758,9 +830,11 @@
                                                             <input type="radio" id="CESD-15-3" name="CESD-15" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-16 -->
                                                 <li><label>I enjoyed life.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-16-0" name="CESD-16" value="0" required/> 0
@@ -775,9 +849,11 @@
                                                             <input type="radio" id="CESD-16-3" name="CESD-16" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-17 -->
                                                 <li><label>I had crying spells.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-17-0" name="CESD-17" value="0" required/> 0
@@ -792,9 +868,11 @@
                                                             <input type="radio" id="CESD-17-3" name="CESD-17" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-18 -->
                                                 <li><label>I felt sad.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-18-0" name="CESD-18" value="0" required/> 0
@@ -809,9 +887,11 @@
                                                             <input type="radio" id="CESD-18-3" name="CESD-18" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-19 -->
                                                 <li><label>I felt that people dislike me.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-19-0" name="CESD-19" value="0" required/> 0
@@ -826,9 +906,11 @@
                                                             <input type="radio" id="CESD-19-3" name="CESD-19" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                                 <!-- cesd-20 -->
                                                 <li><label>I could not get “going”.</label><br/>
+                                                    <label class="scale">Rarely or none of the time </label>
                                                     <div class="btn-group" data-toggle="buttons">
                                                         <label class="btn btn-default" data-toggle="tooltip" title="Rarely or none of the time (less than 1 day)">
                                                             <input type="radio" id="CESD-20-0" name="CESD-20" value="0" required/> 0
@@ -843,6 +925,7 @@
                                                             <input type="radio" id="CESD-20-3" name="CESD-20" value="3" /> 3
                                                         </label>
                                                     </div>
+                                                    <label class="scale">Most or all of the time </label>
                                                 </li>
                                             </ol>
                                             <input type="button" class="btn btn-info" id="to-survey3" value="Next"/>
@@ -857,7 +940,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingThree">
                                 <h4 class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseThree" href="#collapseThree">
                                     Survey 3/3
                                     </a>
                                 </h4>
@@ -1807,6 +1890,35 @@
                     </div>
                     <!-- end of the accordion/panel group -->
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id= "resubmit-email-modal" data-backdrop="static" data-keyboard="false" data-resubmit={{resubmit}}>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+                <h4 class="modal-title">Fill-in Email</h4>
+            </div>
+             
+            <div class="modal-body">
+                <p>We couldn't find your email nor initial survey in the system. Could you please fill in your email and survey again? We apologize for the inconvenience</p>
+            
+                <div class="row" style="margin-bottom: 40px;">
+                   <form id="resubmit-email-form">
+                            <div class="col-sm-6 text-right" style="height:34px;line-height:34px;">
+                                <label for="resubmit-email-field" class="control-label" id="email-label">Please input your email:</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="email" id="resubmit-email-field" class="form-control" placeholder="Enter a valid Emaill address" required/>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" id="resubmit-email-btn" value="Submit"></input>
             </div>
         </div>
     </div>

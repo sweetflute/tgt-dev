@@ -157,13 +157,13 @@ $(document).on("click","a#delete",function(e) {
 });
 
 // save a comment
-$(document).on("submit","form#comment",function(e) {
+$(document).on("submit","form#comment_form",function(e) {
     var good_thing = $(this);
     var url_data = $( this ).serialize() + '&good_thing=' + $( this ).parents('div#data_container').data('id');
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id);
+        get_comments(data,id, true);
     });
     return false;
 });
@@ -175,7 +175,7 @@ $(document).on("click","a#comment",function(e) {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id);
+            get_comments(data,id, false);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -205,8 +205,7 @@ $(document).on("click","#notification_icon",function(e) {
 // });
 
 
-$(window).scroll(function()
-{
+$(window).scroll(function(){
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
         console.log("scholl=" + $('#next').attr('data-name'));
@@ -242,6 +241,11 @@ window.onload = function() {
                 if( log ) alert(log);
             }
             
+        });
+
+
+        $('.carousel-next-public').click(function(){
+            $('#tutorial-slider-public').carousel('next');
         });
 
     });
@@ -281,7 +285,9 @@ function change_view(){
         // var cursor = "";
         // if($('#current-cursor').attr('data-name') != null)
         //     cursor = $('#current-cursor').attr('data-name');
-        var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
+        // var data = 'view=' + current_view + '&cursor=' + $('#next').attr('data-name');
+        var data = 'view=' + current_view + '&cursor=';
+
         $.post( "/post", data).done(function (data) {
             $('ul#good_things').empty();
             get_posts(data,false);
@@ -413,14 +419,25 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id) {
+function get_comments(comment_list,id,commenting) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
-            $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
+            if (commenting)
+                $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
+            else
+                $('div#data_container[data-id="'+id+'"]').find('div#comments').append(Mustache.render(template, data));
+
+            $(".comment-time").each(function(index){
+                var created_time = $(this).html();
+                $(this).html(localize_time(created_time));
+                $(this).attr("class", "comment-time-done");
+            });
         });
+
+
     });
 }
 

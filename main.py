@@ -36,7 +36,7 @@ app = webapp2.WSGIApplication(
         # handler for temproray change user type
         ('/admin', views.AdminHandler),
         # landing page
-        ('/landing', views.LandingHandler),
+        # ('/landing', views.LandingHandler),
         # survey page
         ('/survey', views.SurveyHandler),
         # home feed

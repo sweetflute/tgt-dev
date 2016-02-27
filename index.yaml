@@ -80,6 +80,7 @@ indexes:
   - name: user
   - name: created
     direction: desc
+
 - kind: GoodThing
   properties:
   - name: deleted

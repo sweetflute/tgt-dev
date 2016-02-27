@@ -131,7 +131,7 @@ $(document).on("click","a#delete",function(e) {
             $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
             $('div[data-id="'+id+'"]').remove();
         } else {
-            console.log('deleting a good thing');
+            console.lfog('deleting a good thing');
             console.log($('div[data-id="'+id+'"]').parents('li#good_thing'));
             $('div[data-id="'+id+'"]').parents('li#good_thing').remove();
             get_stats();
@@ -147,7 +147,7 @@ $(document).on("submit","form#comment",function(e) {
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id);
+        get_comments(data,id, true);
     });
     return false;
 });
@@ -159,7 +159,7 @@ $(document).on("click","a#comment",function(e) {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id);
+            get_comments(data,id, false);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -326,7 +326,7 @@ function localize_time(created_time){
 
 // render posts from template and json data
 function get_posts(post_list, posting) {
-    $.get('../static/templates/good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
         post_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
@@ -351,13 +351,22 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id) {
-    $.get('../static/templates/good_thing_tpl.html', function(templates) {
+function get_comments(comment_list,id,commenting) {
+    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
-            $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
+            if (commenting)
+                $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
+            else
+                $('div#data_container[data-id="'+id+'"]').find('div#comments').append(Mustache.render(template, data));
+
+            $(".comment-time").each(function(index){
+                var created_time = $(this).html();
+                $(this).html(localize_time(created_time));
+                $(this).attr("class", "comment-time-done");
+            });
         });
     });
 }
@@ -370,7 +379,7 @@ function get_stats() {
         $('span#progress').text(data.progress + ' Complete');
         $('#good_things_today').text(data.posts_today + ' Good Things Today');
         $('#good_things_total').text(data.posts + ' Total Good Things');
-        $.get('../static/templates/good_thing_tpl.html', function(templates) {
+        $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
             $('div#word_cloud').empty();
             data.word_cloud.forEach(function(data) {
                 var template = $(templates).filter('#word_cloud_tpl').html();
@@ -432,7 +441,7 @@ function get_settings() {
 }
 
 function get_notifications(notification_list) {
-    $.get('../static/templates/good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
         if (notification_list.length > 0) {
             notification_list.forEach(function(data) {
                 var template;

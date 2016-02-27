@@ -140,6 +140,7 @@ class User(db.Model):
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
     email = db.StringProperty() #TODO: required=True
+    survey_id = db.StringProperty()
 
 # model for each survey with unique survey id
 class Survey(db.Model):
@@ -313,7 +314,7 @@ class GoodThing(db.Model):
     def get_img_url(self):
         # logging.info("get_img_url")
         if (self.blob_key is not None):
-            logging.info(images.get_serving_url(self.blob_key, size=400))
+            # logging.info(images.get_serving_url(self.blob_key, size=400))
             return images.get_serving_url(self.blob_key, size=400)
         else:
             return None
@@ -346,6 +347,7 @@ class Comment(db.Model):#TODO: add time and fix timezone issues for comment
             'comment_text':self.comment_text,
             'user_name':self.user.name,
             'user_id':self.user.id,
+            'comment_created': str(self.created),
             'good_thing_id':self.good_thing.key().id(),
             'current_user':current_user
         }

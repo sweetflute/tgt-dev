@@ -246,6 +246,10 @@ window.onload = function() {
             
         });
 
+        $('.carousel-next-private').click(function(){
+            $('#tutorial-slider-private').carousel('next');
+        });
+
     });
 };
 

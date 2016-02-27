@@ -148,7 +148,7 @@ body {
 #good_things #control a:last-child::after {
   content: "" !important;
 }
-#good_things #control form#comment input{
+/*#good_things #control form#comment input{
   padding-left: 6px;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -172,7 +172,34 @@ body {
 }
 #good_things #control form#comment button:first-letter {
   text-transform: uppercase;
+}*/
+
+#good_things form#comment_form input{
+  padding-left: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  line-height: 20px;
+  padding: 2px 6px;
+  font-size: 12px;
+  width:60%;
 }
+#good_things form#comment_form button {
+  border-radius: 4px;
+  border: none;
+  background-color: #20aae5;
+  color: #fff;
+  font-size: 12px;
+  line-height: 20px;
+  vertical-align: top;
+  padding: 3px 14px;
+}
+#good_things form#comment_form button:hover {
+  background-color: #1894ca;
+}
+#good_things form#comment_form button:first-letter {
+  text-transform: uppercase;
+}
+
 #good_things #comments #name h4 a {
   font-size: 14px;
   float: left;
@@ -227,7 +254,6 @@ input[readonly] {
 }
 
 
-
 #yes-btn, #no-btn {
   margin-bottom: 40px;
 }
@@ -237,6 +263,13 @@ h1.landing-title {
   font-family: 'Montserrat';
   color: #555;
 }
+
+h4.landing-footnote {
+  margin-bottom:20px;
+  font-family: 'Montserrat';
+  color: #666;
+}
+
 .carousel-control {
   opacity: 0.8;
 }
@@ -294,7 +327,9 @@ blockquote input.btn{
 }
 
 blockquote form ol li label{
-  max-width: 95%;
+  max-width: 90%;
+  display: inline-block;
+  vertical-align: top;
 }
 
 input[type=radio] {
@@ -316,7 +351,23 @@ div .d-error, .ipip-error, .cesd-error, .perma-error{
 }
 
 .scale{
+  font-size: 12px;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.comment-time-done{
+  display: inline-block;
+  font-size: 0.9em;
+  color: #999;
+}
+
+.comment-time-done::after{
+  content: "" !important;
+}
+
+#comment_delete::before{
+  color: #999;
+  content: " • ";
 }
 

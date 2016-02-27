@@ -1,6 +1,24 @@
 
 $(document).ready(function(){
 
+    $(document).tooltip({show: null});
+    if ($('#resubmit-email-modal').attr('data-resubmit') == 'True'){
+        $('#resubmit-email-modal').modal('show');
+    }
+    // survey_id = Cookies.get("survey_id");
+    // if(survey_id == null || survey_id == "")
+    //     $('#resubmit-email-modal').modal('show');
+
+    $('#resubmit-email-form').validate();
+    $('#resubmit-email-btn').click(function(){
+        if ($('#resubmit-email-form').valid()){
+            resubmit_survey_id();
+            $('#resubmit-email-modal').modal('hide');
+        }
+    });
+
+    
+
     $.validator.messages.required = "";
     $('#demographic-form').validate({
         invalidHandler: function(event, validator) {
@@ -41,6 +59,7 @@ $(document).ready(function(){
                 : 'You missed ' + errors + ' fields.';
                 $("div.ipip-error span").html(message);
                 $("div.ipip-error").show();
+                $('html,body').animate({scrollTop: $("div.ipip-error").offset().top-70}, 500); 
             } else {
                 $("div.ipip-error").hide();
             }
@@ -71,6 +90,7 @@ $(document).ready(function(){
                 : 'You missed ' + errors + ' fields.';
                 $("div.cesd-error span").html(message);
                 $("div.cesd-error").show();
+                $('html,body').animate({scrollTop: $("div.cesd-error").offset().top-70}, 500); 
             } else {
                 $("div.cesd-error").hide();
             }
@@ -101,6 +121,7 @@ $(document).ready(function(){
                 : 'You missed ' + errors + ' fields.';
                 $("div.perma-error span").html(message);
                 $("div.perma-error").show();
+                $('html,body').animate({scrollTop: $("div.perma-error").offset().top-70}, 500); 
             } else {
                 $("div.perma-error").hide();
             }
@@ -121,6 +142,14 @@ $(document).ready(function(){
             $(element).parent().parent().siblings('.error-msg').remove();
         }
     });
+
+
+    $('#accordion').on('shown.bs.collapse', function (e) {
+        var offset = $(this).find('.collapse.in').prev('.panel-heading');
+        if(offset) {
+            $('html,body').animate({scrollTop: $(offset).offset().top-20}, 500); 
+        }
+    }); 
 
     $("#to-survey1").click(function(){
         // result = false;
@@ -166,8 +195,23 @@ $(document).ready(function(){
 });
 
 
+function resubmit_survey_id(){
+
+    // alert('not valid!');
+    var data_in = "type=0&email=" + $('#resubmit-email-field').val();
+
+    // alert(data_in);
+    $.post("/survey", data_in).done(function(data){
+       // Cookies.set('liame', $('#email-field').val(), {expires:1});
+       $('#resubmit-email-field').val('');
+       // alert('survey_id=' + data.survey_id);
+       Cookies.set('survey_id', data.survey_id, {expires:365});
+    });
+}
+
 function submit_demographic(){
     survey_id = Cookies.get("survey_id");
+    
     var data_in = $("form#demographic-form").serialize() + "&type=1&survey_id=" + survey_id;
     console.log(data_in);
     $.post("/survey", data_in).done(function(){
@@ -201,9 +245,9 @@ function submit_cesd(){
 function submit_perma(){
     survey_id = Cookies.get("survey_id");
     var data_in = $("form#perma-form").serialize() + "&type=4&survey_id=" + survey_id;
-    alert(data_in);
+    // alert(data_in);
     $.post("/survey", data_in).done(function(){
-      window.location = "http://tgt-dev.appspot.com/landing";   
+      window.location = "http://tgt-dev.appspot.com/";   
     });
     return false;
 }

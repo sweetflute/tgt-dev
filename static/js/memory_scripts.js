@@ -235,6 +235,10 @@ window.onload = function() {
             
         });
 
+        $('.carousel-next-memory').click(function(){
+            $('#tutorial-slider-memory').carousel('next');
+        });
+
     });
 };
 

@@ -132,49 +132,102 @@ class HomeHandler(BaseHandler):
             user_id = str(self.current_user['id'])
             user = models.User.get_by_key_name(user_id)
             # user_type = self.request.get('user_type')
-            user_type = self.request.cookies.get('user_type')
-            logging.info("user_type in cookies:")
-            logging.info(user_type)
-            logging.info("user.user_type=" + str(user.user_type))
+            # check if user already get a type assigned
 
-            if user.user_type == -1:
-                if (user_type != "" and user_type != None):
-                    user.user_type = int(user_type)
+            # check if user already fillied in survey
+            has_init_survey = False
+            if user.survey_id == None or user.survey_id == "":
+                # if "survey_id" in 
+                logging.info(self.request.cookies)
+                if "survey_id" in self.request.cookies:
+                    survey_id = self.request.cookies['survey_id']
                 else:
-                    user.user_type = int(math.floor(random.random()*3))
-            user.put()
+                    survey_id = None
+                
+                if survey_id != None and survey_id != "":
+                    user.survey_id = survey_id
+                    survey = models.Survey.get_by_key_name(survey_id)
+                    if survey != None and survey.PERMA_23 != None:
+                        user.email = survey.email
+                        user.put()
+                        has_init_survey = True
+                    else:
+                        has_init_survey = False
+                else:                    
+                    has_init_survey = False
+            else:
+                has_init_survey = True
+
+            if (has_init_survey):
+                user_type = self.request.cookies.get('user_type')
+                logging.info("user_type in cookies:")
+                logging.info(user_type)
+                logging.info("user.user_type=" + str(user.user_type))
 
 
-            # if user.public_user:
-            if user.user_type == 2:
-                template = jinja_environment.get_template('public_main.html')
-            # elif user.public_user is private user:
-            elif user.user_type == 1:
-                template = jinja_environment.get_template('private_main.html')
-            # elif user.public_user is placebo:
-            elif user.user_type == 0:
-                template = jinja_environment.get_template('memory_main.html')
-            # else:
-            #     template = jinja_environment.get_template('landing.html')
-                # return None
-            template_values = {
-                'facebook_app_id':FACEBOOK_APP_ID,
-                'current_user':current_user,
-            }
+                if user.user_type == -1:
+                    if (user_type != "" and user_type != None):
+                        user.user_type = int(user_type)
+                    else:
+                        user.user_type = int(math.floor(random.random()*3))
+                    user.put()
+                if user.user_type != user_type:
+                    self.response.set_cookie('user_type', str(user.user_type), max_age=360)
+
+                # if user.public_user:
+                if user.user_type == 2:
+                    template = jinja_environment.get_template('public_main.html')
+                # elif user.public_user is private user:
+                elif user.user_type == 1:
+                    template = jinja_environment.get_template('private_main.html')
+                # elif user.public_user is placebo:
+                elif user.user_type == 0:
+                    template = jinja_environment.get_template('memory_main.html')
+                # else:
+                #     template = jinja_environment.get_template('landing.html')
+                    # return None
+                template_values = {
+                    'facebook_app_id':FACEBOOK_APP_ID,
+                    'current_user':current_user,
+                }
+            else:
+                template = jinja_environment.get_template('survey.html')
+                template_values = {'resubmit':'True'}
+                # template = jinja_environment.get_template('intro.html')
+                # template_values = {'resubmit':'True'}
+            self.response.out.write(template.render(template_values))
         else:
-            template = jinja_environment.get_template('landing.html')
-            template_values = {
-                # 'facebook_app_id':FACEBOOK_APP_ID,
-                # 'public_user':4,
-            }
-        self.response.out.write(template.render(template_values))
+            if ('user_type' not in self.request.cookies and 'survey_id' not in self.request.cookies):
+                self.redirect('/intro')
+
+            else:
+                if ('user_type' not in self.request.cookies):
+                    user_type = int(math.floor(random.random()*3))
+                    self.response.set_cookie('user_type', str(user_type), max_age=360)
+                else:
+                    user_type = int(self.request.cookies['user_type'])
+                # if(int(user_type) == -1):
+                #     user_type = int(math.floor(random.random()*3))
+                #     self.response.set_cookie('user_type', str(user_type), max_age=360)
+            
+                logging.info("In Home Handler, not current user, user_type=" + str(user_type))
+                template = jinja_environment.get_template('landing.html')
+                template_values = {
+                'public_user': user_type,
+                }
+                logging.info(template_values)
+                self.response.out.write(template.render(template_values))
 
 # intro page for first time users
 class IntroHandler(BaseHandler):
     # serve the intro page
     def get(self):
         current_user = self.current_user
-        if(current_user):
+        logging.info("IntroHandler")
+        # logging.info(self.request.cookies)
+        # logging.info("survey_id" in self.request.cookies)
+
+        if(current_user or "survey_id" in self.request.cookies):
             self.redirect('/')
         else:
             template = jinja_environment.get_template('intro.html')
@@ -186,30 +239,29 @@ class IntroHandler(BaseHandler):
 
     # update the public/private field after the user has passed through the intro
     # screen.
-class LandingHandler(BaseHandler):
-    def get(self):
-        # public_user = self.request.get('public_user') 
-        user_type = int(math.floor(random.random()*3))
-        current_user = self.current_user
-        if current_user:
-            user_id = str(self.current_user['id'])
-            user = models.User.get_by_key_name(user_id)
-            if user.user_type == -1:
-                user.user_type = user_type
-                user.put()
-        template_values = {
-            'public_user':user_type,
-        }
+# class LandingHandler(BaseHandler):
+#     def get(self):
+#         # public_user = self.request.get('public_user') 
+#         user_type = int(math.floor(random.random()*3))
+#         current_user = self.current_user
+#         if current_user:
+#             user_id = str(self.current_user['id'])
+#             user = models.User.get_by_key_name(user_id)
+#             if user.user_type == -1:
+#                 user.user_type = user_type
+#                 user.put()
+#         template_values = {
+#             'public_user':user_type,
+#         }
  
-        logging.info("public_user=" + str(user_type))
-        template = jinja_environment.get_template('landing.html')
-        self.response.set_cookie('user_type', str(user_type), max_age=360)
-        self.response.out.write(template.render(template_values))
+#         logging.info("public_user=" + str(user_type))
+#         template = jinja_environment.get_template('landing.html')
+#         self.response.set_cookie('user_type', str(user_type), max_age=365)
+#         self.response.out.write(template.render(template_values))
 
 class SurveyHandler(BaseHandler):
     def get(self):
-        template_values = {
-        }
+        template_values = {'resubmit':'False'}
         logging.info("survey page")
         template = jinja_environment.get_template('survey.html')
         self.response.out.write(template.render(template_values))
@@ -933,8 +985,8 @@ class ReminderHandler(BaseHandler):
             # else:
             #     user.user_type = 1
             # user.put()
-            # if (user.name == "Elena Agapie"):
-            #     user.user_type = 2
+            # if (user.id == "486465554889959" or user.id == "1598935150376651"):
+            #     user.survey_id = ""
             #     user.put()
             reminder_days = int(user.settings.reminder_days)
             logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))

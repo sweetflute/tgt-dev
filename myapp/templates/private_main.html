@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-3gt.html" %}
 {% block head %}
 <link href="/static/css/magicsuggest-min.css" rel="stylesheet">
 <script src="/static/js/magicsuggest-min.js"></script>
@@ -12,6 +12,8 @@
     </a>
     <ul class="dropdown-menu">
         <li><a href="#" data-toggle="modal" data-target="#settings_modal">Account Settings</a></li>
+        <li class="divider"></li>
+        <li><a href="#" data-toggle="modal" data-target="#faq_modal">FAQ</a></li>
         <li class="divider"></li>
         <li><a href="http://tgt-dev.appspot.com/logout" id="logout">Logout</a></li>
     </ul>
@@ -42,6 +44,62 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" id="close_settings">Close</button>
         <button type="button" class="btn btn-default" id="save_settings">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FAQ modal -->
+<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Let's see how this works!</h4>
+      </div>
+      <div class="modal-body">
+        <div id="tutorial-slider-private" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+              <li data-target="#tutorial-slider-private" data-slide-to="0" class="active"></li>
+              <li data-target="#tutorial-slider-private" data-slide-to="1"></li>
+              <li data-target="#tutorial-slider-private" data-slide-to="2"></li>
+              <li data-target="#tutorial-slider-private" data-slide-to="3"></li>
+              <li data-target="#tutorial-slider-private" data-slide-to="4"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+              <div class="item active carousel-next-private">
+                  <img src="/static/slides/slides_private-01.png" />
+              </div>
+              <div class="item carousel-next-private">
+                  <img src="/static/slides/slides_private-02.png" />
+              </div>
+              <div class="item carousel-next-private">
+                  <img src="/static/slides/slides_private-03.png" />
+              </div>
+              <div class="item carousel-next-private">
+                  <img src="/static/slides/slides_private-04.png" />
+              </div>
+              <div class="item fb-login">
+                  <img src="/static/slides/slides_private-05.png" />
+              </div>
+          </div>
+
+          <!-- Controls -->
+          <a class="left carousel-control" href="#tutorial-slider-private" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#tutorial-slider-private" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+          </a>
+        </div>
+        <hr>
+        <h4>FAQ</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="close_faq">Close</button>
       </div>
     </div>
   </div>
@@ -119,11 +177,11 @@
             <h4 class="text-muted" id="good_things_today"></h4>
             <h4 class="text-muted" id="good_things_total"></h4>
             <hr>
-            <h4>My Word Tags</h4>
+            <h4>My Good Thing Words</h4>
             <div id="word_cloud"></div>
-            <h4>Reason Tags</h4>
+            <h4>My Reasons</h4>
             <div id="reason_cloud"></div>
-            <h4>Friends Tags</h4>
+            <h4>Friends Tagged</h4>
             <div id="friend_cloud"></div>
         </div>
     </div>

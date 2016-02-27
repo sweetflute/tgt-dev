@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-memory.html" %}
 {% block head %}
 <link href="/static/css/magicsuggest-min.css" rel="stylesheet">
 <script src="/static/js/magicsuggest-min.js"></script>
@@ -78,12 +78,12 @@
             <hr>
             <h4 class="text-muted" id="good_things_total"></h4>
             <hr>
-            <h4>Words Tags</h4>
+            <h4>My Good Thing Words</h4>
             <div id="word_cloud"></div>
             {% if user_id == current_user_id %}
-            <h4>Reasons Tags</h4>
+            <h4>My Reasons</h4>
             <div id="reason_cloud"></div>
-            <h4>Friends Tags</h4>
+            <h4>Friends Tagged</h4>
             <div id="friend_cloud"></div>
             {% endif %}
         </div>

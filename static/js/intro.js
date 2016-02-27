@@ -2,7 +2,7 @@
 $(document).ready(function(){
 
 
-    $('#email-form').validate();
+    
     
     $('[data-toggle="tooltip"]').tooltip(); 
     // $.validate();
@@ -22,27 +22,29 @@ $(document).ready(function(){
 
     $('#email-btn').click(function() {
 
-        if (!$('#email-form').valid()){
-            // alert('not valid!');
-            return false;
-        }
-
-    submit_email();
-        
-        
+        submit_email(); 
         
     });
 
 });
 
 function submit_email(){
+    // alert("submit_email");
+    
+    $('#email-form').validate();
+
+    if (!$('#email-form').valid()){
+            // alert('not valid!');
+            return false;
+    }
+    
     var data_in = "type=0&email=" + $('#email-field').val();
         
-    alert(data_in);
+    // alert(data_in);
     $.post("/survey", data_in).done(function(data){
        // Cookies.set('liame', $('#email-field').val(), {expires:1});
        $('#email-field').val('');
-       alert('survey_id=' + data.survey_id);
+       // alert('survey_id=' + data.survey_id);
        Cookies.set('survey_id', data.survey_id, {expires:365});
        window.location = "http://tgt-dev.appspot.com/survey";
     });
