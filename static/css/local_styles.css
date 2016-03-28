@@ -139,12 +139,12 @@ body {
 #good_things #control, #good_things #control a {
   font-size: 12px;
 }
-#good_things #control a::after{
+/*#good_things #control a::after{
   content: " • ";
 }
 #good_things #control span::after{
   content: " • ";
-}
+}*/
 #good_things #control a:last-child::after {
   content: "" !important;
 }
@@ -370,4 +370,15 @@ div .d-error, .ipip-error, .cesd-error, .perma-error{
   color: #999;
   content: " • ";
 }
+
+div[id*="cesd-score"]{
+  display: none;
+}
+#finish-survey{
+  display: none;
+}
+
+/*#survey_warning{
+  display:none;
+}*/
 

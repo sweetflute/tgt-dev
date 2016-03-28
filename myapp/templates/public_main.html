@@ -120,6 +120,16 @@
   </div>
 </div>
 <div class="col-md-6 col-sm-8 col-xs-12">
+    <!-- banners for reminder -->
+    {% if survey_no >= 0 %}
+    <!-- <div class="panel panel-default" id="survey_warning">
+        <div class="panel-body"> -->
+          <div class="alert alert-warning" role="alert" id="survey_warning">
+              You have a survey waiting! Please help us answer a few questions <a href="http://tgt-dev.appspot.com/survey?survey_no={{survey_no}}">here</a>.
+          </div>
+        <!-- </div>
+    </div> -->
+    {% endif %}
     <!-- input for posting a good thing -->
     <div class="panel panel-default" id="my_good_thing">
         <div class="panel-body">
@@ -178,7 +188,7 @@
     <!-- list of posted good things -->
     <div class="panel panel-default">
         <div class="panel-heading">
-            <a href='#' id='view_select' data-view='all'>all</a>
+            <a href='#' id='view_select' data-view='all' data-test='{{survey_no}}'>all</a>
             <a href='#' id='view_select' data-view='me'>my posts</a>
         </div>
         <ul class="list-group" id='good_things'>

@@ -175,22 +175,32 @@ $(document).ready(function(){
     });
 
     $("#to-survey3").click(function(){
-        if ($('#cesd-form').valid()){
-            $("div.cesd-error").hide();
-            submit_cesd(); 
+        if ($('#perma-form').valid()){
+            $("div.perma-error").hide();
+            submit_perma(); 
         }else{
             return false;            
         }   
     }); 
 
     $("#submit-survey").click(function(){
-        if ($('#perma-form').valid()){
-            $("div.perma-error").hide();
-            submit_perma(); 
+        if ($('#cesd-form').valid()){
+            $("div.cesd-error").hide();
+            submit_cesd(); 
         }else{
             return false;            
         }         
     });
+
+    $("#finish-survey").click(function(){
+        var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
+    var survey_no = results[1];
+        var data_in = $("form#cesd-form").serialize() + "&survey_no=" + survey_no + "&type=4&survey_id=" + survey_id;
+        console.log(data_in);
+        $.post("/survey", data_in).done(function(){
+            window.location = "http://tgt-dev.appspot.com/";  
+        });
+    })
 
 });
 
@@ -206,13 +216,14 @@ function resubmit_survey_id(){
        $('#resubmit-email-field').val('');
        // alert('survey_id=' + data.survey_id);
        Cookies.set('survey_id', data.survey_id, {expires:365});
+       Cookies.set('survey_no', data.survey_no, {expires:365});
     });
 }
 
 function submit_demographic(){
     survey_id = Cookies.get("survey_id");
     
-    var data_in = $("form#demographic-form").serialize() + "&type=1&survey_id=" + survey_id;
+    var data_in = $("form#demographic-form").serialize() + "&survey_no=0&type=1&survey_id=" + survey_id;
     console.log(data_in);
     $.post("/survey", data_in).done(function(){
         $('#collapseOne').collapse('show'); 
@@ -222,7 +233,7 @@ function submit_demographic(){
 
 function submit_ipip(){
     survey_id = Cookies.get("survey_id");
-    var data_in = $("form#ipip-form").serialize() + "&type=2&survey_id=" + survey_id;
+    var data_in = $("form#ipip-form").serialize() + "&survey_no=0&type=2&survey_id=" + survey_id;
     console.log(data_in);
     $.post("/survey", data_in).done(function(){
         $('#collapseOne').collapse('hide');
@@ -231,26 +242,68 @@ function submit_ipip(){
     return false;
 }
 
-function submit_cesd(){
+function submit_perma(){
     survey_id = Cookies.get("survey_id");
-    var data_in = $("form#cesd-form").serialize() + "&type=3&survey_id=" + survey_id;
+    var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
+    var survey_no = results[1];
+
+    var data_in = $("form#perma-form").serialize() + "&survey_no=" + survey_no + "&type=3&survey_id=" + survey_id;
     console.log(data_in);
-    $.post("/survey", data_in).done(function(){
+    $.post("/survey", data_in).done(function(data){
+        if(survey_no != 0)
+            Cookies.set('survey_id', data.survey_id, {expires:365}); 
+            Cookies.set('survey_no', data.survey_no, {expires:365});
         $('#collapseTwo').collapse('hide');
-        $('#collapseThree').collapse('show');  
+        $('#collapseThree').collapse('show'); 
     });
     return false;
 }
 
-function submit_perma(){
+function submit_cesd(){
     survey_id = Cookies.get("survey_id");
-    var data_in = $("form#perma-form").serialize() + "&type=4&survey_id=" + survey_id;
-    // alert(data_in);
-    $.post("/survey", data_in).done(function(){
-      window.location = "http://tgt-dev.appspot.com/";   
+    var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
+    var survey_no = results[1];
+
+    var cesd_score = 0;
+    var cesd_count = 1;
+    
+    $("input:radio[name*='CESD']:checked").each(function(){
+        if (cesd_count % 4 == 0 && cesd_count != 20){
+            cesd_score += (3 - parseInt($(this).val()));
+        }else{
+            cesd_score += parseInt($(this).val());
+        }
+        cesd_count++;
     });
+    // alert(cesd_score);
+    if (cesd_score >= 7 && cesd_score < 16){
+        $('#cesd-score-7').css('display', 'block');
+        $('#finish-survey').css('display', 'block');
+        $('#submit-survey').css('display', 'none');
+    }else if (cesd_score >= 16  && cesd_score < 21){
+        $('#cesd-score-16').css('display', 'block');
+        $('#finish-survey').css('display', 'block');
+        $('#submit-survey').css('display', 'none');
+    }else if (cesd_score >= 21  && cesd_score < 41){
+        $('#cesd-score-21').css('display', 'block');
+        $('#finish-survey').css('display', 'block');
+        $('#submit-survey').css('display', 'none');
+    }else if (cesd_score >= 41){
+        $('#cesd-score-41').css('display', 'block');
+        $('#finish-survey').css('display', 'block');
+        $('#submit-survey').css('display', 'none');
+    }else{
+        var data_in = $("form#cesd-form").serialize() + "&survey_no=" + survey_no + "&type=4&survey_id=" + survey_id;
+        console.log(data_in);
+        $.post("/survey", data_in).done(function(){
+            window.location = "http://tgt-dev.appspot.com/";  
+        });
+    }
+    
     return false;
 }
+
+
 
 // choose public or private user
 // $(document).on("click","#submit_public_user",function(e) {
@@ -304,47 +357,62 @@ function submit_perma(){
 //         });
 //     });
 // }
+// $('#fblogin-modal').on('hidden.bs.modal', function () {
+//   FB.login();
+// })
 
-// function logout() {
-//     FB.logout(function(response) {
-//         if (response && !response.error) {
-//             window.location = "http://tgt-dev.appspot.com/logout";
-//         } else {
-//             console.log(response.error)
-//         }
-//     });
-// }
+function logout() {
+    FB.logout(function(response) {
+        if (response && !response.error) {
+            window.location = "http://tgt-dev.appspot.com/logout";
+        } else {
+            console.log(response.error)
+        }
+    });
+}
 
-// window.fbAsyncInit = function() {
-//     FB.init({
-//         appId      : "997456320282204", // App ID
-//         version: 'v2.0',
-//         status     : true, // check login status
-//         cookie     : true, // enable cookies to allow the server to access the session
-//         xfbml      : true  // parse XFBML
-//     });
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : "997456320282204", // App ID
+        version: 'v2.0',
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        xfbml      : true  // parse XFBML
+    });
 
-//     // logout handler
-//     $(document).on("click","a#logout",function(e) {
-//         logout()
-//     });
+    // logout handler
+    $(document).on("click","a#logout",function(e) {
+        logout();
+    });
 
-//     FB.getLoginStatus(function(response){
-//         FB.api("/me/friends", function (response) {
-//             if (response && !response.error) {
-//                 assign_user(response.data);
-//             }
-//         });
-//     });
-// };
+    FB.getLoginStatus(function(response){
+        if(response.status !== 'connected'){
+            // alert('not login');
+            var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
+            var survey_no = results[1];
 
-// // Load the SDK Asynchronously
-// (function(d){
-//     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-//     js = d.createElement('script'); js.id = id; js.async = true;
-//     js.src = "//connect.facebook.net/en_US/sdk.js";
-//     d.getElementsByTagName('head')[0].appendChild(js);
-// }(document));
+            if(survey_no != 0){
+                $('#fblogin-modal').modal('show');            
+            }
+
+        }else{
+            $('#fblogin-modal').modal('hide'); 
+        }
+        // FB.api("/me/friends", function (response) {
+        //     if (response && !response.error) {
+        //         assign_user(response.data);
+        //     }
+        // });
+    });
+};
+
+// Load the SDK Asynchronously
+(function(d){
+    var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    d.getElementsByTagName('head')[0].appendChild(js);
+}(document));
 
 
 // use admin page to change user type

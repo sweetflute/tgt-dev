@@ -2,6 +2,12 @@
 {% block head %}
 <script src='/static/js/intro.js'></script>
 {% endblock %}
+{% block nav_buttons %}
+<li style="margin-top:15px">
+    Returning user? Log in here:
+    <fb:login-button autologoutlink="true" data-size= "large" scope="publish_actions, user_friends"></fb:login-button>
+</li>
+{% endblock %}
 {% block body %}
 
 <div class="container-fluid">
@@ -82,6 +88,12 @@
                     <button id="no-btn" type="button" class="btn btn-default btn-lg btn-block">No, I want to quit now.</button>
                 </div>
             </div>
+            <div class="row">
+                <p style="text-align:right; margin-right:15px;">
+                    Returning user? Log in here:
+                    <fb:login-button autologoutlink="true" data-size= "medium" scope="publish_actions, user_friends"></fb:login-button>
+                </p>
+            </div>
             <div class="row" style="margin-bottom: 40px;">
                 <form id="email-form" onsubmit="submit_email();return false;">
                         <div class="col-sm-4 text-right" style="height:34px;line-height:34px;">
@@ -94,8 +106,6 @@
                             <input type="button" id="email-btn" class="btn btn-block btn-success" value="Submit"/>
                         </div>
                 </form>
-                   <!--  </div>
-                </div> -->
             </div>
         </div>
     </div>

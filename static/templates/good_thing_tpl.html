@@ -24,16 +24,17 @@
                     </div>
                     <div id="control">
                         {{#num_mentions}}
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="mentions">with {{num_mentions}} others</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="mentions">with {{num_mentions}} others</a> • 
                         <ul class="dropdown-menu">
                             {{#mentions}}
                             <li>{{name}}</li>
                             {{/mentions}}
                         </ul>
                         {{/num_mentions}}
-                        {{#current_user}}<span id='cheer'>({{num_cheers}})cheer</span>{{/current_user}}
-                        {{^current_user}}<a href="#" class="link" id='cheer' data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>({{num_cheers}}) {{#cheered}}uncheer{{/cheered}}{{^cheered}}cheer{{/cheered}}</a>{{/current_user}}
-                        {{#current_user}}<a href="#" class="link" id='delete'>delete</a>{{/current_user}}
+                        {{#current_user}}<span id='cheer'>{{num_cheers}} cheer</span>{{/current_user}}
+                        {{^current_user}}<span id='cheer'>{{num_cheers}} cheer </span><a id='acheer' href="#" class="link" data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>{{#cheered}}(uncheer){{/cheered}}{{^cheered}}(cheer){{/cheered}}</a>{{/current_user}}
+                         • 
+                        {{#current_user}}<a href="#" class="link" id='delete'>delete</a> • {{/current_user}}
                         <a href="#" class="link" data-toggle="off" id='comment'>({{num_comments}}) comments</a>
                     </div>
                     <!-- comments of the good thing -->
@@ -73,7 +74,7 @@
 <!-- cheer notification template -->
 <script id='cheer_notification_tpl' type='text/html'>
     <li>
-        <a id="notification_link" href="#{{event_id}}" data-event_id={{event_id}}">{{from_user}} cheered your good thing</a>
+        <a id="notification_link" href="#{{event_id}}" data-event_id="{{event_id}}">{{from_user}} cheered your good thing</a>
     </li>
 </script>
 

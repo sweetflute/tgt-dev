@@ -46,7 +46,8 @@ function submit_email(){
        $('#email-field').val('');
        // alert('survey_id=' + data.survey_id);
        Cookies.set('survey_id', data.survey_id, {expires:365});
-       window.location = "http://tgt-dev.appspot.com/survey";
+       Cookies.set('survey_no', data.survey_no, {expires:365});
+       window.location = "http://tgt-dev.appspot.com/survey?survey_no=0";
     });
     return false;
     }
@@ -115,36 +116,52 @@ function submit_email(){
 //     });
 // }
 
-// window.fbAsyncInit = function() {
-//     FB.init({
-//         appId      : "997456320282204", // App ID
-//         version: 'v2.0',
-//         status     : true, // check login status
-//         cookie     : true, // enable cookies to allow the server to access the session
-//         xfbml      : true  // parse XFBML
-//     });
+$( document ).ready(function() {
+    window.fbAsyncInit = function() {
+    FB.init({
+        appId      : "997456320282204", // App ID
+        version: 'v2.0',
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        xfbml      : true  // parse XFBML
+    });
 
-//     // logout handler
-//     $(document).on("click","a#logout",function(e) {
-//         logout()
-//     });
+    // logout handler
+    FB.Event.subscribe('auth.login', function(response) {
+        window.location = "http://tgt-dev.appspot.com/";
+    });
 
-//     FB.getLoginStatus(function(response){
-//         FB.api("/me/friends", function (response) {
-//             if (response && !response.error) {
-//                 assign_user(response.data);
-//             }
-//         });
-//     });
-// };
+    // FB.login(function(response) {});
+    // if (response.authResponse) {
+    //     window.location = "http://tgt-dev.appspot.com/";
+    };
 
-// // Load the SDK Asynchronously
-// (function(d){
-//     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-//     js = d.createElement('script'); js.id = id; js.async = true;
-//     js.src = "//connect.facebook.net/en_US/sdk.js";
-//     d.getElementsByTagName('head')[0].appendChild(js);
-// }(document));
+    // Load the SDK Asynchronously
+    (function(d){
+        var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+        js = d.createElement('script'); js.id = id; js.async = true;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        d.getElementsByTagName('head')[0].appendChild(js);
+    }(document));
+
+    cache = {}
+
+    $('.carousel-next-memory').click(function(){
+        $('#tutorial-slider-memory').carousel('next');
+    });
+
+    $('.carousel-next-public').click(function(){
+        $('#tutorial-slider-public').carousel('next');
+    });
+
+    $('.carousel-next-private').click(function(){
+        $('#tutorial-slider-private').carousel('next');
+    });
+
+    $('.fb-login').click(function(){
+        FB.login();
+    });
+});
 
 
 // use admin page to change user type

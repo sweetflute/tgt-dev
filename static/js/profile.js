@@ -170,6 +170,43 @@ $(document).on("click","a#comment",function(e) {
     }
 });
 
+$(document).on("click","#word_cloud > a",function(e) {
+    // alert($(this).text());
+    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+    var user_id = results[1];
+    var goodthing_word = $(this).text();
+    var url_data = "user_id=" + user_id + "&goodthing_word=" + goodthing_word;
+
+    $.get("/search", url_data).done(function(data){
+        get_search(data);
+    });
+});
+
+$(document).on("click","#reason_cloud > a",function(e) {
+    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+    var user_id = results[1];
+    var reason_word = $(this).text();
+    var url_data = "user_id=" + user_id + "&reason_word=" + reason_word;
+
+    $.get("/search", url_data).done(function(data){
+        get_search(data);
+    });
+});
+
+$(document).on("click","#friend_cloud > a",function(e) {
+    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+    var user_id = results[1];
+    var friend_word = $(this).text();
+    var url_data = "user_id=" + user_id + "*friend_word=" + friend_word;
+
+    $.get("/search", url_data).done(function(data){
+        get_search(data);
+    });
+});
+
+
+
+
 // $(document).on("click", "#next", function(){
 //     // var cursor = "";
 //     // if($('#current-cursor').attr('data-name') != null)
@@ -458,6 +495,34 @@ function get_notifications(notification_list) {
             var template = $(templates).filter('#blank_notification_tpl').html();
             $('ul#notifications').prepend(Mustache.render(template));
         }
+    });
+}
+
+function get_search(post_list) {
+    console.log("in get_search");
+    console.log(post_list);
+    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+        // console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
+        $('ul#good_things').empty();
+        $('#next').attr('data-name',"");
+        post_list.forEach(function(data) {
+            // Fetch the <script /> block from the loaded external
+            // template file which contains our greetings template.
+            var template = $(templates).filter('#good_thing_tpl').html();
+            $('ul#good_things').append(Mustache.render(template, data));
+        });
+
+
+            $(".local-time").each(function(index){
+                var created_time = $(this).html();
+                $(this).html(localize_time(created_time));
+
+                if (index == 1)
+                 if($(this).attr('data-url') != null)
+                    $('#img').attr('data-url', $(this).attr('data-url'));
+
+                $(this).attr("class", ".local-time-done");
+            });
     });
 }
 

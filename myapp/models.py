@@ -5,6 +5,8 @@ from google.appengine.ext import db
 from collections import Counter,OrderedDict
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import images
+from google.appengine.api import search
+
 import logging
 
 # model for user's settings
@@ -52,7 +54,10 @@ class WordCloud(db.Model):
 
         if (profile_type == 'public'):
             for user in users:
-                good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('public =',True).fetch(limit=None)
+                # count = 0
+                index = search.Index(name=user.id)
+
+                good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('public =',True).filter('deleted =',False).fetch(limit=None)
                 for good_thing in good_thing_list:
                     # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
                     # words = [word for word in x.split(' ') if word not in self.stopwords]
@@ -61,12 +66,33 @@ class WordCloud(db.Model):
                     words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
 
                     counter.update(words)
+
+                    #create search document
+                    good_thing_document = search.Document(
+                    doc_id=str(good_thing.key().id()),
+                    fields=[#search.TextField(name='id', value=str(good_thing.key().id())),
+                            # search.TextField(name='user_id', value=good_thing.user.id),
+                            search.TextField(name='good_thing', value=x)],
+                    language='en')
+
+                    
+                    index = search.Index(name=user.id)
+                    try:    
+                        index.put(good_thing_document)
+                        # count += 1
+                    except search.Error:
+                        logging.exception('Failed to put document')
+                # logging.info("adding " + str(count) + " documents")
+
             self.word_dict = json.dumps(counter)
-            self.upated = datetime.datetime.now()
+            self.updated = datetime.datetime.now()
+            self.put()       
 
         else:
+            
             for user in users:
-                good_thing_list = user.goodthing_set.filter('created >=', self.updated).fetch(limit=None)
+                # count = 0
+                good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('deleted =',False).fetch(limit=None)
                 for good_thing in good_thing_list:
                     # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
                     # words = [word for word in x.split(' ') if word not in self.stopwords]
@@ -86,10 +112,34 @@ class WordCloud(db.Model):
                     rcounter.update(rwords)
                     fcounter.update(fnames)
 
+                    #create search document
+                    fnames_str = str(fnames).strip('[]')
+                    good_thing_document = search.Document(
+                    doc_id=str(good_thing.key().id()),
+                    fields=[#search.TextField(name='id', value=str(good_thing.key().id())),
+                            # search.TextField(name='user_id', value=str(good_thing.user.id)),
+                            search.TextField(name='good_thing', value=x),
+                            search.TextField(name='reason', value=y),
+                            search.TextField(name='mentions', value=fnames_str)],
+                    language='en')
+
+                    
+                    index = search.Index(name=user.id)
+                    try:
+                        index.put(good_thing_document)
+                        # count += 1
+                    except search.Error:
+                        logging.exception('Failed to put document')
+
+                # logging.info("adding " + str(count) + " documents")
+
+
+
             self.word_dict = json.dumps(counter)
             self.reason_dict = json.dumps(rcounter)
             self.friend_dict = json.dumps(fcounter)
-            self.pv_upated = datetime.datetime.now()
+            self.updated = datetime.datetime.now()
+            self.put()
 
     
     # return the 20 most common words as a sorted list of dictionaries
@@ -140,12 +190,17 @@ class User(db.Model):
     settings = db.ReferenceProperty(Settings,required=True)
     word_cloud = db.ReferenceProperty(WordCloud,required=True)
     email = db.StringProperty() #TODO: required=True
-    survey_id = db.StringProperty()
+    survey_id = db.StringProperty()#initial survey ID
+    survey_1_id = db.StringProperty()#1-week survey ID
+    survey_2_id = db.StringProperty()#1-month survey ID
+    survey_3_id = db.StringProperty()#3-month survey ID
+    survey_4_id = db.StringProperty()#6-month survey ID
 
 # model for each survey with unique survey id
 class Survey(db.Model):
     # id = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
+    survey_no = db.IntegerProperty() #0:initial, 1:1-week, 2:1-month, 3:3-month, 4:6-month
     email = db.StringProperty()
     age = db.StringProperty()
     gender = db.StringProperty()

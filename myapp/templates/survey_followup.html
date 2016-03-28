@@ -13,522 +13,21 @@
                 <div class="col-sm-12">
                     <!-- General Introduction -->
                     <div class="alert alert-info" role="alert">
-                        We are conducting a research study on how people may use health and wellness applications. We would like to know your information for categorization purpose. All the information will be kept confidential.
+                        Thank you for participating in the positive psychology study. We would like to follow up with you with a few questions. All the information will be kept confidential.
                     </div>
-                    <!-- Validation Error Message -->
-                    <div class='d-error alert alert-danger' role="alert"><span></span></div>
-                    <!-- Demographics Question -->
-                    <blockquote>
-                        <form id="demographic-form">
-                        <ol>
-                            <li><label>what is your age?</label>
-                                <input id="survey-age" name="survey-age" type="number" style="width:45px" min="18" max="100" required="required"/>
-                            </li>
-                            <li><label>What is your gender?</label><br/>
-                                <input type="radio" name="survey-gender" id="survey-gender-male" value="0" required="required"/>
-                                <label for="survey-gender-male">Male</label><br/>
-                                <input type="radio" name="survey-gender" id="survey-gender-female" value="1"/>
-                                <label for="survey-gender-female">Female</label><br/>
-                                <input type="radio" name="survey-gender" id="survey-gender-other" value="2"/>
-                                <label for="survey-gender-other">Other</label><br/>
-                                <input type="radio" name="survey-gender" id="survey-gender-no" value="3"/>
-                                <label for="survey-gender-no">Prefer not to say</label><br/>
-                            </li>
-                        </ol>
-                        <input type="button" class="btn btn-info" id="to-survey1" value="Next"/>
-                    </form>
-                    </blockquote>
 
 
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <!-- first accordion -->
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseOne">
-                                    Survey 1/3
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <!-- Survey 1 Description -->
-                                    <div class="alert alert-info" role="alert">
-                                        <p>For the following parts, there are phrases describing people's behaviors. Please use the rating scale below to describe how accurately each statement describes you. Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age. So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence. Please read each statement carefully, and then fill in the bubble that corresponds to the number on the scale.</p><br>
-                                        <ol>
-                                            <li>Very Inaccurate </li>
-                                            <li>Moderately Inaccurate</li>
-                                            <li>Neither Inaccurate nor Accurate </li>
-                                            <li>Moderately Accurate </li>
-                                            <li>Very Accurate</li>
-                                        </ol>
-                                    </div>
-                                    <!-- End of Survey 1 Description -->
-                                    <!-- Validation Error Message -->
-                                    <div class='ipip-error alert alert-danger' role="alert"><span></span></div>
-                                    <!-- Survey 1 Question -->
-                                    <blockquote>
-                                        <form id="ipip-form">
-                                            <ol>
-                                                <!-- IPIP-1 -->
-                                                <li> <label>I am the life of the party.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-1-1" name="IPIP-1" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-1-2" name="IPIP-1" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-1-3" name="IPIP-1" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-1-4" name="IPIP-1" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-1-5" name="IPIP-1" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-2 -->
-                                                <li> <label>I sympathize with others' feelings.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-2-1" name="IPIP-2" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-2-2" name="IPIP-2" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-2-3" name="IPIP-2" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-2-4" name="IPIP-2" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-2-5" name="IPIP-2" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-3 -->
-                                                <li> <label>I get chores done right away.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-3-1" name="IPIP-3" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-3-2" name="IPIP-3" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-3-3" name="IPIP-3" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-3-4" name="IPIP-3" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-3-5" name="IPIP-3" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-4 -->
-                                                <li> <label>I have frequent mood swings.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-4-1" name="IPIP-4" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-4-2" name="IPIP-4" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-4-3" name="IPIP-4" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-4-4" name="IPIP-4" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-4-5" name="IPIP-4" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-5 -->
-                                                <li> <label>I have a vivid imagination.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-5-1" name="IPIP-5" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-5-2" name="IPIP-5" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-5-3" name="IPIP-5" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-5-4" name="IPIP-5" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-5-5" name="IPIP-5" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-6 -->
-                                                <li> <label>I don't talk a lot.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-6-1" name="IPIP-6" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-6-2" name="IPIP-6" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-6-3" name="IPIP-6" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-6-4" name="IPIP-6" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-6-5" name="IPIP-6" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-7 -->
-                                                <li> <label>I am not interested in other people's problems.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-7-1" name="IPIP-7" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-7-2" name="IPIP-7" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-7-3" name="IPIP-7" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-7-4" name="IPIP-7" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-7-5" name="IPIP-7" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-8 -->
-                                                <li> <label>I often forget to put things back in their proper place.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-8-1" name="IPIP-8" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-8-2" name="IPIP-8" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-8-3" name="IPIP-8" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-8-4" name="IPIP-8" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-8-5" name="IPIP-8" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-9 -->
-                                                <li> <label>I am relaxed most of the time.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-9-1" name="IPIP-9" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-9-2" name="IPIP-9" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-9-3" name="IPIP-9" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-9-4" name="IPIP-9" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-9-5" name="IPIP-9" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-10 -->
-                                                <li> <label>I am not interested in abstract ideas.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-10-1" name="IPIP-10" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-10-2" name="IPIP-10" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-10-3" name="IPIP-10" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-10-4" name="IPIP-10" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-10-5" name="IPIP-10" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-11 -->
-                                                <li> <label>I talk to a lot of different people at parties.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-11-1" name="IPIP-11" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-11-2" name="IPIP-11" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-11-3" name="IPIP-11" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-11-4" name="IPIP-11" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-11-5" name="IPIP-11" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-12 -->
-                                                <li> <label>I feel others' emotions.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-12-1" name="IPIP-12" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-12-2" name="IPIP-12" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-12-3" name="IPIP-12" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-12-4" name="IPIP-12" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-12-5" name="IPIP-12" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-13 -->
-                                                <li><label>I like order.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-13-1" name="IPIP-13" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-13-2" name="IPIP-13" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-13-3" name="IPIP-13" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-13-4" name="IPIP-13" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-13-5" name="IPIP-13" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-14 -->
-                                                <li><label>I get upset easily.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-14-1" name="IPIP-14" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-14-2" name="IPIP-14" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-14-3" name="IPIP-14" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-14-4" name="IPIP-14" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-14-5" name="IPIP-14" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-15 -->
-                                                <li><label>I have difficulty understanding abstract ideas.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-15-1" name="IPIP-15" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-15-2" name="IPIP-15" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-15-3" name="IPIP-15" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-15-4" name="IPIP-15" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-15-5" name="IPIP-15" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-16 -->
-                                                <li><label>I keep in the background.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-16-1" name="IPIP-16" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-16-2" name="IPIP-16" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-16-3" name="IPIP-16" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-16-4" name="IPIP-16" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-16-5" name="IPIP-16" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-17 -->
-                                                <li><label>I am not really interested in others.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-17-1" name="IPIP-17" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-17-2" name="IPIP-17" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-17-3" name="IPIP-17" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-17-4" name="IPIP-17" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-17-5" name="IPIP-17" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-18 -->
-                                                <li><label>I make a mess of things.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-18-1" name="IPIP-18" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-18-2" name="IPIP-18" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-18-3" name="IPIP-18" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-18-4" name="IPIP-18" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-18-5" name="IPIP-18" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-19 -->
-                                                <li><label>I seldom feel blue.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-19-1" name="IPIP-19" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-19-2" name="IPIP-19" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-19-3" name="IPIP-19" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-19-4" name="IPIP-19" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-19-5" name="IPIP-19" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                                <!-- IPIP-20 -->
-                                                <li><label>I do not have a good imagination.</label><br/>
-                                                    <label class="scale">Very Inaccurate</label>
-                                                    <div class="btn-group" data-toggle="buttons">
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Inaccurate">
-                                                            <input type="radio" id="IPIP-20-1" name="IPIP-20" value="1" required/> 1
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Inaccurate">
-                                                            <input type="radio" id="IPIP-20-2" name="IPIP-20" value="2" /> 2
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Neither Inaccurate nor Accurate">
-                                                            <input type="radio" id="IPIP-20-3" name="IPIP-20" value="3" /> 3
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Moderately Accurate">
-                                                            <input type="radio" id="IPIP-20-4" name="IPIP-20" value="4" /> 4
-                                                        </label>
-                                                        <label class="btn btn-default" data-toggle="tooltip" title="Very Accurate">
-                                                            <input type="radio" id="IPIP-20-5" name="IPIP-20" value="5" /> 5
-                                                        </label>
-                                                    </div>
-                                                    <label class="scale">Very Accurate</label>
-                                                </li>
-                                            </ol>
-                                            <input type="button" class="btn btn-info" id="to-survey2" value="Next"/>
-                                        </form>
-                                    </blockquote>
-                                    <!-- End of Survey 1 Question -->
-                                </div> 
-                            </div>
-                        </div>
-                        <!-- end of first accordion -->
                         <!-- second accordion -->
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingTwo">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseTwo" href="#collapseTwo">
-                                    Survey 2/3
+                                    Survey 1/2
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                                 <div class="panel-body">
                                     <!-- Survey 2 Description -->
                                     <div class="alert alert-info" role="alert">
@@ -1475,7 +974,7 @@
                             <div class="panel-heading" role="tab" id="headingThree">
                                 <h4 class="panel-title">
                                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseThree" href="#collapseThree">
-                                    Survey 3/3
+                                    Survey 2/2
                                     </a>
                                 </h4>
                             </div>
@@ -1917,6 +1416,7 @@
     </div>
 </div>
 
+<!-- Reminder for the initial survey -->
 <div class="modal fade" tabindex="-1" role="dialog" id= "resubmit-email-modal" data-backdrop="static" data-keyboard="false" data-resubmit={{resubmit}}>
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1944,5 +1444,21 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id= "fblogin-modal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Login to continue</h4>
+      </div>
+      <div class="modal-body">
+        Please login to continue:
+        <fb:login-button autologoutlink="true" data-size= "large" scope="publish_actions, user_friends" onlogin="$('#fblogin-modal').modal('hide');"></fb:login-button>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
