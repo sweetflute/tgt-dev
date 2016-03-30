@@ -50,6 +50,12 @@ class WordCloud(db.Model):
         if self.word_dict:
             counter.update(json.loads(self.word_dict))
             logging.info("self.word_dict exist")
+        if self.reason_dict:
+            rcounter.update(json.loads(self.reason_dict))
+            logging.info("self.reason_dict exist")
+        if self.friend_dict:
+            fcounter.update(json.loads(self.friend_dict))
+            logging.info("self.friend_dict exist")
         users = self.user_set.fetch(limit=None)
 
         if (profile_type == 'public'):
@@ -93,6 +99,7 @@ class WordCloud(db.Model):
             for user in users:
                 # count = 0
                 good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('deleted =',False).fetch(limit=None)
+                # good_thing_list = user.goodthing_set.filter('deleted =',False).fetch(limit=None)
                 for good_thing in good_thing_list:
                     # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
                     # words = [word for word in x.split(' ') if word not in self.stopwords]

@@ -192,7 +192,6 @@ class HomeHandler(BaseHandler):
                     survey_no = 4
 
 
-
                 # if user.public_user:
                 if user.user_type == 2:
                     template = jinja_environment.get_template('public_main.html')
@@ -1100,6 +1099,7 @@ class ReminderHandler(BaseHandler):
         logging.info("In ReminderHandler")
         users = models.User.all()
         for user in users:
+            # user.word_cloud.update_word_dict('private')
             # if (user.public_user == True):
             #     user.user_type = 2
             # else:
