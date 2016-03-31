@@ -37,72 +37,6 @@ $(document).on("click","button#close_settings",function(e) {
   get_settings();
 });
 
-// submit a new post
-// clear form on success
-// $(document).on("click","#submit_good_thing",function(e) {
-//     //console.log($( "#post" ).serialize());
-//     //TODO: check required field
-//     $("form#post").find('[required]').each(function(){
-//         if($(this).val() == ''){
-//             $(this).focus();
-//             alert("Good Thing is required!");
-//             e.preventDefault();
-//         }
-//     });
-
-//     var timezone_offset = (new Date().getTimezoneOffset())/60;
-//     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
-//     var img_file = $("#img")[0].files[0];
-//     // alert(img_file.name);
-//     var data_in = new FormData(document.querySelector("#post"));
-//     // var data_in = new FormData();
-
-//     // data_in.append("good_thing", $("#good_thing").html());
-//     // data_in.append("reason", $("#reason").html());
-
-//     if (img_file != null)
-//         data_in.append("img", img_file);
-//     data_in.append("tzoffset", timezone_offset);
-//     data_in.append("mentions", mention_list);
-//     data_in.append("view", "");    
-//     // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
-//     // alert("after FormData");
-
-//     $.ajax({
-//       url: "/post",
-//       data: data_in,
-//       cache: false,
-//       processData: false,
-//       contentType: false,
-//       // mimeType: 'multipart/form-data',
-//       type: 'POST',
-//     //   beforeSend: function(xhr) { 
-//     //     alert("ajax beforesend");
-//     //     mime_type = "multipart/form-data, boundary=" + data_in.boundary;
-//     //     xhr.setRequestHeader('Content-Type', mime_type);
-//     // },
-//       success: function(data) {
-//         // alert("ajax success");
-//         $('input#good_thing, input#reason, input#img').val('');
-//             $('#magic_friend_tagging').magicSuggest().clear();
-//             get_settings();
-//             get_posts(data, true);
-//             get_stats();
-//       }
-//     });
-
-//     // $.post("/post",data_in)
-//     //     .done(function(data){
-//     //         $('input#good_thing, input#reason, input#img').val('');
-//     //         $('#magic_friend_tagging').magicSuggest().clear();
-//     //         get_settings();
-//     //         get_posts(data);
-//     //         get_stats();
-//     //     });
-//     return false;
-// });
-
-
 
 $(document).on("click","a#cheer",function(e) {
     var cheer = $(this)
@@ -127,7 +61,7 @@ $(document).on("click","a#delete",function(e) {
     $.post( "/delete",url_data).done(function(data){
         if (type == 'comment') {
             console.log('deleting a comment')
-            var result = data.num_comments + ' comments'
+            var result = "(" + data.num_comments + ') comments'
             $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
             $('div[data-id="'+id+'"]').remove();
         } else {

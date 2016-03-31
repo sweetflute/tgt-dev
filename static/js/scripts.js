@@ -144,7 +144,7 @@ $(document).on("click","a#delete",function(e) {
     $.post( "/delete",url_data).done(function(data){
         if (type == 'comment') {
             console.log('deleting a comment')
-            var result = data.num_comments + ' comments'
+            var result = "(" + data.num_comments + ') comments'
             $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
             $('div[data-id="'+id+'"]').remove();
         } else {

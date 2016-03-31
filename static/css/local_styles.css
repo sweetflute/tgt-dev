@@ -19,15 +19,16 @@ div.post {
 
 #notification_count {
 	width:12px;
-    height: 12px;
-    position: absolute;
-    top: -3px;
-    right: -4px;
-    line-height: 12px;
-    font-size:8px;
-    color: white;
-    background-color: red;
-    text-align: center;
+  height: 12px;
+  position: absolute;
+  top: -3px;
+  right: -4px;
+  line-height: 12px;
+  font-size:8px;
+  color: white;
+  background-color: red;
+  text-align: center;
+  opacity: 0;
 
 }
 
@@ -35,6 +36,11 @@ div.post {
 	position: relative;
 }
 
+#notifications li{
+  width: auto;
+  white-space: nowrap;
+  padding:5px;
+}
 /** New style override - Tony Ip**/
 
 body {
@@ -366,10 +372,10 @@ div .d-error, .ipip-error, .cesd-error, .perma-error{
   content: "" !important;
 }
 
-#comment_delete::before{
+/*#comment_delete::before{
   color: #999;
   content: " • ";
-}
+}*/
 
 div[id*="cesd-score"]{
   display: none;

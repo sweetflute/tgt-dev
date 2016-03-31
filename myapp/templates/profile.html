@@ -7,8 +7,11 @@
 {% endblock %}
 {% block nav_buttons %}
 <li>
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "notification_icon">
+        <div class="tgt_notify">
+            <div class="glyphicon glyphicon-globe" aria-hidden="true"></div>
+            <div id="notification_count"></div>
+        </div>
     </a>
     <ul class="dropdown-menu" id='notifications'>
     </ul>
@@ -32,7 +35,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title"> Settings</h4>
+        <h4 class="modal-title">Settings</h4>
       </div>
       <div class="modal-body">
           <form id='settings' action=''>
