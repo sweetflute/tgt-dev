@@ -194,7 +194,10 @@ $(document).ready(function(){
 
     $("#finish-survey").click(function(){
         var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
-    var survey_no = results[1];
+        // var survey_no = results[1];
+        var survey_no = 0;
+        if (results != null)
+            survey_no = results[1];
         var data_in = $("form#cesd-form").serialize() + "&survey_no=" + survey_no + "&type=4&survey_id=" + survey_id;
         console.log(data_in);
         $.post("/survey", data_in).done(function(){
@@ -217,6 +220,7 @@ function resubmit_survey_id(){
        // alert('survey_id=' + data.survey_id);
        Cookies.set('survey_id', data.survey_id, {expires:365});
        Cookies.set('survey_no', data.survey_no, {expires:365});
+       // window.location = "http://tgt-dev.appspot.com/survey?surveyno=0"; 
     });
 }
 
@@ -245,7 +249,9 @@ function submit_ipip(){
 function submit_perma(){
     survey_id = Cookies.get("survey_id");
     var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
-    var survey_no = results[1];
+    var survey_no = 0;
+    if (results != null)
+        survey_no = results[1];
 
     var data_in = $("form#perma-form").serialize() + "&survey_no=" + survey_no + "&type=3&survey_id=" + survey_id;
     console.log(data_in);
@@ -262,7 +268,10 @@ function submit_perma(){
 function submit_cesd(){
     survey_id = Cookies.get("survey_id");
     var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
-    var survey_no = results[1];
+    // var survey_no = results[1];
+    var survey_no = 0;
+    if (results != null)
+        survey_no = results[1];
 
     var cesd_score = 0;
     var cesd_count = 1;
@@ -389,7 +398,9 @@ window.fbAsyncInit = function() {
         if(response.status !== 'connected'){
             // alert('not login');
             var results = new RegExp('[\?&]' + 'survey_no' + '=([^&#]*)').exec(window.location.href);
-            var survey_no = results[1];
+            var survey_no = 0;
+            if (results != null)
+                survey_no = results[1];
 
             if(survey_no != 0){
                 $('#fblogin-modal').modal('show');            

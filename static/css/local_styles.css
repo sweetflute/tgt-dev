@@ -41,6 +41,33 @@ div.post {
   white-space: nowrap;
   padding:5px;
 }
+
+#mention_list li {
+  padding:5px;
+}
+
+#img{
+  display: none;
+}
+
+#magic_friend_tagging{
+  display: none;
+}
+
+.glyphicon.glyphicon-camera, .glyphicon.glyphicon-user{
+  font-size: 20px;
+  cursor:pointer;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.checkbox-inline{
+  margin:0px 15px 5px 20px;
+}
+
+#filename{
+  display: none;
+}
 /** New style override - Tony Ip**/
 
 body {
@@ -115,9 +142,9 @@ body {
   margin: 0 0 3px;
 }
 /*#good_things p:nth-child(2)::before {*/
-#content_reason::before {
+/*#content_reason::before {
   content: "Reason: ";
-}
+}*/
 /*#good_things p:nth-child(2) {*/
 #content_reason {
   font-style: italic;
@@ -142,7 +169,13 @@ body {
 #good_things #control form{
   margin-bottom: 10px;
 }
-#good_things #control, #good_things #control a {
+
+#good_things #control{
+  font-size: 12px;
+  clear:both;
+} 
+
+#good_things #control a {
   font-size: 12px;
 }
 /*#good_things #control a::after{
@@ -206,19 +239,32 @@ body {
   text-transform: uppercase;
 }
 
-#good_things #comments #name h4 a {
-  font-size: 14px;
+#good_things #comments #name{
+  display: inline-block;
   float: left;
+  margin-right: 5px;
 }
-#good_things #comments #content::before {
+
+#good_things #comments #name h4{
+  font-size: 14px;
+}
+
+/*#good_things #comments #name::after{
   content: ": ";
-}
+}*/
+
+/*#good_things #comments #content::before {
+  content: ": ";
+}*/
+
 #good_things #comments #content {
   font-size: 14px;
   margin-bottom: 6px;
   line-height: 14px;
   overflow: hidden;
-  padding-left: 6px;
+  /*float: left;*/
+  /*display:inline-block;*/
+  /*padding-left: 6px;*/
 }
 h4 {
   margin-top:26px;

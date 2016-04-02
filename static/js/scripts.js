@@ -1,11 +1,11 @@
 var current_view = 'all';
 var old_cursor = '';
 
-$(document).on('change', '.btn-file :file', function() {
-  var input = $(this),
-      numFiles = input.get(0).files ? input.get(0).files.length : 1,
-      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-  input.trigger('fileselect', [numFiles, label]);
+$(document).on('change', '.input-group :file', function() {
+    var input = $(this),
+    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
 });
 
 // submit settings from settings form
@@ -43,9 +43,12 @@ $(document).on("click","button#save_settings",function(e) {
 });
 
 $(document).on("click","button#close_settings",function(e) {
-  get_settings();
+    get_settings();
 });
 
+$(document).on("click", ".glyphicon-user", function(){
+    $("#magic_friend_tagging").css("display", "block");
+});
 // submit a new post
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
@@ -96,7 +99,7 @@ $(document).on("click","#submit_good_thing",function(e) {
     // },
       success: function(data) {
         // alert("ajax success");
-        $('input#good_thing, input#reason, input#img, input#img_text').val('');
+        $('input#good_thing, input#reason, input#img').val('');
         $('#magic_friend_tagging').magicSuggest().clear();
         get_settings();
         get_posts(data, true);
@@ -104,6 +107,8 @@ $(document).on("click","#submit_good_thing",function(e) {
 
         $("#submit_good_thing").css("display","block");
         $("#posting").css("display","none");
+        $("#magic_friend_tagging").css("display", "none");
+        $("#filename").css("display", "none");
       }
     });
 
@@ -164,7 +169,11 @@ $(document).on("submit","form#comment_form",function(e) {
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id, true);
+        get_comments(data,id);
+        var comment_a = good_thing.parents('div#data_container').find('a#comment');
+        var num_comments = parseInt(comment_a.text().substr(1,2)) + 1;
+        var result = "(" + num_comments + ') comments'
+        comment_a.text(result);
     });
     return false;
 });
@@ -176,7 +185,7 @@ $(document).on("click","a#comment",function(e) {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id, false);
+            get_comments(data,id);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -262,13 +271,14 @@ window.onload = function() {
         save_email();
         // search_words();
 
-        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+        $('.input-group :file').on('fileselect', function(event, numFiles, label) {
         
-            var input = $(this).parents('.input-group').find(':text'),
+            var input = $('#filename'),
                 log = numFiles > 1 ? numFiles + ' files selected' : label;
             
             if( input.length ) {
-                input.val(log);
+                input.text(log);
+                input.css("display","block");
             } else {
                 if( log ) alert(log);
             }
@@ -279,6 +289,8 @@ window.onload = function() {
         $('.carousel-next-public').click(function(){
             $('#tutorial-slider-public').carousel('next');
         });
+
+        $('[data-toggle="tooltip"]').tooltip();
 
     });
 };
@@ -442,6 +454,17 @@ function get_posts(post_list, posting) {
 
             });
 
+            $("a#comment").each(function(){
+                var good_thing = $(this);            
+                var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
+                $.post( "/comment",url_data).done(function(data){
+                    var id = good_thing.parents('div#data_container').data('id');
+                    if(data.length >= 1)
+                        get_comments(data.slice(0,1),id);
+                        good_thing.data('toggle', 'on');
+                });
+                
+            });
 
             $(".local-time").each(function(index){
                 var created_time = $(this).html();
@@ -465,16 +488,16 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id,commenting) {
+function get_comments(comment_list,id) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
+        var comment_section = $('div#data_container[data-id="'+id+'"]').find('div#comments');
+        comment_section.empty();
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
-            if (commenting)
-                $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
-            else
-                $('div#data_container[data-id="'+id+'"]').find('div#comments').append(Mustache.render(template, data));
+            
+            comment_section.append(Mustache.render(template, data));
 
             $(".comment-time").each(function(index){
                 var created_time = $(this).html();

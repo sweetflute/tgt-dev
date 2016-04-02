@@ -25,7 +25,7 @@
                     <div id="control">
                         {{#num_mentions}}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="mentions">with {{num_mentions}} others</a> • 
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" id="mention_list">
                             {{#mentions}}
                             <li>{{name}}</li>
                             {{/mentions}}
@@ -54,7 +54,9 @@
     <hr>
     <div id='data_container' data-id={{id}} data-good_thing_id={{good_thing_id}} data-user_id={{user_id}} data-type='comment'>
         <div id="name">
-            <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{user_name}}</a></h4>
+            <h4 class="media-heading">
+                <a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{user_name}}</a>:
+            </h4>
         </div>
         <div id="content">{{comment_text}}</div>
         <div id="control">

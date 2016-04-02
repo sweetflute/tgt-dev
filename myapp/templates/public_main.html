@@ -145,39 +145,42 @@
                     <form id="post" action=''>
                         <!-- the good thing -->
                         <div class="form-group">
-                            <label for="good_thing">Good Thing</label>
-                            <input type="text" class="form-control" placeholder='Good Thing' name="good_thing" id="good_thing" required="true">
+                            <input type="text" class="form-control" placeholder='What was the good thing?' name="good_thing" id="good_thing" required="true">
                         </div>
                         <!-- the reason -->
                         <div class="form-group">
-                            <label for="reason">Reason</label>
-                            <input type="text" class="form-control" placeholder='Reason' name="reason" id="reason"/>
+                            <input type="text" class="form-control" placeholder='Why did it happen?' name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
                         </div>
                         <!-- upload and image -->
 
                         <div class="form-group">
-                            <label for="img">Image</label>
-                            <!-- <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img" data-url=""/> -->
-                            <div class="input-group">
-                              <span class="input-group-btn">
-                                  <span class="btn btn-info btn-file">
-                                      Browse&hellip; <input type="file" name="img" id="img" multiple>
-                                  </span>
-                              </span>
-                              <input id="img_text" type="text" class="form-control" readonly>
+                          <div class="input-group">
+                            <!-- upload file -->
+                            <label for="img">
+                              <span class="glyphicon glyphicon-camera" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
+                            </label>
+                            <input type="file" name="img" id="img" multiple>
+
+
+                            <!-- tag friends -->
+                            <label for="twitter_friend_tagging">
+                              <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
+                            </label>
+
+                            <!-- post to 3gt -->
+                            <label class="checkbox-inline">
+                              <input type="checkbox" id="settings_public" name="public"> Make post public on 3GT
+                            </label>
+                            <!-- post to facebook -->
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="settings_wall" name="wall"> Post to your facebook wall
+                            </label>
+                            <label id="filename"></label>
                           </div>
-                        </div>
-                        <!-- tag friends with magicsuggest -->
-                        <div class="form-group">
-                            <label for="twitter_friend_tagging">Tag a Friend</label>
-                            <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
-                        </div>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="settings_public" name="public"> Make post public on 3GT
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="settings_wall" name="wall"> Post to your facebook wall
-                        </label>
+                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
+                      </div>
+
+                        
                         <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
                         <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
                     </form>

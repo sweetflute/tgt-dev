@@ -295,12 +295,13 @@ class SurveyHandler(BaseHandler):
     def post(self):
         survey_type = self.request.get('type')
         logging.info("survey_type=" + survey_type)
-        survey_no = int(self.request.get('survey_no'))
+        
 
         # submit email
         if(survey_type == '0'):
             email = self.request.get('email')
             if (email != None and email != ''):
+                survey_no = 0
                 survey_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                 survey_id += ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(6)])
                 logging.info("survey_id:" + survey_id)
@@ -308,7 +309,7 @@ class SurveyHandler(BaseHandler):
                 survey = models.Survey(
                             key_name=survey_id,
                             email=email,
-                            survey_no=0
+                            survey_no=survey_no
                             )
                 survey.put()
 
@@ -436,19 +437,21 @@ class SurveyHandler(BaseHandler):
             
             survey.put()
 
-            user_id = str(self.current_user['id'])
-            user = models.User.get_by_key_name(user_id)
             survey_no = int(self.request.get('survey_no'))
+            if(survey_no != 0):
+                user_id = str(self.current_user['id'])
+                user = models.User.get_by_key_name(user_id)
+                
 
-            if (survey_no == 1):
-                user.survey_1_id = survey_id
-            elif (survey_no == 2):
-                user.survey_2_id = survey_id
-            elif (survey_no == 3):
-                user.survey_3_id = survey_id
-            elif (survey_no == 4):
-                user.survey_4_id = survey_id
-            user.put()           
+                if (survey_no == 1):
+                    user.survey_1_id = survey_id
+                elif (survey_no == 2):
+                    user.survey_2_id = survey_id
+                elif (survey_no == 3):
+                    user.survey_3_id = survey_id
+                elif (survey_no == 4):
+                    user.survey_4_id = survey_id
+                user.put()           
 
 
 
@@ -847,8 +850,10 @@ class CommentHandler(BaseHandler):
                                         good_thing=good_thing).template(user_id)]
         # return all comments associated with a good thing
         else:
-            comments = good_thing.comment_set.order('-created').filter('deleted =',False).fetch(limit=None)
+            # comments = good_thing.comment_set.order('-created').filter('deleted =',False).fetch(limit=None)
+            comments = good_thing.comment_set.order('created').filter('deleted =',False).fetch(limit=None)
             result = [x.template(user_id) for x in comments]
+
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
 
@@ -1149,13 +1154,13 @@ class ReminderHandler(BaseHandler):
             # logging.info("date_since_enroll=" + str(date_since_enroll))
 
             # survey_no = -1
-            # if(date_since_enroll < 30 and date_since_enroll >= 7 and user.survey_1_id is None):
+            # if((date_since_enroll == 7 or date_since_enroll == 10 or date_since_enroll == 14) and user.survey_1_id is None):
             #     survey_no = 1
-            # elif(date_since_enroll < 90 and date_since_enroll >= 30 and user.survey_2_id is None):
+            # elif((date_since_enroll == 30 or date_since_enroll == 37 or date_since_enroll == 44) and user.survey_2_id is None):
             #     survey_no = 2
-            # elif(date_since_enroll < 180 and date_since_enroll >= 90 and user.survey_3_id is None):
+            # elif((date_since_enroll == 90 or date_since_enroll == 97 or date_since_enroll == 104) and user.survey_3_id is None):
             #     survey_no = 3
-            # elif(date_since_enroll >= 180 and user.survey_4_id is None):
+            # elif((date_since_enroll == 180 or date_since_enroll == 187 or date_since_enroll == 194) and user.survey_4_id is None):
             #     survey_no = 4
             
             # if (survey_no > 0 and user.email != "" and user.email is not None):

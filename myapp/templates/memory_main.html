@@ -124,27 +124,28 @@
                     <form id="post" action=''>
                         <!-- the good thing -->
                         <div class="form-group">
-                            <label for="good_thing">Write about one or more childhood memory:</label>
-                            <textarea row="4" class="form-control" placeholder='Early memory' name="good_thing" id="good_thing" required="true"></textarea>
+                            <textarea rows="6" class="form-control" placeholder='Write about one or more childhood memory' name="good_thing" id="good_thing" required="true"></textarea>
                         </div>
                         <!-- upload and image -->
                         <div class="form-group">
-                            <label for="img">Image</label>
-                            <!-- <input type="file" class="form-control" placeholder='Image' name="img" multiple id="img" data-url=""/> -->
-                            <div class="input-group">
-                              <span class="input-group-btn">
-                                  <span class="btn btn-info btn-file">
-                                      Browse&hellip; <input type="file" name="img" id="img" multiple>
-                                  </span>
-                              </span>
-                              <input id="img_text" type="text" class="form-control" readonly>
+                          <div class="input-group">
+                            <!-- upload file -->
+                            <label for="img">
+                              <span class="glyphicon glyphicon-camera" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
+                            </label>
+                            <input type="file" name="img" id="img" multiple>
+
+
+                            <!-- tag friends -->
+                            <label for="twitter_friend_tagging">
+                              <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
+                            </label>
+
+                            <label id="filename"></label>
                           </div>
+                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
                         </div>
-                        <!-- tag friends with magicsuggest -->
-                        <div class="form-group">
-                            <label for="twitter_friend_tagging">Tag a Friend</label>
-                            <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
-                        </div>
+
                         <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
                         <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
                     </form>

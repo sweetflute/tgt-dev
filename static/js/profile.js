@@ -309,6 +309,15 @@ function get_posts(post_list, posting) {
 
         });
 
+        $("a#comment").each(function(){
+            var good_thing = $(this);            
+            var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
+            $.post( "/comment",url_data).done(function(data){
+                var id = good_thing.parents('div#data_container').data('id');
+                get_comments(data[0],id, false);
+            });
+            good_thing.data('toggle', 'on');
+        });
 
         $(".local-time").each(function(){
             var created_time = $(this).html();
