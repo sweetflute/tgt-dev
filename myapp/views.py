@@ -841,6 +841,7 @@ class CommentHandler(BaseHandler):
         good_thing_id = long(self.request.get('good_thing'))
         good_thing = models.GoodThing.get_by_id(good_thing_id)
         user_id = str(self.current_user['id'])
+        logging.info(user_id)
         # if the client is trying to save a comment, create a new comment, save
         # to the datastore and return the comment
         if comment_text != '':

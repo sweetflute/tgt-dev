@@ -75,13 +75,17 @@ $(document).on("click","a#delete",function(e) {
 });
 
 // save a comment
-$(document).on("submit","form#comment",function(e) {
+$(document).on("submit","form#comment_form",function(e) {
     var good_thing = $(this);
     var url_data = $( this ).serialize() + '&good_thing=' + $( this ).parents('div#data_container').data('id');
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id, true);
+        get_comments(data,id);
+        var comment_a = good_thing.parents('div#data_container').find('a#comment');
+        var num_comments = parseInt(comment_a.text().substr(1,2)) + 1;
+        var result = "(" + num_comments + ') comments'
+        comment_a.text(result);
     });
     return false;
 });
@@ -93,7 +97,7 @@ $(document).on("click","a#comment",function(e) {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id, false);
+            get_comments(data,id);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -314,7 +318,7 @@ function get_posts(post_list, posting) {
             var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
             $.post( "/comment",url_data).done(function(data){
                 var id = good_thing.parents('div#data_container').data('id');
-                get_comments(data[0],id, false);
+                get_comments(data.slice(0,1),id);
             });
             good_thing.data('toggle', 'on');
         });
@@ -331,16 +335,16 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id,commenting) {
+function get_comments(comment_list,id) {
     $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+        var comment_section = $('div#data_container[data-id="'+id+'"]').find('div#comments');
+        comment_section.empty();
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
-            if (commenting)
-                $('div#data_container[data-id="'+id+'"]').find('div#comments').prepend(Mustache.render(template, data));
-            else
-                $('div#data_container[data-id="'+id+'"]').find('div#comments').append(Mustache.render(template, data));
+            
+            comment_section.append(Mustache.render(template, data));
 
             $(".comment-time").each(function(index){
                 var created_time = $(this).html();
