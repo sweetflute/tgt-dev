@@ -32,7 +32,7 @@ class WordCloud(db.Model):
     friend_dict = db.TextProperty(default=None)
     updated = db.DateTimeProperty(auto_now_add=True)
     pv_updated = db.DateTimeProperty(auto_now_add=True)
-    stopwords = db.StringListProperty(default=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now', 'today', 'yesterday', 'good', 'great', 'nice'])
+    stopwords = db.StringListProperty(default=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'isn', 'are', 'aren', 'was', 'wasn', 'were', 'weren', 'be', 'been', 'being', 'have', 'haven', 'has', 'hasn', 'had', 'hadn', 'having', 'do', 'don', 'does', 'doesn', 'did', 'didn', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now', 'today', 'yesterday', 'good', 'great', 'nice'])
 
     # update the word counter.  only load posts since last update time
     # store the counter as json and change the last updated time
@@ -64,6 +64,7 @@ class WordCloud(db.Model):
                 index = search.Index(name=user.id)
 
                 good_thing_list = user.goodthing_set.filter('created >=', self.updated).filter('public =',True).filter('deleted =',False).fetch(limit=None)
+                # good_thing_list = user.goodthing_set.filter('public =',True).filter('deleted =',False).fetch(limit=None)
                 for good_thing in good_thing_list:
                     # x = str(good_thing.good_thing).translate(replace_punctuation).lower()
                     # words = [word for word in x.split(' ') if word not in self.stopwords]
@@ -110,7 +111,7 @@ class WordCloud(db.Model):
 
                     words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
                     rwords = [word for word in re.split('[ '+ string.punctuation +']', y) if word not in self.stopwords]
-                    fnames = [mention['name'] for mention in z]
+                    fnames = [mention['name'].encode('utf-8') for mention in z]
 
                     # logging.info(z)
                     # logging.info(fnames)
@@ -121,6 +122,7 @@ class WordCloud(db.Model):
 
                     #create search document
                     fnames_str = str(fnames).strip('[]')
+                    logging.info(fnames_str)
                     good_thing_document = search.Document(
                     doc_id=str(good_thing.key().id()),
                     fields=[#search.TextField(name='id', value=str(good_thing.key().id())),

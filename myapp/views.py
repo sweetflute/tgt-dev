@@ -472,6 +472,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         logging.info("in the post, view=" + view)
         if view != '':
             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
+            logging.info("count of all good things:" + str(all_good_things.count()))
             # if (good_things_cursor == ""):
             #     good_things_cursor = None
             # select only this week's post
@@ -511,9 +512,27 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     # return all public posts and current user's private posts
                     elif view == 'all':
                         user = models.User.get_by_key_name(user_id)
-                        good_things = all_good_things.filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
-                        good_things_cursor = all_good_things.cursor()
-                        result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
+                        result = []
+                        while(len(result) < 10):
+                        # all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
+                            logging.info("view=all, good_things_cursor=" + str(good_things_cursor))
+                        # logging.info("good_things_cursor type=" + str(type(good_things_cursor)))
+                        # logging.info("count of all good things:" + str(all_good_things.count()))
+                        
+                            if (isinstance(good_things_cursor, str)):
+                                good_things_cursor = Cursor.from_websafe_string(good_things_cursor.encode('utf-8'))
+                        # good_things_filtered = 
+                            good_things = all_good_things.filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
+                        # logging.info("count of all good things before fetch:" + str(good_things_filtered.count()))
+                            logging.info("count of fetched good_things:" + str(len(good_things)))
+                            logging.info([x.good_thing for x in good_things])
+                            good_things_cursor = all_good_things.cursor()
+                            logging.info("new good_things_cursor=" + str(good_things_cursor))
+                            result += [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
+                        # result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things]#[::-1]
+                            logging.info("count of result=" + str(len(result)))
+
+                            
                         logging.info("view == all")
                         # logging.info(result)
                     elif view == 'profile':
@@ -618,9 +637,10 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     fb_app_id = to_user_id['app_id']
                     event_id = good_thing.key().id()
                     # handle mention notification
-                    self.notify(event_type='mention',
-                                to_user=to_user,
-                                event_id=event_id)
+                    if (user.user_type == 2 and to_user.user_type == 2 and user.id != to_user.id):
+                        self.notify(event_type='mention',
+                                    to_user=to_user,
+                                    event_id=event_id)
                 else:
                     to_user = None
                 
@@ -841,7 +861,6 @@ class CommentHandler(BaseHandler):
         good_thing_id = long(self.request.get('good_thing'))
         good_thing = models.GoodThing.get_by_id(good_thing_id)
         user_id = str(self.current_user['id'])
-        logging.info(user_id)
         # if the client is trying to save a comment, create a new comment, save
         # to the datastore and return the comment
         if comment_text != '':
@@ -867,9 +886,11 @@ class CommentHandler(BaseHandler):
         )
         comment.put()
         event_id = good_thing.key().id()
-        self.notify(event_type='comment',
-                    to_user=good_thing.user,
-                    event_id=event_id,)
+        
+        if (user.user_type == 2 and user.id != good_thing.user.id):
+            self.notify(event_type='comment',
+                        to_user=good_thing.user,
+                        event_id=event_id)
         return comment
 
 # API for deleting a good thing or a comment
@@ -1035,7 +1056,17 @@ class SearchHandler(BaseHandler):
                 reason_list.append(reason)
             result = [x.template(goodthing_user, upload_url=upload_url) for x in reason_list]
         elif(mention_name):
-            mword = str(mention_name)
+            logging.info(mention_name)
+
+            # try:
+            #     mention_name.decode('ascii')
+            # except UnicodeDecodeError:
+            #     mword = ''.join(chr(int(i)) for i in mention_name)
+            # else:
+            mword = mention_name.encode('utf-8')
+           
+            logging.info(mword)
+            # mword = str(mention_name)
             index = search.Index(name=goodthing_user)
             results = index.search("mentions:" + mword)
             mention_list = []
@@ -1129,8 +1160,9 @@ class ReminderHandler(BaseHandler):
                     else:
                         latest_post_date = latest_post.created
                     days_no_posting = (datetime.datetime.now() - latest_post_date).days
+                    logging.info(str(days_no_posting) + " days no posting")
                     # if(user.name == "Magi Chung"):
-                    if (user.email != "" and user.email is not None):
+                    if (days_no_posting > 0 and user.email != "" and user.email is not None):
                         message = mail.EmailMessage()
                         if(user.user_type == 0):
                             message.subject = "Reminder: Post a early memory to 3gt!"
@@ -1180,7 +1212,7 @@ class ReminderHandler(BaseHandler):
                 
             #=========================================================================             
             # clean search index
-            # docindex = search.Index(name='1598935150376651')
+            # docindex = search.Index(name='563244175490')
             # try:
             #     while True:
             #         document_ids = [document.doc_id for document in docindex.get_range(ids_only=True)]

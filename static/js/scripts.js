@@ -1,11 +1,20 @@
 var current_view = 'all';
 var old_cursor = '';
 
-$(document).on('change', '.input-group :file', function() {
+
+$(document).on('change', '.form-group :file', function() {
     var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1,
     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
     input.trigger('fileselect', [numFiles, label]);
+});
+
+$(document).on('change', "input#good_thing", function(){
+    $("#submit_good_thing").removeClass('disabled');
+});
+
+$(document).on('change', "input#magic_friend_tagging", function(){
+    $("#icon-photo").css("color", "#337ab7");
 });
 
 // submit settings from settings form
@@ -25,6 +34,7 @@ $(document).on("click","button#save_settings",function(e) {
     console.log(data_in)
     $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
+        $('.modal-backdrop').remove();
         
         // Update settings when post done
         $('input#settings_wall').prop('checked', data.default_fb);
@@ -47,20 +57,21 @@ $(document).on("click","button#close_settings",function(e) {
 });
 
 $(document).on("click", ".glyphicon-user", function(){
-    $("#magic_friend_tagging").css("display", "block");
+    $("#div_friend_tagging").css("display", "table");
 });
 // submit a new post
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
     //console.log($( "#post" ).serialize());
     //TODO: check required field
-    $("form#post").find('[required]').each(function(){
-        if($(this).val() == ''){
-            $(this).focus();
-            alert("Good Thing is required!");
-            e.preventDefault();
-        }
-    });
+    // $("form#post").find('[required]').each(function(){
+    //     if($(this).val() == ''){
+    //         $(this).focus();
+    //         alert("Good Thing is required!");
+    //         e.preventDefault();
+    //         return false;
+    //     }
+    // });
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
@@ -76,9 +87,7 @@ $(document).on("click","#submit_good_thing",function(e) {
         data_in.append("img", img_file);
     data_in.append("tzoffset", timezone_offset);
     data_in.append("mentions", mention_list);
-    data_in.append("view", "");    
-    // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
-    // alert("after FormData");
+    data_in.append("view", "");
 
     $("#submit_good_thing").css("display","none");
     $("#posting").css("display","inline");
@@ -92,11 +101,7 @@ $(document).on("click","#submit_good_thing",function(e) {
       contentType: false,
       enctype: 'multipart/form-data',
       type: 'POST',
-    //   beforeSend: function(xhr) { 
-    //     alert("ajax beforesend");
-    //     mime_type = "multipart/form-data, boundary=" + data_in.boundary;
-    //     xhr.setRequestHeader('Content-Type', mime_type);
-    // },
+
       success: function(data) {
         // alert("ajax success");
         $('input#good_thing, input#reason, input#img').val('');
@@ -107,19 +112,11 @@ $(document).on("click","#submit_good_thing",function(e) {
 
         $("#submit_good_thing").css("display","block");
         $("#posting").css("display","none");
-        $("#magic_friend_tagging").css("display", "none");
+        $("#div_friend_tagging").css("display", "none");
         $("#filename").css("display", "none");
       }
     });
 
-    // $.post("/post",data_in)
-    //     .done(function(data){
-    //         $('input#good_thing, input#reason, input#img').val('');
-    //         $('#magic_friend_tagging').magicSuggest().clear();
-    //         get_settings();
-    //         get_posts(data);
-    //         get_stats();
-    //     });
     return false;
 });
 
@@ -271,7 +268,7 @@ window.onload = function() {
         save_email();
         // search_words();
 
-        $('.input-group :file').on('fileselect', function(event, numFiles, label) {
+        $('.form-group :file').on('fileselect', function(event, numFiles, label) {
         
             var input = $('#filename'),
                 log = numFiles > 1 ? numFiles + ' files selected' : label;
@@ -279,6 +276,7 @@ window.onload = function() {
             if( input.length ) {
                 input.text(log);
                 input.css("display","block");
+                $("#icon-photo").css("color", "#337ab7");
             } else {
                 if( log ) alert(log);
             }
@@ -291,6 +289,7 @@ window.onload = function() {
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+        $('#post').validate();
 
     });
 };
@@ -306,7 +305,7 @@ function load_all_post(){
         //     cursor = $('#current-cursor').attr('data-name');
         // alert(cursor);
         var data_in = view + '&cursor=' + $('#next').attr('data-name');
-
+        console.log(data_in);
         $.post( "/post", data_in).done(function(data){
             get_posts(data, false);
         });

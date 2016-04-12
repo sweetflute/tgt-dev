@@ -14,7 +14,7 @@ div.post {
 }
 
 .tgt_notify .glyphicon {
-	font-size:22px;
+	font-size:20px;
 }
 
 #notification_count {
@@ -50,23 +50,33 @@ div.post {
   display: none;
 }
 
-#magic_friend_tagging{
+#div_friend_tagging{
   display: none;
+  margin-bottom: 10px;
 }
 
-.glyphicon.glyphicon-camera, .glyphicon.glyphicon-user{
+.glyphicon{
   font-size: 20px;
-  cursor:pointer;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
-.checkbox-inline{
-  margin:0px 15px 5px 20px;
+.form-group .glyphicon{
+  margin-left: 10px;
+}
+
+.form-group .glyphicon.glyphicon-camera, .glyphicon.glyphicon-user{
+  cursor:pointer;
+}
+
+#settings_wall_label{
+  margin-bottom:10px;
 }
 
 #filename{
   display: none;
+}
+
+#content img { 
+  width: 100%;
 }
 /** New style override - Tony Ip**/
 
@@ -112,8 +122,8 @@ body {
 }
 #my_good_thing #submit_good_thing{
   float:right;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   background-color: #59b329;
   font-size: 700;
   color: #fff;

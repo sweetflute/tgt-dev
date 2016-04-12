@@ -21,7 +21,7 @@
 {% endblock %}
 {% block body %}
 <!-- setings modal -->
-<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  data-backdrop="">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -49,7 +49,7 @@
   </div>
 </div>
 <!-- FAQ modal -->
-<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -132,30 +132,38 @@
                         </div>
                         <!-- the reason -->
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder='Why did it happen?' name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
+                            <input type="text" class="form-control" placeholder="Why did it happen?" name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
                         </div>
+                        <!-- friends tagged -->
+                        <div class="input-group"  id="div_friend_tagging">
+                          <span class="input-group-addon">With</span>
+                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
+                        </div>
+                        <!-- photo attached -->
+                        <label id="filename"></label>
+
                         <!-- upload and image -->
                         <div class="form-group">
-                          <div class="input-group">
-                            <!-- upload file -->
-                            <label for="img">
-                              <span class="glyphicon glyphicon-camera" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
-                            </label>
-                            <input type="file" name="img" id="img" multiple>
-
-
-                            <!-- tag friends -->
-                            <label for="twitter_friend_tagging">
-                              <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
-                            </label>
-
-                            <label id="filename"></label>
+                          <!-- upload file -->         
+                            <div class="row">
+                              <div class="col-md-1 col-sm-1 col-xs-1">
+                                <label for="img">
+                                  <span class="glyphicon glyphicon-camera" id="icon-photo" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
+                                </label>
+                                <input type="file" name="img" id="img" multiple>
+                              </div>
+                              <div class="col-md-1 col-sm-1 col-xs-1">
+                                <!-- tag friends -->
+                                <label for="twitter_friend_tagging">
+                                  <span class="glyphicon glyphicon-user" id="icon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
+                                </label>
+                              </div>
+                              <div class="col-md-3 col-md-offset-7 col-sm-3 col-sm-offset-7 col-xs-12">
+                                <input type="button" class="btn btn-default btn-block disabled" id="submit_good_thing" value="Post" required="required"></input>
+                                <input type="button" class="btn btn-default btn-block" id="posting" value="Posting ..."></input>
+                              </div>
+                            </div>
                           </div>
-                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
-                      </div>
-
-                        <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
-                        <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
                     </form>
                 </div>
             </div>
@@ -174,7 +182,8 @@
 
 {% block profile %}
 <!-- profile sidebar -->
-<div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12">
+<div class="col-md-2 col-md-offset-2 col-sm-4 hidden-xs">
+<!-- <div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12"> -->
     <div class="panel panel-default">
         <div class="panel-body">
             <img src="http://graph.facebook.com/{{ current_user.id }}/picture?width=250"" alt="..." class="img-rounded img-responsive">

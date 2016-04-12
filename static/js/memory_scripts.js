@@ -2,11 +2,19 @@ var current_view = 'all';
 // submit settings from settings form
 // generic alert on success
 
-$(document).on('change', '.input-group :file', function() {
+$(document).on('change', '.form-group :file', function() {
   var input = $(this),
       numFiles = input.get(0).files ? input.get(0).files.length : 1,
       label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
   input.trigger('fileselect', [numFiles, label]);
+});
+
+$(document).on('change', "textarea#good_thing", function(){
+    $("#submit_good_thing").removeClass('disabled');
+});
+
+$(document).on('change', "input#magic_friend_tagging", function(){
+    $("#icon-photo").css("color", "#337ab7");
 });
 
 $(document).on("click","button#save_settings",function(e) {
@@ -46,7 +54,7 @@ $(document).on("click","button#close_settings",function(e) {
 });
 
 $(document).on("click", ".glyphicon-user", function(){
-    $("#magic_friend_tagging").css("display", "block");
+    $("#div_friend_tagging").css("display", "table");
 });
 
 // submit a new post
@@ -108,7 +116,7 @@ $(document).on("click","#submit_good_thing",function(e) {
 
         $("#submit_good_thing").css("display","block");
         $("#posting").css("display","none");
-        $("#magic_friend_tagging").css("display", "none");
+        $("#div_friend_tagging").css("display", "none");
         $("#filename").css("display", "none");
       }
     });
@@ -255,7 +263,7 @@ window.onload = function() {
         tag_friends();
         save_email();
 
-        $('.input-group :file').on('fileselect', function(event, numFiles, label) {
+        $('.form-group :file').on('fileselect', function(event, numFiles, label) {
         
              var input = $('#filename'),
                 log = numFiles > 1 ? numFiles + ' files selected' : label;
@@ -263,6 +271,7 @@ window.onload = function() {
             if( input.length ) {
                 input.text(log);
                 input.css("display","block");
+                $("#icon-photo").css("color", "#337ab7");
             } else {
                 if( log ) alert(log);
             }

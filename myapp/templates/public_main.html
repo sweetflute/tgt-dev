@@ -9,7 +9,7 @@
 <li>
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "notification_icon">
         <div class="tgt_notify">
-            <div class="glyphicon glyphicon-globe" aria-hidden="true"></div>
+            <div class="glyphicon glyphicon-bell" aria-hidden="true"></div>
             <div id="notification_count"></div>
         </div>
     </a>
@@ -31,7 +31,7 @@
 {% endblock %}
 {% block body %}
 <!-- settings modal -->
-<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  data-backdrop="">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -64,7 +64,7 @@
   </div>
 </div>
 <!-- FAQ modal -->
-<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -145,44 +145,64 @@
                     <form id="post" action=''>
                         <!-- the good thing -->
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder='What was the good thing?' name="good_thing" id="good_thing" required="true">
+                          <input type="text" class="form-control" placeholder='What was the good thing?' name="good_thing" id="good_thing" required="true">
                         </div>
                         <!-- the reason -->
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder='Why did it happen?' name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
+                          <input type="text" class="form-control" placeholder="Why did it happen?" name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
                         </div>
+                        <!-- friends tagged -->
+                        <div class="input-group"  id="div_friend_tagging">
+                          <span class="input-group-addon">With</span>
+                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
+                        </div>
+                        <!-- photo attached -->
+                        <label id="filename"></label>
                         <!-- upload and image -->
 
                         <div class="form-group">
-                          <div class="input-group">
-                            <!-- upload file -->
-                            <label for="img">
-                              <span class="glyphicon glyphicon-camera" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
-                            </label>
-                            <input type="file" name="img" id="img" multiple>
-
-
-                            <!-- tag friends -->
-                            <label for="twitter_friend_tagging">
-                              <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
-                            </label>
-
-                            <!-- post to 3gt -->
-                            <label class="checkbox-inline">
-                              <input type="checkbox" id="settings_public" name="public"> Make post public on 3GT
-                            </label>
-                            <!-- post to facebook -->
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="settings_wall" name="wall"> Post to your facebook wall
-                            </label>
-                            <label id="filename"></label>
+                            <!-- upload file -->         
+                            <div class="row">
+                              <div class="col-md-1 col-sm-1 col-xs-1">
+                                <label for="img">
+                                  <span class="glyphicon glyphicon-camera" id="icon-photo" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
+                                </label>
+                                <input type="file" name="img" id="img" multiple>
+                              </div>
+                              <div class="col-md-1 col-sm-1 col-xs-1">
+                                <!-- tag friends -->
+                                <label for="twitter_friend_tagging">
+                                  <span class="glyphicon glyphicon-user" id="icon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
+                                </label>
+                              </div>
+                              <div class="col-md-7 col-sm-7 col-xs-12">
+                                <div class="row">
+                                  <div class="col-md-2 col-sm-2 col-xs-2">
+                                    <label>
+                                      <span class="glyphicon glyphicon-globe" aria-hidden="true"/>
+                                    </label>
+                                  </div>
+                                  <!-- post to 3gt -->
+                                  <div class="col-md-5 col-sm-5 col-xs-10">
+                                    <label class="checkbox-inline" >
+                                    <!-- <label> -->
+                                      <input type="checkbox" id="settings_public" name="public"> Public on 3GT
+                                    </label>
+                                  </div>
+                                  <!-- post to facebook -->
+                                  <div class="col-md-5 col-sm-5 col-xs-10">
+                                    <label class="checkbox-inline" id="settings_wall_label">
+                                        <input type="checkbox" id="settings_wall" name="wall"> Post to Facebook
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-12">
+                                <input type="button" class="btn btn-default btn-block disabled" id="submit_good_thing" value="Post" required="required"></input>
+                                <input type="button" class="btn btn-default btn-block" id="posting" value="Posting ..."></input>
+                              </div>
                           </div>
-                          <input id="magic_friend_tagging" class="form-control" type="text" placeholder="Friends" name='mentions'/>
-                      </div>
-
-                        
-                        <button type="button" class="btn btn-default" id="submit_good_thing">Post</button>
-                        <input type="button" class="btn btn-default" id="posting" value="Posting ..."></input>
+                      </div> 
                     </form>
                 </div>
             </div>
@@ -203,7 +223,8 @@
 
 {% block profile %}
 <!-- profile sidebar -->
-<div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12">
+<!-- <div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12"> -->
+<div class="col-md-2 col-md-offset-2 col-sm-4 hidden-xs">
     <div class="panel panel-default">
         <div class="panel-body"><a href='../user/?userid={{current_user.id}}' id='profile_link' data-id={{current_user.id}}><img src="http://graph.facebook.com/{{ current_user.id }}/picture?width=250" alt="..." class="img-rounded img-responsive"></a>
             <hr>
