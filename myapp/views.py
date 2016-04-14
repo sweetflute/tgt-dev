@@ -453,6 +453,13 @@ class SurveyHandler(BaseHandler):
                     user.survey_4_id = survey_id
                 user.put()           
 
+class FileUploadHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
+    def get(self):
+        upload_url = blobstore.create_upload_url('/post')
+        logging.info(upload_url)
+        result = {'upload_url': upload_url}
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(result))
 
 
 class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
@@ -515,7 +522,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                         result = []
                         while(len(result) < 10):
                         # all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
-                            logging.info("view=all, good_things_cursor=" + str(good_things_cursor))
+                            # logging.info("view=all, good_things_cursor=" + str(good_things_cursor))
                         # logging.info("good_things_cursor type=" + str(type(good_things_cursor)))
                         # logging.info("count of all good things:" + str(all_good_things.count()))
                         
@@ -524,13 +531,13 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                         # good_things_filtered = 
                             good_things = all_good_things.filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
                         # logging.info("count of all good things before fetch:" + str(good_things_filtered.count()))
-                            logging.info("count of fetched good_things:" + str(len(good_things)))
-                            logging.info([x.good_thing for x in good_things])
+                            # logging.info("count of fetched good_things:" + str(len(good_things)))
+                            # logging.info([x.good_thing for x in good_things])
                             good_things_cursor = all_good_things.cursor()
-                            logging.info("new good_things_cursor=" + str(good_things_cursor))
+                            # logging.info("new good_things_cursor=" + str(good_things_cursor))
                             result += [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
                         # result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things]#[::-1]
-                            logging.info("count of result=" + str(len(result)))
+                            # logging.info("count of result=" + str(len(result)))
 
                             
                         logging.info("view == all")

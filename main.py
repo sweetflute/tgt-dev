@@ -13,6 +13,8 @@ app = webapp2.WSGIApplication(
         ('/logout', views.LogoutHandler),
         # API for posting good things and getting good things
         ('/post', views.PostHandler),
+        # API for getting uploadURL
+        ('/upload', views.FileUploadHandler),
         # API for adding/removing cheers and getting cheers
         ('/cheer', views.CheerHandler),
         # API for posting comments and getting comments

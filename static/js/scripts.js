@@ -2,11 +2,23 @@ var current_view = 'all';
 var old_cursor = '';
 
 
+$(document).on('click','.glyphicon-camera', function(e){  
+    if ($(this).data('select') === 'on') {
+        $("#icon-photo").css("color", "#333");
+        $('.form-group :file').wrap('<form>').closest('form').get(0).reset();
+        $('.form-group :file').unwrap();
+        e.preventDefault();
+        $(this).data('select','off');
+        $('#filename').text('');
+    }
+});
+
 $(document).on('change', '.form-group :file', function() {
     var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1,
     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
     input.trigger('fileselect', [numFiles, label]);
+    $('.glyphicon-camera').data('select','on');
 });
 
 $(document).on('change', "input#good_thing", function(){
@@ -91,32 +103,36 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     $("#submit_good_thing").css("display","none");
     $("#posting").css("display","inline");
-    
-    $.ajax({
-      // url: "/post",
-      url: upload_url,
-      data: data_in,
-      cache: false,
-      processData: false,
-      contentType: false,
-      enctype: 'multipart/form-data',
-      type: 'POST',
 
-      success: function(data) {
-        // alert("ajax success");
-        $('input#good_thing, input#reason, input#img').val('');
-        $('#magic_friend_tagging').magicSuggest().clear();
-        get_settings();
-        get_posts(data, true);
-        get_stats();
+    $.get("/upload").done(function(data){
+        upload_url = data.upload_url;
+        console.log(upload_url);
 
-        $("#submit_good_thing").css("display","block");
-        $("#posting").css("display","none");
-        $("#div_friend_tagging").css("display", "none");
-        $("#filename").css("display", "none");
-      }
+        $.ajax({
+          // url: "/post",
+          url: upload_url,
+          data: data_in,
+          cache: false,
+          processData: false,
+          contentType: false,
+          enctype: 'multipart/form-data',
+          type: 'POST',
+
+          success: function(data) {
+            // alert("ajax success");
+            $('input#good_thing, input#reason, input#img').val('');
+            $('#magic_friend_tagging').magicSuggest().clear();
+            get_settings();
+            get_posts(data, true);
+            get_stats();
+
+            $("#submit_good_thing").css("display","block");
+            $("#posting").css("display","none");
+            $("#div_friend_tagging").css("display", "none");
+            $("#filename").css("display", "none");
+          }
+        });
     });
-
     return false;
 });
 

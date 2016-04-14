@@ -165,39 +165,44 @@
                             <div class="row">
                               <div class="col-md-1 col-sm-1 col-xs-1">
                                 <label for="img">
-                                  <span class="glyphicon glyphicon-camera" id="icon-photo" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture"/>
+                                  <span class="glyphicon glyphicon-camera icon-bg" id="icon-photo" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Add a picture" data-select="off"/>
                                 </label>
-                                <input type="file" name="img" id="img" multiple>
+                                <form>
+                                  <input type="file" name="img" id="img" multiple>
+                                </form>
                               </div>
                               <div class="col-md-1 col-sm-1 col-xs-1">
                                 <!-- tag friends -->
-                                <label for="twitter_friend_tagging">
-                                  <span class="glyphicon glyphicon-user" id="icon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends"/>
+                                <label>
+                                  <span class="glyphicon glyphicon-user icon-bg" id="icon-user" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Tag some friends" data-select="off"/>
                                 </label>
                               </div>
-                              <div class="col-md-7 col-sm-7 col-xs-12">
-                                <div class="row">
-                                  <div class="col-md-2 col-sm-2 col-xs-2">
+                              <div class="col-md-8 col-sm-7 col-xs-12">
+                                <div class="row icon-group">
+                                  <div class="col-md-1 col-sm-1 col-xs-1">
                                     <label>
                                       <span class="glyphicon glyphicon-globe" aria-hidden="true"/>
                                     </label>
                                   </div>
+                                  <div class="col-md-3 col-sm-3 col-xs-3">
+                                    Share on
+                                  </div>
                                   <!-- post to 3gt -->
-                                  <div class="col-md-5 col-sm-5 col-xs-10">
-                                    <label class="checkbox-inline" >
+                                  <div class="col-md-4 col-sm-5 col-xs-5">
+                                    <label class="checkbox-inline">
                                     <!-- <label> -->
-                                      <input type="checkbox" id="settings_public" name="public"> Public on 3GT
+                                      <input type="checkbox" id="settings_public" name="public">3GT
                                     </label>
                                   </div>
                                   <!-- post to facebook -->
-                                  <div class="col-md-5 col-sm-5 col-xs-10">
+                                  <div class="col-md-4 col-sm-5 col-xs-5">
                                     <label class="checkbox-inline" id="settings_wall_label">
-                                        <input type="checkbox" id="settings_wall" name="wall"> Post to Facebook
+                                        <input type="checkbox" id="settings_wall" name="wall">Facebook
                                     </label>
                                   </div>
                                 </div>
                               </div>
-                              <div class="col-md-3 col-sm-3 col-xs-12">
+                              <div class="col-md-2 col-sm-3 col-xs-12">
                                 <input type="button" class="btn btn-default btn-block disabled" id="submit_good_thing" value="Post" required="required"></input>
                                 <input type="button" class="btn btn-default btn-block" id="posting" value="Posting ..."></input>
                               </div>

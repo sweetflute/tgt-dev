@@ -59,17 +59,17 @@ div.post {
   font-size: 20px;
 }
 
-.form-group .glyphicon{
+/*.form-group .glyphicon{
   margin-left: 10px;
-}
+}*/
 
 .form-group .glyphicon.glyphicon-camera, .glyphicon.glyphicon-user{
   cursor:pointer;
 }
 
-#settings_wall_label{
+/*#settings_wall_label{
   margin-bottom:10px;
-}
+}*/
 
 #filename{
   display: none;
@@ -77,6 +77,21 @@ div.post {
 
 #content img { 
   width: 100%;
+}
+
+.icon-bg {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-right: 3px;
+  padding:7px;
+}
+
+.icon-group {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-right: 3px;
+  padding-top:7px;
+  margin-left: 0px;
 }
 /** New style override - Tony Ip**/
 
