@@ -25,10 +25,6 @@ $(document).on('change', "textarea#good_thing", function(){
     $("#submit_good_thing").removeClass('disabled');
 });
 
-$(document).on('change', "input#magic_friend_tagging", function(){
-    $("#icon-photo").css("color", "#337ab7");
-});
-
 $(document).on("click","button#save_settings",function(e) {
     // console.log($( "form#settings" ).serialize());
     data_in = "reminder_days="
@@ -66,7 +62,16 @@ $(document).on("click","button#close_settings",function(e) {
 });
 
 $(document).on("click", ".glyphicon-user", function(){
-    $("#div_friend_tagging").css("display", "table");
+    if ($(this).data('select') === 'off') {
+        $("#div_friend_tagging").css("display", "table");
+        $("#icon-user").css("color", "#337ab7");
+        $(this).data('select', 'on');
+    }else if ($(this).data('select') === 'on') {
+        $("#div_friend_tagging").css("display", "none");
+        $('#magic_friend_tagging').magicSuggest().clear();
+        $("#icon-user").css("color", "#333");
+        $(this).data('select', 'off');
+    } 
 });
 
 // submit a new post
