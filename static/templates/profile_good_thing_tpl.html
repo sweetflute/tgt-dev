@@ -8,8 +8,12 @@
                 </div>
                 <div class="media-body">
                     <div id="status">
-                        <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
-                        <span>{{public}}</span>
+                        <a href="../posts/?postid={{id}}" target="_blank">
+                            <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
+                        </a>
+                        {{#current_user}}
+                            • <span>{{public}}</span>
+                        {{/current_user}}
                     </div>
                     <div id="content">
                         {{#img_url}}<p><img src="{{img_url}}"/></p>{{/img_url}}
@@ -25,10 +29,48 @@
                             {{/mentions}}
                         </ul>
                         {{/num_mentions}}
-                        {{#current_user}}<span id='cheer'>({{num_cheers}})cheer</span>{{/current_user}}
-                        {{^current_user}}<a href="#" class="link" id='cheer' data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>({{num_cheers}}) {{#cheered}}uncheer{{/cheered}}{{^cheered}}cheer{{/cheered}}</a>{{/current_user}}
+                        {{#current_user}}
+                            <span id='cheer'>
+                                {{#is_cheered}}
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">
+                                        {{num_cheers}} cheers
+                                    </a>
+                                     <ul class="dropdown-menu" id="cheer_list">
+                                        {{#cheer_names}}
+                                        <li>{{cheer_name}}</li>
+                                        {{/cheer_names}}
+                                    </ul>
+                                {{/is_cheered}}
+                                {{^is_cheered}}
+                                    {{num_cheers}} cheers
+                                {{/is_cheered}}
+                            </span>
+                        {{/current_user}}
+                        {{^current_user}}
+                            <span id='cheer'>
+                            {{#is_cheered}}
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">{{num_cheers}} cheers 
+                                </a>
+                                 <ul class="dropdown-menu" id="cheer_list">
+                                    {{#cheer_names}}
+                                    <li>{{cheer_name}}</li>
+                                    {{/cheer_names}}
+                                </ul>
+                            {{/is_cheered}}
+                            {{^is_cheered}}
+                                {{num_cheers}} cheers
+                            {{/is_cheered}}
+                            </span>
+                            <a id='acheer' href="#" class="link" data-toggle={{#cheered}}"on"{{/cheered}}{{^cheered}}"off"{{/cheered}}>{{#cheered}}(uncheer){{/cheered}}{{^cheered}}(cheer){{/cheered}}</a>
+                        {{/current_user}}
+                         • 
                         {{#current_user}}<a href="#" class="link" id='delete'>delete</a> • {{/current_user}}
-                        <a href="#" class="link" data-toggle="off" id='comment'>({{num_comments}}) comments</a>
+                        {{#is_commented}}
+                            <a href="#" class="link" data-toggle="off" id='comment'>{{num_comments}} comment(s)</a>
+                        {{/is_commented}}
+                        {{^is_commented}}
+                            <span id='comment'>{{num_comments}} comment(s)</span>
+                        {{/is_commented}}
                     </div>
                     <!-- comments of the good thing -->
                     <div id="comments"></div>
@@ -47,7 +89,7 @@
     <hr>
     <div id='data_container' data-id={{id}} data-good_thing_id={{good_thing_id}} data-user_id={{user_id}} data-type='comment'>
         <div id="name">
-            <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{user_name}}</a>:</h4>
+            <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{display_name}}</a>:</h4>
         </div>
         <div id="content">{{comment_text}}</div>
         <div id="control">
@@ -55,6 +97,13 @@
             {{#current_user}} • <a href="#" class="link" id='delete'>delete</a>{{/current_user}}
         </div>
     </div>
+</script>
+
+<!-- more template -->
+<script id='more_tpl' type='text/html'>
+<div id='more'>
+    <a href="#" class="link" data-toggle="off">More ..</a>
+</div>
 </script>
 
 <!-- comment notification template -->

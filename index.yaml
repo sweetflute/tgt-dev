@@ -87,3 +87,10 @@ indexes:
   - name: memory
   - name: created
     direction: desc
+
+- kind: GoodThing
+  properties:
+  - name: deleted
+  - name: public
+  - name: created
+    direction: desc

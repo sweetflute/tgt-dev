@@ -42,8 +42,12 @@ div.post {
   padding:5px;
 }
 
-#mention_list li {
+#mention_list li, #cheer_list li{
   padding:5px;
+}
+
+.faq li{
+  padding:3px;
 }
 
 #img{
@@ -76,7 +80,8 @@ div.post {
 }
 
 #content img { 
-  width: 100%;
+  /*width: 100%;*/
+  max-width:100%;
 }
 
 .icon-bg {
@@ -178,9 +183,9 @@ body {
 #good_things p:last-child {
   margin-bottom:15px;
 }
-#good_things #status span:nth-child(1)::after {
+/*#good_things #status span:nth-child(1)::after {
   content: " • ";
-}
+}*/
 #good_things #status span{
   display: inline-block;
   font-size: 0.9em;
@@ -188,7 +193,7 @@ body {
 #good_things #status span:first-letter {
   text-transform: uppercase;
 }
-#good_things #control {
+#good_things #control, #more{
   margin-bottom:10px;
 }
 #good_things #control form{
@@ -282,7 +287,7 @@ body {
   content: ": ";
 }*/
 
-#good_things #comments #content {
+#good_things #comments #content{
   font-size: 14px;
   margin-bottom: 6px;
   line-height: 14px;
@@ -291,6 +296,7 @@ body {
   /*display:inline-block;*/
   /*padding-left: 6px;*/
 }
+
 h4 {
   margin-top:26px;
   margin-bottom:0;

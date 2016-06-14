@@ -38,23 +38,14 @@ $(document).on("click","button#close_settings",function(e) {
 });
 
 
-$(document).on("click","a#acheer",function(e) {
+$(document).on("click","a#cheer",function(e) {
     var cheer = $(this)
     var url_data = 'good_thing=' + cheer.parents('div#data_container').data('id');
         $.post( "/cheer",url_data).done(function(data){
             if (data.cheered) {
-                var result = '(uncheer)';
-                cheer.prev('span#cheer').html('<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">'
-                                   + data.cheers + ' cheers </a>');
+                var result = '(' + data.cheers + ') uncheer';
             } else {
-                var result = '(cheer)';
-                console.log("data.cheers=" + data.cheers);
-                if(data.cheers == '0'){
-                    cheer.prev('span#cheer').text('0 cheer ');
-                }
-                else
-                    cheer.prev('span#cheer').html('<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">'
-                                   + data.cheers + ' cheers </a>');
+                var result = '(' + data.cheers + ') cheer';
             }
             cheer.text(result);
         });
@@ -70,21 +61,8 @@ $(document).on("click","a#delete",function(e) {
     $.post( "/delete",url_data).done(function(data){
         if (type == 'comment') {
             console.log('deleting a comment')
-            var comment_a = $('div[data-id="'+id+'"]').parents('div#data_container').find('#comment');
-            var num_comments = parseInt(comment_a.text().split('')[0]) - 1;
-            console.log(comment_a.data('toggle'));
-            if(num_comments > 0){
-                if(comment_a.data('toggle') === 'on')
-                    var result = '<a href="#" class="link" data-toggle="on" id="comment">' + num_comments + ' comment(s)</a>';
-                else
-                    var result = '<a href="#" class="link" data-toggle="off" id="comment">' + num_comments + ' comment(s)</a>';
-            }
-            else
-                var result = '<span id="comment">' + data.num_comments + ' comment(s)</span>';
-            var div_more = comment_a.parents('div#data_container').find('#more');
-            div_more.remove();
-            // var result = "(" + data.num_comments + ') comments'
-            comment_a.replaceWith(result);
+            var result = "(" + data.num_comments + ') comments'
+            $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
             $('div[data-id="'+id+'"]').remove();
         } else {
             console.log('deleting a good thing');
@@ -103,29 +81,11 @@ $(document).on("submit","form#comment_form",function(e) {
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        var comment_a = good_thing.parents('div#data_container').find('#comment');
-        var num_comments = parseInt(comment_a.text().split('')[0]) + 1;
-   
-        console.log(comment_a.data('toggle'));
-        
-        if (comment_a.data('toggle') === 'on'){
-            var result = '<a href="#" class="link" data-toggle="on" id="comment">' + num_comments + ' comment(s)</a>';
-            var to_clear = false;
-        }else{
-            var result = '<a href="#" class="link" data-toggle="off" id="comment">' + num_comments + ' comment(s)</a>';
-            var to_clear = true;
-        }
-
-        if(num_comments > 0){
-            if(num_comments > 1 && comment_a.data('toggle') === 'off')
-                get_comments(data,id, true, to_clear);
-            else
-                get_comments(data,id, false, to_clear);
-        }else{
-            var result = '<span id="comment">' + num_comments + ' comment(s)</span>';
-        }
-        
-        comment_a.replaceWith(result);
+        get_comments(data,id);
+        var comment_a = good_thing.parents('div#data_container').find('a#comment');
+        var num_comments = parseInt(comment_a.text().substr(1,2)) + 1;
+        var result = "(" + num_comments + ') comments'
+        comment_a.text(result);
     });
     return false;
 });
@@ -137,7 +97,7 @@ $(document).on("click","a#comment",function(e) {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id,false, true);
+            get_comments(data,id);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -148,54 +108,39 @@ $(document).on("click","a#comment",function(e) {
     }
 });
 
-// click on more comment
-$(document).on("click","div#more > a",function(e) {
-    var good_thing = $(this);
-    var comment_a = good_thing.parents('div#data_container').find('#comment');
-    console.log(comment_a.data('toggle'));
-    var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
-    $.post( "/comment",url_data).done(function(data){
-        var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id,false, true);
-    });
-    comment_a.data('toggle', 'on');
-    console.log("after more:" + comment_a.data('toggle'));
-    return false;
-});
+// $(document).on("click","#word_cloud > a",function(e) {
+//     // alert($(this).text());
+//     var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//     var user_id = results[1];
+//     var goodthing_word = $(this).text();
+//     var url_data = "user_id=" + user_id + "&goodthing_word=" + goodthing_word;
 
-$(document).on("click","#word_cloud > a",function(e) {
-    // alert($(this).text());
-    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-    var user_id = results[1];
-    var goodthing_word = $(this).text();
-    var url_data = "user_id=" + user_id + "&goodthing_word=" + goodthing_word;
+//     $.get("/search", url_data).done(function(data){
+//         get_search(data);
+//     });
+// });
 
-    $.get("/search", url_data).done(function(data){
-        get_search(data);
-    });
-});
+// $(document).on("click","#reason_cloud > a",function(e) {
+//     var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//     var user_id = results[1];
+//     var reason_word = $(this).text();
+//     var url_data = "user_id=" + user_id + "&reason_word=" + reason_word;
 
-$(document).on("click","#reason_cloud > a",function(e) {
-    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-    var user_id = results[1];
-    var reason_word = $(this).text();
-    var url_data = "user_id=" + user_id + "&reason_word=" + reason_word;
+//     $.get("/search", url_data).done(function(data){
+//         get_search(data);
+//     });
+// });
 
-    $.get("/search", url_data).done(function(data){
-        get_search(data);
-    });
-});
+// $(document).on("click","#friend_cloud > a",function(e) {
+//     var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//     var user_id = results[1];
+//     var friend_word = $(this).text();
+//     var url_data = "user_id=" + user_id + "&friend_word=" + friend_word;
 
-$(document).on("click","#friend_cloud > a",function(e) {
-    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-    var user_id = results[1];
-    var friend_word = $(this).text();
-    var url_data = "user_id=" + user_id + "&friend_word=" + friend_word;
-
-    $.get("/search", url_data).done(function(data){
-        get_search(data);
-    });
-});
+//     $.get("/search", url_data).done(function(data){
+//         get_search(data);
+//     });
+// });
 
 
 
@@ -213,66 +158,89 @@ $(document).on("click","#friend_cloud > a",function(e) {
 //     });
 // });
 
-var loading = false;
-$(window).scroll(function()
-{
-    if($(window).scrollTop() == $(document).height() - $(window).height())
-    {
 
-        if(!loading){
-            $('#good_things').append('<li class="list-group-item" id="loading">loading ...</li>');
-            loading = true;
-        }
-        if($('#next').attr('data-name') != null)
-            cursor = $('#next').attr('data-name');
-        var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-        var data_in = "view=profile&cursor=" + cursor + '&userid=' + results[1];
-        $.post( "/post", data_in).done(function (data) {
-            // $('ul#good_things').empty();
-            $('li#loading').remove();
-            loading = false;
-            get_posts(data, false);
-        });
-    }
-});
+// $(window).scroll(function()
+// {
+//     if($(window).scrollTop() == $(document).height() - $(window).height())
+//     {
+//         if($('#next').attr('data-name') != null)
+//             cursor = $('#next').attr('data-name');
+//         var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//         var data_in = "view=profile&cursor=" + cursor + '&userid=' + results[1];
+//         $.post( "/post", data_in).done(function (data) {
+//             // $('ul#good_things').empty();
+//             get_posts(data, false);
+//         });
+//     }
+// });
 
 // on page load
 window.onload = function() {
     $( document ).ready(function() {        
-        load_all_post();
+        load_a_post();
+        // load_all_post();
         // change_view();
         // tag_friends();
 
     });
 };
 
-// get all posts on page load
-function load_all_post(){
 
-        var view = 'view=profile';
+// get all posts on page load
+function load_a_post(){
+
+        // var view = 'view=profile';
         // current_view = "profile";
-        var cursor = "";
-        if($('#next').attr('data-name') != null)
-            cursor = $('#next').attr('data-name');
+        // var cursor = "";
+        // if($('#next').attr('data-name') != null)
+            // cursor = $('#next').attr('data-name');
         // alert(cursor);
         // var data_in = view + '&cursor=' + $('#next').attr('data-name');
-        var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-        var data_in = view + '&cursor=' + cursor + '&userid=' + results[1];
+        var results = new RegExp('[\?&]' + 'postid' + '=([^&#]*)').exec(window.location.href);
+        var data_in = 'postid=' + results[1];
 
-        console.log("load_all_posts:" + data_in);
+        // console.log("load_all_posts:" + data_in);
 
-        $.post( "/post", data_in).done(function(data){
+        $.post( "/posts/?", data_in).done(function(data){
             get_posts(data, false);
         });
         // get user settings
         get_settings();
         // get user stats
-        get_stats();
+        // get_stats();
         // get unread notifications
         $.get('/notify','').done(function(data) {
             get_notifications(data);
         })
 }
+
+// get all posts on page load
+// function load_all_post(){
+
+//         var view = 'view=profile';
+//         // current_view = "profile";
+//         var cursor = "";
+//         if($('#next').attr('data-name') != null)
+//             cursor = $('#next').attr('data-name');
+//         // alert(cursor);
+//         // var data_in = view + '&cursor=' + $('#next').attr('data-name');
+//         var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//         var data_in = view + '&cursor=' + cursor + '&userid=' + results[1];
+
+//         console.log("load_all_posts:" + data_in);
+
+//         $.post( "/post", data_in).done(function(data){
+//             get_posts(data, false);
+//         });
+//         // get user settings
+//         get_settings();
+//         // get user stats
+//         get_stats();
+//         // get unread notifications
+//         $.get('/notify','').done(function(data) {
+//             get_notifications(data);
+//         })
+// }
 
 
 // change views
@@ -363,31 +331,26 @@ function localize_time(created_time){
 
 // render posts from template and json data
 function get_posts(post_list, posting) {
-    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/apost_good_thing_tpl.html', function(templates) {
         post_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#good_thing_tpl').html();
-            if (posting)
-                $('ul#good_things').prepend(Mustache.render(template, data));
-            else
-                $('ul#good_things').append(Mustache.render(template, data));
+            // if (posting)
+            //     $('ul#good_things').prepend(Mustache.render(template, data));
+            // else
+            $('ul#good_things').append(Mustache.render(template, data));
 
         });
 
-        $("a#comment, span#comment").each(function(){
+        $("span#comment").each(function(){
             var good_thing = $(this);            
             var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
             $.post( "/comment",url_data).done(function(data){
                 var id = good_thing.parents('div#data_container').data('id');
-                if(data.length > 1){
-                    get_comments(data.slice(0,1),id, true, true);
-                    good_thing.data('toggle', 'off');
-                }else if(data.length == 1){
-                    get_comments(data.slice(0,1),id, false, true);
-                    good_thing.data('toggle', 'on');
-                }
+                get_comments(data,id);
             });
+            good_thing.data('toggle', 'on');
         });
 
         $(".local-time").each(function(){
@@ -402,22 +365,16 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id, has_more, to_clear) {
+function get_comments(comment_list,id) {
     $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
         var comment_section = $('div#data_container[data-id="'+id+'"]').find('div#comments');
-        if(to_clear)
-            comment_section.empty();
+        // comment_section.empty();
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
             
             comment_section.append(Mustache.render(template, data));
-
-            if(has_more){
-                var template_more = $(templates).filter('#more_tpl').html();
-                comment_section.append(Mustache.render(template_more, data));
-            }
 
             $(".comment-time").each(function(index){
                 var created_time = $(this).html();
@@ -428,59 +385,56 @@ function get_comments(comment_list,id, has_more, to_clear) {
     });
 }
 
-function get_stats() {
-    var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
-    var data_in = 'view=profile&user_id=' + results[1]+ '&tzoffset=' + (new Date().getTimezoneOffset())/60;
-    $.post( "/stat",data_in).done(function (data) {
-        $('div#progress').css('width',data.progress);
-        $('span#progress').text(data.progress + ' Complete');
-        $('#good_things_today').text(data.posts_today + ' Good Things Today');
-        $('#good_things_total').text(data.posts + ' Total Good Things');
-        $('#good_things_total').tooltip({
-            'title': data.average_posts + ' posts per day',
-            'placement': 'bottom'});
-        $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
-            $('div#word_cloud').empty();
-            data.word_cloud.forEach(function(data) {
-                var template = $(templates).filter('#word_cloud_tpl').html();
-                $('div#word_cloud').prepend(Mustache.render(template, data));
-            });
-            $.fn.tagcloud.defaults = {
-                size: {start: 12, end: 18, unit: 'pt'},
-                color: {start: '#777', end: '#777'}
-            };
-            $(function () {
-                $('#word_cloud a').tagcloud();
-            });
+// function get_stats() {
+//     var results = new RegExp('[\?&]' + 'userid' + '=([^&#]*)').exec(window.location.href);
+//     var data_in = 'view=profile&user_id=' + results[1]+ '&tzoffset=' + (new Date().getTimezoneOffset())/60;
+//     $.post( "/stat",data_in).done(function (data) {
+//         $('div#progress').css('width',data.progress);
+//         $('span#progress').text(data.progress + ' Complete');
+//         $('#good_things_today').text(data.posts_today + ' Good Things Today');
+//         $('#good_things_total').text(data.posts + ' Total Good Things');
+//         $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+//             $('div#word_cloud').empty();
+//             data.word_cloud.forEach(function(data) {
+//                 var template = $(templates).filter('#word_cloud_tpl').html();
+//                 $('div#word_cloud').prepend(Mustache.render(template, data));
+//             });
+//             $.fn.tagcloud.defaults = {
+//                 size: {start: 12, end: 18, unit: 'pt'},
+//                 color: {start: '#777', end: '#777'}
+//             };
+//             $(function () {
+//                 $('#word_cloud a').tagcloud();
+//             });
 
-            $('div#reason_cloud').empty();
-            data.reason_cloud.forEach(function(data) {
-                var template = $(templates).filter('#word_cloud_tpl').html();
-                $('div#reason_cloud').prepend(Mustache.render(template, data));
-            });
-            $.fn.tagcloud.defaults = {
-                size: {start: 12, end: 18, unit: 'pt'},
-                color: {start: '#777', end: '#777'}
-            };
-            $(function () {
-                $('#reason_cloud a').tagcloud();
-            });
+//             $('div#reason_cloud').empty();
+//             data.reason_cloud.forEach(function(data) {
+//                 var template = $(templates).filter('#word_cloud_tpl').html();
+//                 $('div#reason_cloud').prepend(Mustache.render(template, data));
+//             });
+//             $.fn.tagcloud.defaults = {
+//                 size: {start: 12, end: 18, unit: 'pt'},
+//                 color: {start: '#777', end: '#777'}
+//             };
+//             $(function () {
+//                 $('#reason_cloud a').tagcloud();
+//             });
 
-            $('div#friend_cloud').empty();
-            data.friend_cloud.forEach(function(data) {
-                var template = $(templates).filter('#word_cloud_tpl').html();
-                $('div#friend_cloud').prepend(Mustache.render(template, data));
-            });
-            $.fn.tagcloud.defaults = {
-                size: {start: 12, end: 18, unit: 'pt'},
-                color: {start: '#777', end: '#777'}
-            };
-            $(function () {
-                $('#friend_cloud a').tagcloud();
-            });
-        });
-    });
-}
+//             $('div#friend_cloud').empty();
+//             data.friend_cloud.forEach(function(data) {
+//                 var template = $(templates).filter('#word_cloud_tpl').html();
+//                 $('div#friend_cloud').prepend(Mustache.render(template, data));
+//             });
+//             $.fn.tagcloud.defaults = {
+//                 size: {start: 12, end: 18, unit: 'pt'},
+//                 color: {start: '#777', end: '#777'}
+//             };
+//             $(function () {
+//                 $('#friend_cloud a').tagcloud();
+//             });
+//         });
+//     });
+// }
 
 function get_settings() {
     $.get( "/settings",'')
@@ -521,33 +475,33 @@ function get_notifications(notification_list) {
     });
 }
 
-function get_search(post_list) {
-    console.log("in get_search");
-    console.log(post_list);
-    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
-        // console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
-        $('ul#good_things').empty();
-        $('#next').attr('data-name',"");
-        post_list.forEach(function(data) {
-            // Fetch the <script /> block from the loaded external
-            // template file which contains our greetings template.
-            var template = $(templates).filter('#good_thing_tpl').html();
-            $('ul#good_things').append(Mustache.render(template, data));
-        });
+// function get_search(post_list) {
+//     console.log("in get_search");
+//     console.log(post_list);
+//     $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+//         // console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
+//         $('ul#good_things').empty();
+//         $('#next').attr('data-name',"");
+//         post_list.forEach(function(data) {
+//             // Fetch the <script /> block from the loaded external
+//             // template file which contains our greetings template.
+//             var template = $(templates).filter('#good_thing_tpl').html();
+//             $('ul#good_things').append(Mustache.render(template, data));
+//         });
 
 
-            $(".local-time").each(function(index){
-                var created_time = $(this).html();
-                $(this).html(localize_time(created_time));
+//             $(".local-time").each(function(index){
+//                 var created_time = $(this).html();
+//                 $(this).html(localize_time(created_time));
 
-                if (index == 1)
-                 if($(this).attr('data-url') != null)
-                    $('#img').attr('data-url', $(this).attr('data-url'));
+//                 if (index == 1)
+//                  if($(this).attr('data-url') != null)
+//                     $('#img').attr('data-url', $(this).attr('data-url'));
 
-                $(this).attr("class", ".local-time-done");
-            });
-    });
-}
+//                 $(this).attr("class", ".local-time-done");
+//             });
+//     });
+// }
 
 window.fbAsyncInit = function() {
     FB.init({

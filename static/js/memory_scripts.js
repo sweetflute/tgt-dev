@@ -135,7 +135,11 @@ $(document).on("click","#submit_good_thing",function(e) {
             $("#submit_good_thing").css("display","block");
             $("#posting").css("display","none");
             $("#div_friend_tagging").css("display", "none");
+            $("#icon-user").css("color", "#333");
+            $("#icon-user").data('select', 'off');
             $("#filename").css("display", "none");
+            $("#icon-photo").css("color", "#333");
+            $("#icon-photo").data('select', 'off');
           }
         });
     });
@@ -597,7 +601,7 @@ window.fbAsyncInit = function() {
                 });
                 console.log(friend_app_ids);
                 // get list of taggable fb friends
-                FB.api("/me/taggable_friends",function (response) {
+                FB.api("/me/taggable_friends?limit=5000",function (response) {
                     if (response && !response.error) {
                         response.data.forEach(function(friend_data) {
                             friend = {

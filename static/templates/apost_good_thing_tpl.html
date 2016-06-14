@@ -14,9 +14,7 @@
                         <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{display_name}}</a></h4>
                     </div>
                     <div id="status">
-                        <a href="../posts/?postid={{id}}" target="_blank">
-                            <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
-                        </a>
+                        <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
                         {{#current_user}}
                             • <span>{{public}}</span>
                         {{/current_user}}
@@ -71,12 +69,7 @@
                         {{/current_user}}
                          • 
                         {{#current_user}}<a href="#" class="link" id='delete'>delete</a> • {{/current_user}}
-                        {{#is_commented}}
-                            <a href="#" class="link" data-toggle="off" id='comment'>{{num_comments}} comment(s)</a>
-                        {{/is_commented}}
-                        {{^is_commented}}
-                            <span id='comment'>{{num_comments}} comment(s)</span>
-                        {{/is_commented}}
+                        <span id='comment'>{{num_comments}} comment(s)</span>
                     </div>
                     <!-- comments of the good thing -->
                     <div id="comments"></div>
@@ -107,32 +100,24 @@
     </div>
 </script>
 
-<!-- more template -->
-<script id='more_tpl' type='text/html'>
-<div id='more'>
-    <a href="#" class="link" data-toggle="off">More ..</a>
-</div>
-</script>
-
-
 <!-- comment notification template -->
 <script id='comment_notification_tpl' type='text/html'>
     <li>
-        <a id="notification_link" href="../posts/?postid={{event_id}}" data-event_id={{event_id}} target="_blank">{{from_user}} commented on your good thing</a>
+        <a id="notification_link" href="#{{event_id}}" data-event_id={{event_id}}>{{from_user}} commented on your good thing</a>
     </li>
 </script>
 
 <!-- cheer notification template -->
 <script id='cheer_notification_tpl' type='text/html'>
     <li>
-        <a id="notification_link" href="../posts/?postid={{event_id}}" data-event_id="{{event_id}}" target="_blank">{{from_user}} cheered your good thing</a>
+        <a id="notification_link" href="#{{event_id}}" data-event_id="{{event_id}}">{{from_user}} cheered your good thing</a>
     </li>
 </script>
 
 <!-- mention notification template -->
 <script id='mention_notification_tpl' type='text/html'>
     <li>
-        <a id="notification_link" href="../posts/?postid={{event_id}}" data-event_id={{event_id}} target="_blank">{{from_user}} mentioned you in a good thing</a>
+        <a id="notification_link" href="#{{event_id}}" data-event_id={{event_id}}>{{from_user}} mentioned you in a good thing</a>
     </li>
 </script>
 

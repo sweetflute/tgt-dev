@@ -1,4 +1,1 @@
 cron:
-- description: daily email reminders
-  url: /reminder
-  schedule: every day 00:00

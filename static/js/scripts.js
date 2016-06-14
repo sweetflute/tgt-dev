@@ -22,8 +22,14 @@ $(document).on('change', '.form-group :file', function() {
 });
 
 $(document).on('change', "input#good_thing", function(){
-    $("#submit_good_thing").removeClass('disabled');
+    if ($("input#good_thing").val().length >= 1){
+        $("#submit_good_thing").removeClass('disabled');
+    }
 });
+
+// $(document).on('change', "input#good_thing", function(){
+//     $("#submit_good_thing").removeClass('disabled');
+// });
 
 // submit settings from settings form
 // generic alert on success
@@ -39,6 +45,10 @@ $(document).on("click","button#save_settings",function(e) {
     if($('input#settings_public').prop('checked'))
         data_in += "&default_public=on"
     data_in += "&email=" + $('input#email_setting').val();
+    if($('input#short_name').prop('checked'))
+        data_in += "&display_name=" + $('input#short_name').next().html();
+    else
+        data_in += "&display_name=" + $('input#long_name').next().html();
     console.log(data_in)
     $.post( "/settings",data_in).done(function(data) {
         $('#settings_modal').modal('hide');
@@ -77,14 +87,10 @@ $(document).on("click", ".glyphicon-user", function(){
     } 
 });
 
-$(document).on('change', "input#good_thing", function(){
-    $("#submit_good_thing").removeClass('disabled');
-});
-
 // submit a new post
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
-    //console.log($( "#post" ).serialize());
+    console.log($( "#post" ).serialize());
     //TODO: check required field
     // $("form#post").find('[required]').each(function(){
     //     if($(this).val() == ''){
@@ -97,7 +103,7 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
-    console.log(mention_list)
+    // console.log(mention_list)
     var img_file = $("#img")[0].files[0];
     var upload_url = $("#img").attr('data-url');
     // console.log(upload_url)
@@ -113,6 +119,7 @@ $(document).on("click","#submit_good_thing",function(e) {
 
     $("#submit_good_thing").css("display","none");
     $("#posting").css("display","inline");
+    console.log($('#good_thing').text());
 
     $.get("/upload").done(function(data){
         upload_url = data.upload_url;
@@ -139,7 +146,12 @@ $(document).on("click","#submit_good_thing",function(e) {
             $("#submit_good_thing").css("display","block");
             $("#posting").css("display","none");
             $("#div_friend_tagging").css("display", "none");
+            $("#icon-user").css("color", "#333");
+            $("#icon-user").data('select', 'off');
             $("#filename").css("display", "none");
+            $("#icon-photo").css("color", "#333");
+            $("#icon-photo").data('select', 'off');
+
           }
         });
     });
@@ -154,10 +166,23 @@ $(document).on("click","a#acheer",function(e) {
         $.post( "/cheer",url_data).done(function(data){
             if (data.cheered) {
                 var result = '(uncheer)';
+                cheer.prev('span#cheer').html('<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">'
+                                   + data.cheers + ' cheers </a>');
             } else {
                 var result = '(cheer)';
+                console.log("data.cheers=" + data.cheers);
+                if(data.cheers == '0'){
+                    cheer.prev('span#cheer').text('0 cheer ');
+                }
+                else
+                    cheer.prev('span#cheer').html('<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="cheers">'
+                                   + data.cheers + ' cheers </a>');
             }
-            cheer.prev('span#cheer').text(data.cheers + ' cheer ');
+            // if (data.cheers != '0')
+            //     cheer.prev('span#cheer').text(data.cheers + ' cheer ');
+            // else
+            //     cheer.prev('a#cheers').text(data.cheers + ' cheer ');
+
             cheer.text(result);
         });
         return false;
@@ -172,10 +197,23 @@ $(document).on("click","a#delete",function(e) {
     $.post( "/delete",url_data).done(function(data){
         if (type == 'comment') {
             console.log('deleting a comment')
-            var result = "(" + data.num_comments + ') comments'
-            $('div[data-id="'+id+'"]').parents('div#data_container').find('a#comment').text(result);
+            var comment_a = $('div[data-id="'+id+'"]').parents('div#data_container').find('#comment');
+            var num_comments = parseInt(comment_a.text().split('')[0]) - 1;
+            console.log(comment_a.data('toggle'));
+            if(num_comments > 0){
+                if(comment_a.data('toggle') === 'on')
+                    var result = '<a href="#" class="link" data-toggle="on" id="comment">' + num_comments + ' comment(s)</a>';
+                else
+                    var result = '<a href="#" class="link" data-toggle="off" id="comment">' + num_comments + ' comment(s)</a>';
+            }
+            else
+                var result = '<span id="comment">' + data.num_comments + ' comment(s)</span>';
+            var div_more = comment_a.parents('div#data_container').find('#more');
+            div_more.remove();
+            // var result = "(" + data.num_comments + ') comments'
+            comment_a.replaceWith(result);
             $('div[data-id="'+id+'"]').remove();
-        } else {
+        } else { 
             console.log('deleting a good thing');
             console.log($('div[data-id="'+id+'"]').parents('li#good_thing'));
             $('div[data-id="'+id+'"]').parents('li#good_thing').remove();
@@ -192,11 +230,31 @@ $(document).on("submit","form#comment_form",function(e) {
     $.post( "/comment",url_data).done(function(data){
         good_thing.trigger("reset");
         var id = good_thing.parents('div#data_container').data('id');
-        get_comments(data,id);
-        var comment_a = good_thing.parents('div#data_container').find('a#comment');
-        var num_comments = parseInt(comment_a.text().substr(1,2)) + 1;
-        var result = "(" + num_comments + ') comments'
-        comment_a.text(result);
+
+        // get_comments(data,id);
+        var comment_a = good_thing.parents('div#data_container').find('#comment');
+        var num_comments = parseInt(comment_a.text().split('')[0]) + 1;
+   
+        console.log(comment_a.data('toggle'));
+        
+        if (comment_a.data('toggle') === 'on'){
+            var result = '<a href="#" class="link" data-toggle="on" id="comment">' + num_comments + ' comment(s)</a>';
+            var to_clear = false;
+        }else{
+            var result = '<a href="#" class="link" data-toggle="off" id="comment">' + num_comments + ' comment(s)</a>';
+            var to_clear = true;
+        }
+
+        if(num_comments > 0){
+            if(num_comments > 1 && comment_a.data('toggle') === 'off')
+                get_comments(data,id, true, to_clear);
+            else
+                get_comments(data,id, false, to_clear);
+        }else{
+            var result = '<span id="comment">' + num_comments + ' comment(s)</span>';
+        }
+        
+        comment_a.replaceWith(result);
     });
     return false;
 });
@@ -204,11 +262,13 @@ $(document).on("submit","form#comment_form",function(e) {
 // get all comments
 $(document).on("click","a#comment",function(e) {
     var good_thing = $(this);
+    // console.log(good_thing);
+    console.log(good_thing.data('toggle'));
     if (good_thing.data('toggle') === 'off') {
         var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
         $.post( "/comment",url_data).done(function(data){
             var id = good_thing.parents('div#data_container').data('id');
-            get_comments(data,id);
+            get_comments(data,id,false, true);
         });
         good_thing.data('toggle', 'on');
         return false;
@@ -219,6 +279,20 @@ $(document).on("click","a#comment",function(e) {
     }
 });
 
+// click on more comment
+$(document).on("click","div#more > a",function(e) {
+    var good_thing = $(this);
+    var comment_a = good_thing.parents('div#data_container').find('#comment');
+    console.log(comment_a.data('toggle'));
+    var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
+    $.post( "/comment",url_data).done(function(data){
+        var id = good_thing.parents('div#data_container').data('id');
+        get_comments(data,id,false, true);
+    });
+    comment_a.data('toggle', 'on');
+    console.log("after more:" + comment_a.data('toggle'));
+    return false;
+});
 // reset notification
 $(document).on("click","#notification_icon",function(e) {
     $('#notification_count').html(0);
@@ -253,24 +327,17 @@ $(document).on("click","#friend_cloud > a",function(e) {
     });
 });
 
-// $(document).on("click", "#next", function(){
-//     // var cursor = "";
-//     // if($('#current-cursor').attr('data-name') != null)
-//     //     cursor = $('#current-cursor').attr('data-name');
-//     //     $('#current-cursor').attr('data-name','');
-
-//     var data_in = "view=" + current_view + "&cursor=" + $('#next').attr('data-name');
-//     $.post( "/post", data_in).done(function (data) {
-//         // $('ul#good_things').empty();
-//         get_posts(data);
-//     });
-// });
 
 //search for wordcloud
-
+var loading = false;
 $(window).scroll(function(){
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
+        
+        if(!loading){
+            $('#good_things').append('<li class="list-group-item" id="loading">loading ...</li>');
+            loading = true;
+        }
         console.log("scholl=" + $('#next').attr('data-name'));
         // console.log("old_cursor=" + old_cursor);
         // if(old_cursor != $('#next').attr('data-name')){
@@ -279,6 +346,8 @@ $(window).scroll(function(){
             console.log("scholl:" + data_in);
             $.post( "/post", data_in).done(function (data) {
                 // $('ul#good_things').empty();
+                $('li#loading').remove();
+                loading = false;
                 get_posts(data, false);
             });
         }
@@ -331,7 +400,7 @@ function load_all_post(){
         //     cursor = $('#current-cursor').attr('data-name');
         // alert(cursor);
         var data_in = view + '&cursor=' + $('#next').attr('data-name');
-        console.log(data_in);
+        // console.log(data_in);
         $.post( "/post", data_in).done(function(data){
             get_posts(data, false);
         });
@@ -444,6 +513,10 @@ function save_email(){
     if(email != null){
         Cookies.remove('liame');
         data_in = "reminder_days=-1&defult_fb=off&default_public=on&email=" + email;
+        if($('input#short_name').prop('checked'))
+        data_in += "&display_name=" + $('input#short_name').next().html();
+    else
+        data_in += "&display_name=" + $('input#long_name').next().html();
         alert(data_in);
         $.post( "/settings",data_in);
     }
@@ -462,7 +535,7 @@ function save_email(){
 // render posts from template and json data
 function get_posts(post_list, posting) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
-        console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
+        // console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
 
         if(post_list.length == 1 && Object.keys(post_list[0]).length == 2){
             $('#img').attr('data-url', post_list[0].upload_url);
@@ -479,14 +552,23 @@ function get_posts(post_list, posting) {
 
             });
 
-            $("a#comment").each(function(){
-                var good_thing = $(this);            
+            //check a#comment and span#comment 
+
+            // $("a#comment").each(function(){
+            $("a#comment, span#comment").each(function(){
+                var good_thing = $(this); 
+                // console.log(good_thing.html());           
                 var url_data = 'good_thing=' + good_thing.parents('div#data_container').data('id');
                 $.post( "/comment",url_data).done(function(data){
+                    // console.log(data.length);  
                     var id = good_thing.parents('div#data_container').data('id');
-                    if(data.length >= 1)
-                        get_comments(data.slice(0,1),id);
+                    if(data.length > 1){
+                        get_comments(data.slice(0,1),id, true, true);
+                        good_thing.data('toggle', 'off');
+                    }else if(data.length == 1){
+                        get_comments(data.slice(0,1),id, false, true);
                         good_thing.data('toggle', 'on');
+                    }
                 });
                 
             });
@@ -513,16 +595,22 @@ function get_posts(post_list, posting) {
     });
 }
 
-function get_comments(comment_list,id) {
+function get_comments(comment_list,id, has_more, to_clear) {
     $.get('static/templates/good_thing_tpl.html', function(templates) {
         var comment_section = $('div#data_container[data-id="'+id+'"]').find('div#comments');
-        comment_section.empty();
+        if(to_clear)
+            comment_section.empty();
         comment_list.forEach(function(data) {
             // Fetch the <script /> block from the loaded external
             // template file which contains our greetings template.
             var template = $(templates).filter('#comment_tpl').html();
             
             comment_section.append(Mustache.render(template, data));
+
+            if(has_more){
+                var template_more = $(templates).filter('#more_tpl').html();
+                comment_section.append(Mustache.render(template_more, data));
+            }
 
             $(".comment-time").each(function(index){
                 var created_time = $(this).html();
@@ -542,6 +630,9 @@ function get_stats() {
         $('span#progress').text(data.progress + ' Complete');
         $('#good_things_today').text(data.posts_today + ' Good Things Today');
         $('#good_things_total').text(data.posts + ' Total Good Things');
+        $('#good_things_total').tooltip({
+            'title': data.average_posts + ' posts per day',
+            'placement': 'bottom'});
         $.get('static/templates/good_thing_tpl.html', function(templates) {
             $('div#word_cloud').empty();
             data.word_cloud.forEach(function(data) {
@@ -589,10 +680,20 @@ function get_stats() {
 function get_settings() {
     $.get( "/settings",'')
         .done(function(data) {
+            $('input#short_name').next().html(data.short_name);
+            $('input#long_name').next().html(data.user_name);
+            if(data.same_name){
+                $('input#long_name').prop('checked', true).button("refresh"); 
+                $('input#short_name').prop('checked', false).button("refresh");
+            }else{
+                $('input#short_name').prop('checked', true).button("refresh");
+                $('input#long_name').prop('checked', false).button("refresh");
+            }
+
             $('input#settings_wall').prop('checked', data.default_fb);
             $('input#settings_public').prop('checked', data.default_public);
             $('input#email_setting').val(data.email);
-            if (data.reminder_days >= 0) {
+            if (data.reminder_days > 0) {
                 $('input#reminder_days').val(data.reminder_days);
                 $('input#send_reminders_true').prop('checked', true).button("refresh");
                 $('input#send_reminders_false').prop('checked', false).button("refresh");
@@ -629,10 +730,10 @@ function get_notifications(notification_list) {
 }
 
 function get_search(post_list) {
-    console.log("in get_search");
-    console.log(post_list);
+    // console.log("in get_search");
+    // console.log(post_list);
     $.get('static/templates/good_thing_tpl.html', function(templates) {
-        console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
+        // console.log(post_list[0] + ":" + Object.keys(post_list[0]).length);
         $('ul#good_things').empty();
         $('#next').attr('data-name',"");
         post_list.forEach(function(data) {
@@ -683,9 +784,9 @@ window.fbAsyncInit = function() {
                     response.data.forEach(function(friend_data) {
                         friend_app_ids[friend_data.name] = friend_data.id.toString();
                     });
-                    console.log(friend_app_ids);
+                    // console.log(friend_app_ids);
                     // get list of taggable fb friends
-                    FB.api("/me/taggable_friends",function (response) {
+                    FB.api("/me/taggable_friends?limit=5000",function (response) {
                         if (response && !response.error) {
                             response.data.forEach(function(friend_data) {
                                 friend = {
@@ -694,13 +795,15 @@ window.fbAsyncInit = function() {
                                 };
                                 // if the a taggable friend uses 3gt, store the user id
                                 if (friend_data.name in friend_app_ids) {
-                                    console.log(friend_app_ids[friend_data.name]);
+                                    // console.log(friend_app_ids[friend_data.name]);
                                     friend.app_id = friend_app_ids[friend_data.name];
-                                    console.log(friend);
+                                    // console.log(friend);
                                 }
                                 friend_ids.push(friend);
                             });
+                            
                             localStorage['friend_ids'] = JSON.stringify(friend_ids);
+                            // console.log(localStorage['friend_ids']);
                         } else {
                             console.log(response.error)
                         }

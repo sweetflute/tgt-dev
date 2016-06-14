@@ -13,6 +13,9 @@ app = webapp2.WSGIApplication(
         ('/logout', views.LogoutHandler),
         # API for posting good things and getting good things
         ('/post', views.PostHandler),
+        # handler for each post
+        ('/posts/([^/]+)?', views.APostHandler),
+        # ('/posts', views.APostHandler),
         # API for getting uploadURL
         ('/upload', views.FileUploadHandler),
         # API for adding/removing cheers and getting cheers
@@ -35,6 +38,8 @@ app = webapp2.WSGIApplication(
         ('/user/([^/]+)?', views.ProfileHandler),
         # handler for reminder cron job
         ('/reminder', views.ReminderHandler),
+        # handler for tagged posts search index cron job
+        ('/taggedindex', views.TaggedIndexHandler),
         # handler for temproray change user type
         ('/admin', views.AdminHandler),
         # landing page

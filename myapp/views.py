@@ -12,12 +12,14 @@ import quopri
 import random
 import math
 import string
+import base64
 
 from google.appengine.ext import db
 from webapp2_extras import sessions
 from google.appengine.api import mail
 from google.appengine.datastore.datastore_query import Cursor
 from google.appengine.ext import blobstore
+from google.appengine.api import images
 # from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api import search
@@ -50,6 +52,7 @@ class BaseHandler(webapp2.RequestHandler):
                 # Okay so user logged in.
                 # Now, check to see if existing user
 
+                logging.info(cookie["uid"])
                 user = models.User.get_by_key_name(cookie["uid"])
                 graph = facebook.GraphAPI(cookie["access_token"])
 
@@ -132,6 +135,7 @@ class HomeHandler(BaseHandler):
         
         if current_user:
             survey_no = -1
+            survey_alert = False
             user_id = str(self.current_user['id'])
             user = models.User.get_by_key_name(user_id)
             # user_type = self.request.get('user_type')
@@ -182,14 +186,22 @@ class HomeHandler(BaseHandler):
                 date_since_enroll = (datetime.datetime.now() - user.created).days
                 logging.info("date_since_enroll=" + str(date_since_enroll))
 
-                if(date_since_enroll < 30 and date_since_enroll >= 7 and user.survey_1_id is None):
+                if(date_since_enroll < 14 and date_since_enroll >= 7 and user.survey_1_id is None):
                     survey_no = 1
-                elif(date_since_enroll < 90 and date_since_enroll >= 30 and user.survey_2_id is None):
+                    if(date_since_enroll >= 12):
+                        survey_alert = True
+                elif(date_since_enroll < 50 and date_since_enroll >= 30 and user.survey_2_id is None):
                     survey_no = 2
-                elif(date_since_enroll < 180 and date_since_enroll >= 90 and user.survey_3_id is None):
+                    if(date_since_enroll >= 43):
+                        survey_alert = True
+                elif(date_since_enroll < 110 and date_since_enroll >= 90 and user.survey_3_id is None):
                     survey_no = 3
+                    if(date_since_enroll >= 103):
+                        survey_alert = True
                 elif(date_since_enroll >= 180 and user.survey_4_id is None):
                     survey_no = 4
+                    if(date_since_enroll >= 192):
+                        survey_alert = True
 
 
                 # if user.public_user:
@@ -207,7 +219,8 @@ class HomeHandler(BaseHandler):
                 template_values = {
                     'facebook_app_id':FACEBOOK_APP_ID,
                     'current_user':current_user,
-                    'survey_no':survey_no
+                    'survey_no':survey_no,
+                    'survey_alert':survey_alert
                 }
             else:
                 survey_no = 0
@@ -467,7 +480,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         user_id = str(self.current_user['id'])
         view = self.request.get('view')
         cursor_str = self.request.get('cursor')
-        logging.info("good_things_cursor=" + cursor_str)
+        # logging.info("good_things_cursor=" + cursor_str)
         if(cursor_str != ""):
             good_things_cursor = Cursor.from_websafe_string(cursor_str.encode('utf-8'))
         else:
@@ -479,13 +492,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         logging.info("in the post, view=" + view)
         if view != '':
             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
-            logging.info("count of all good things:" + str(all_good_things.count()))
-            # if (good_things_cursor == ""):
-            #     good_things_cursor = None
-            # select only this week's post
-            # a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
-            # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
-            
+
             user = models.User.get_by_key_name(user_id)
             # if (user.public_user == False):
 
@@ -521,39 +528,48 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                         user = models.User.get_by_key_name(user_id)
                         result = []
                         while(len(result) < 10):
-                        # all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
-                            # logging.info("view=all, good_things_cursor=" + str(good_things_cursor))
-                        # logging.info("good_things_cursor type=" + str(type(good_things_cursor)))
-                        # logging.info("count of all good things:" + str(all_good_things.count()))
-                        
                             if (isinstance(good_things_cursor, str)):
                                 good_things_cursor = Cursor.from_websafe_string(good_things_cursor.encode('utf-8'))
-                        # good_things_filtered = 
                             good_things = all_good_things.filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
-                        # logging.info("count of all good things before fetch:" + str(good_things_filtered.count()))
-                            # logging.info("count of fetched good_things:" + str(len(good_things)))
-                            # logging.info([x.good_thing for x in good_things])
                             good_things_cursor = all_good_things.cursor()
-                            # logging.info("new good_things_cursor=" + str(good_things_cursor))
                             result += [x.template(user_id,good_things_cursor, upload_url) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
-                        # result = [x.template(user_id,good_things_cursor, upload_url) for x in good_things]#[::-1]
-                            # logging.info("count of result=" + str(len(result)))
-
-                            
                         logging.info("view == all")
+                    elif view == 'tag':
+                        user = models.User.get_by_key_name(user_id)
+                        mword = user.name
+                        result = []
+           
+                        logging.info(mword)
+
+                        index = search.Index(name="tagged_posts")
+                        # results = index.search("mentions:" + mword)
+                        results = index.search(search.Query(
+                            query_string = "mentions:" + mword,
+                            options = search.QueryOptions(limit=1000)
+                        ))
+                        mention_list = []
+                        for aDocument in results:
+                            goodthing_id = long(aDocument.doc_id)          
+                            mention = models.GoodThing.get_by_id(goodthing_id)
+                            mention_list.append(mention)
+                       
+                        mention_list = sorted(mention_list, key = lambda goodthing:goodthing.created, reverse=True)
+                        result += [good_thing.template(user_id, upload_url=upload_url) for good_thing in mention_list if good_thing is not None]
+
+                        logging.info("view == tagged")
+                            
+                        
                         # logging.info(result)
                     elif view == 'profile':
                         profile_user_id = str(self.request.get('userid'))
                         if (profile_user_id == user_id):
                             user = models.User.get_by_key_name(user_id)
-                            # good_things.filter('user =',user)
                             good_things = all_good_things.filter('memory =',False).filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
                             good_things_cursor = all_good_things.cursor()
                             result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
                             logging.info("view == profile_me")
                         else:
                             user = models.User.get_by_key_name(profile_user_id)
-                            # good_things.filter('user =',user)
                             good_things = all_good_things.filter('memory =',False).filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
                             good_things_cursor = all_good_things.cursor()
                             result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
@@ -561,7 +577,6 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     else:
                         profile_user_id = str(self.request.get('view'))
                         profile_user = models.User.get_by_key_name(profile_user_id)
-                        # good_things.filter('user =',profile_user).filter('public =',True)
                         good_things = all_good_things.filter('user =',profile_user).filter('public =',True).filter('memory =',False).fetch(limit=10, start_cursor=good_things_cursor)
                         good_things_cursor = all_good_things.cursor()
                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
@@ -583,8 +598,16 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
     def save_post(self):
         logging.info("save_post")
         good_thing_text = self.request.get('good_thing')
+        try:
+            good_thing_text = base64.b64decode(good_thing_text).decode('utf-8')
+        except UnicodeDecodeError:
+            pass
         # logging.info(good_thing_text)
         reason = self.request.get('reason')
+        try:
+            reason = base64.b64decode(reason).decode('utf-8')
+        except UnicodeDecodeError:
+            pass
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
         #check if is_memory
@@ -632,6 +655,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         good_thing.put()
         # handle mentions here
         msg_tags=[]
+        photo_tags = []
         if self.request.get('mentions') != '':
             # logging.info(self.request.get('mentions'))
             # mention_list = json.loads(str(self.request.get('mentions')))
@@ -644,7 +668,7 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     fb_app_id = to_user_id['app_id']
                     event_id = good_thing.key().id()
                     # handle mention notification
-                    if (user.user_type == 2 and to_user.user_type == 2 and user.id != to_user.id):
+                    if (user.user_type == 2 and to_user.user_type == 2 and user.id != to_user.id and good_thing.public):
                         self.notify(event_type='mention',
                                     to_user=to_user,
                                     event_id=event_id)
@@ -652,19 +676,26 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
                     to_user = None
                 
                 mention = models.Mention(
+                    parent=good_thing,
                     to_user=to_user,
                     good_thing=good_thing,
                     to_fb_user_id = to_user_id['id'],
                     to_user_name = to_user_id['name']
                 )
-                # print "mention to_user_id:" + str(to_user_id['name'])
                 mention.put()
+                logging.info("mention to_user_id:" + str(to_user_id['name']))
                 msg_tags.append(to_user_id['id'].encode('utf-8'))
+                photo_tags.append({'tag_uid':to_user_id['id'].encode('utf-8'), 'tag_text':to_user_id['name'].encode('utf-8')})
         # handle posting to fb
         if wall:
             graph = facebook.GraphAPI(self.current_user['access_token'])
             if img_key:
-                graph.put_photo(image=raw_img,message=good_thing)
+                img = images.get_serving_url(img_key, size=400)
+                # graph.put_photo('',message=good_thing.good_thing, url=img, tags=photo_tags)
+                graph.put_photo('',message=good_thing.good_thing, url=img)
+                # graph.put_wall_post(message=good_thing.good_thing, attachment={'picture':img}, tags=msg_tags)
+                # graph.put_photo('', message=good_thing.good_thing, url=img, tag=str(msg_tags).strip('[]'))
+
             else:
                 # logging.info(msg_tags)
                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
@@ -672,163 +703,6 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
 
         # print "before return good thing"
         return good_thing
-
-# API for saving and serving posts
-# class PostHandler(BaseHandler):
-#     # this should be turned into a get() method just for serving posts
-#     def post(self):
-#         user_id = str(self.current_user['id'])
-#         view = self.request.get('view')
-#         cursor_str = self.request.get('cursor')
-#         # logging.info(cursor_str)
-#         if(cursor_str != ""):
-#             good_things_cursor = Cursor.from_websafe_string(cursor_str.encode('utf-8'))
-#         else:
-#             good_things_cursor = None
-
-#         # tz_offset = self.request.get('tzoffset')
-#         # if the client isn't saving a post
-#         if view != '':
-#             all_good_things = models.GoodThing.all().order('-created').filter('deleted =',False)
-#             # if (good_things_cursor == ""):
-#             #     good_things_cursor = None
-#             # select only this week's post
-#             # a_week_ago = (datetime.datetime.now() - datetime.timedelta(days = 7)).date()
-#             # good_things = models.GoodThing.all().order('created').filter('created >=', a_week_ago).filter('deleted =',False)
-            
-#             user = models.User.get_by_key_name(user_id)
-#             # if (user.public_user == False):
-#             if (user.user_type != 2):
-#                 good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
-#                 good_things_cursor = all_good_things.cursor()
-#                 result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-#                 logging.info("private user")
-#             else:
-#                 # return just the current user's posts
-#                 if view == 'me':
-#                     user = models.User.get_by_key_name(user_id)
-#                     # good_things.filter('user =',user)
-#                     good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
-#                     good_things_cursor = all_good_things.cursor()
-#                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-#                     logging.info("view == me")
-#                     # logging.info(result)
-#                 # return all public posts and current user's private posts
-#                 elif view == 'all':
-#                     user = models.User.get_by_key_name(user_id)
-#                     good_things = all_good_things.fetch(limit=10, start_cursor=good_things_cursor)
-#                     good_things_cursor = all_good_things.cursor()
-#                     result = [x.template(user_id,good_things_cursor) for x in good_things if (x.public or x.user.id == user.id)]#[::-1]
-#                     logging.info("view == all")
-#                     # logging.info(result)
-#                 elif view == 'profile':
-#                     profile_user_id = str(self.request.get('userid'))
-#                     if (profile_user_id == user_id):
-#                         user = models.User.get_by_key_name(user_id)
-#                         # good_things.filter('user =',user)
-#                         good_things = all_good_things.filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
-#                         good_things_cursor = all_good_things.cursor()
-#                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-#                         logging.info("view == profile_me")
-#                     else:
-#                         user = models.User.get_by_key_name(profile_user_id)
-#                         # good_things.filter('user =',user)
-#                         good_things = all_good_things.filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
-#                         good_things_cursor = all_good_things.cursor()
-#                         result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-#                         logging.info("view == profile_others")
-#                 else:
-#                     profile_user_id = str(self.request.get('view'))
-#                     profile_user = models.User.get_by_key_name(profile_user_id)
-#                     # good_things.filter('user =',profile_user).filter('public =',True)
-#                     good_things = all_good_things.filter('user =',profile_user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
-#                     good_things_cursor = all_good_things.cursor()
-#                     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
-#                     logging.info("view == else")
-#                     # logging.info(result)
-
-
-#         # save a post.  separate this into the post() method
-#         else:
-#             result = [self.save_post().template(user_id)]
-#         self.response.headers['Content-Type'] = 'application/json'
-#         self.response.out.write(json.dumps(result))
-
-#     # save a post to the datastore and return that post.  this should be turned
-#     # into the post() method
-#     def save_post(self):
-#         good_thing_text = self.request.get('good_thing')
-#         reason = self.request.get('reason')
-#         user_id = str(self.current_user['id'])
-#         user = models.User.get_by_key_name(user_id)
-#         tz_offset = self.request.get('tzoffset')
-#         local_time = datetime.datetime.now() - datetime.timedelta(hours=int(tz_offset))
-
-#         raw_img = self.request.get('img')
-#         if raw_img != '':
-#             img = db.Blob(raw_img)
-#         else:
-#             img = None
-#         # if user.public_user:
-#         if user.user_type == 2:
-#             if self.request.get('wall') == 'on':
-#                 wall = True
-#             else:
-#                 wall = False
-#             if self.request.get('public') == 'on':
-#                 public = True
-#             else:
-#                 public = False
-#         else:
-#             public = False
-#             wall = False
-#             mentions = []
-#         # print wall, self.request.get('wall')
-#         good_thing = models.GoodThing(
-#             good_thing=good_thing_text,
-#             reason=reason,
-#             created_origin=local_time,
-#             user=user,
-#             public=public,
-#             img=img,
-#             wall=wall
-#         )
-#         good_thing.put()
-#         # handle mentions here
-#         msg_tags=[]
-#         if self.request.get('mentions') != '':
-#             mention_list = json.loads(self.request.get('mentions'))
-#             # logging.info(mention_list)
-#             for to_user_id in mention_list:
-#                 if 'app_id' in to_user_id:
-#                     to_user = models.User.get_by_key_name(str(to_user_id['app_id']))
-#                     fb_app_id = to_user_id['app_id']
-#                     event_id = good_thing.key().id()
-#                     # handle mention notification
-#                     self.notify(event_type='mention',
-#                                 to_user=to_user,
-#                                 event_id=event_id)
-#                 else:
-#                     to_user = None
-                
-#                 mention = models.Mention(
-#                     to_user=to_user,
-#                     good_thing=good_thing,
-#                     to_fb_user_id = to_user_id['id'],
-#                     to_user_name = to_user_id['name']
-#                 )
-#                 mention.put()
-#                 msg_tags.append(to_user_id['id'].encode('utf-8'))
-#         # handle posting to fb
-#         if wall:
-#             graph = facebook.GraphAPI(self.current_user['access_token'])
-#             if img:
-#                 graph.put_photo(image=raw_img,message=good_thing)
-#             else:
-#                 # logging.info(msg_tags)
-#                 graph.put_object('me','feed',message=good_thing.good_thing, place='message', tags=msg_tags)
-
-#         return good_thing
 
 # API for saving and serving cheers
 class CheerHandler(BaseHandler):
@@ -860,6 +734,41 @@ class CheerHandler(BaseHandler):
             'cheered':cheered
         }
         self.response.out.write(json.dumps(result))
+
+class APostHandler(BaseHandler):
+    # /posts/?postid=XXXXXX
+    def get(self,postid):
+        # user_id = str(self.request.get('userid'))
+        user_id = str(self.current_user['id'])
+
+        user = models.User.get_by_key_name(user_id)
+        # if (user.user_type == 2):
+            # logging.info("public profile")
+        template = jinja_environment.get_template('apost.html')
+        template_values = {
+            'facebook_app_id':FACEBOOK_APP_ID,
+            'user_id':user_id,
+            'user_name':user.name,
+            # 'current_user_id': current_user_id
+        }
+        # elif (user_id == current_user_id):
+        #     logging.info("entering private user's profile")
+        #     template = jinja_environment.get_template('private_profile.html')
+        #     template_values = {
+        #         'facebook_app_id':FACEBOOK_APP_ID,
+        #         'user_id':user_id,
+        #         'user_name':user.name,
+        #         'current_user_id': current_user_id
+        #     }
+        self.response.out.write(template.render(template_values))
+    def post(self,postid):
+        user_id = str(self.current_user['id'])
+        post_id = long(self.request.get('postid'))
+        a_post = models.GoodThing.get_by_id(post_id)
+        result = [a_post.template(user_id)]
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(result))
+
 
 # API for saving and serving comments.  should be separated like good thing handler
 class CommentHandler(BaseHandler):
@@ -934,6 +843,9 @@ class SettingsHandler(BaseHandler):
         settings = user.settings
         reminder_days = self.request.get('reminder_days')
         email = self.request.get('email')
+        display_name = self.request.get('display_name')
+        user.display_name = display_name
+
         if reminder_days != '' and reminder_days >= 1:
             settings.reminder_days = int(reminder_days)
         else:
@@ -949,10 +861,12 @@ class SettingsHandler(BaseHandler):
 
         if email != None and email != '':
             user.email = email
-            user.put()
+
+        user.put()    
+        # if self.request.get('')
         settings.put()
 
-        result = settings.template()
+        result = settings.template(user.name, user.display_name)
         result['email'] = str(user.email)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
@@ -961,7 +875,7 @@ class SettingsHandler(BaseHandler):
     def get(self):
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)
-        result = user.settings.template()
+        result = user.settings.template(user.name, user.display_name)
         result['email'] = user.email
         logging.info(result)
         self.response.headers['Content-Type'] = 'application/json'
@@ -990,11 +904,15 @@ class StatHandler(BaseHandler):
                 user = models.User.get_by_key_name(user_profile_id)
                 posts = user.goodthing_set.filter('deleted =',False).filter('public =', True).count()
                 posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).filter('public =', True).count()
+                total_days = (datetime.datetime.now() - user.created).days
+                average_posts = '%.2f' %(float(posts) / float(total_days))
                 user.word_cloud.update_word_dict('public')
             else:
                 user = models.User.get_by_key_name(user_id)
                 posts = user.goodthing_set.filter('deleted =',False).count()
                 posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+                total_days = (datetime.datetime.now() - user.created).days
+                average_posts = '%.2f' %(float(posts) / float(total_days))
                 user.word_cloud.update_word_dict('private')
         else:
             if self.request.get('user_id') == '':
@@ -1004,6 +922,8 @@ class StatHandler(BaseHandler):
             user = models.User.get_by_key_name(user_id)
             posts = user.goodthing_set.filter('deleted =',False).count()
             posts_today = user.goodthing_set.filter('created_origin >=', today).filter('deleted =',False).count()
+            total_days = (datetime.datetime.now() - user.created).days
+            average_posts = '%.2f' %(float(posts) / float(total_days))
             user.word_cloud.update_word_dict('private')
         # posts_today = user.goodthing_set.filter('created_origin >=',datetime.date.today()).filter('deleted =',False).count()
 
@@ -1018,6 +938,7 @@ class StatHandler(BaseHandler):
             'posts_today':posts_today,
             'progress':progress,
             'posts':posts,
+            'average_posts':str(average_posts),
             'word_cloud':word_cloud,
             'reason_cloud':reason_cloud,
             'friend_cloud':friend_cloud
@@ -1028,9 +949,30 @@ class StatHandler(BaseHandler):
 # API for searching for good things matching for good_thing words or reasons
 class SearchHandler(BaseHandler):
     def get(self):
+
+        # profile_user_id = str(self.request.get('userid'))
+        # if (profile_user_id == user_id):
+        #     user = models.User.get_by_key_name(user_id)
+        #     # good_things.filter('user =',user)
+        #     good_things = all_good_things.filter('memory =',False).filter('user =',user).fetch(limit=10, start_cursor=good_things_cursor)
+        #     good_things_cursor = all_good_things.cursor()
+        #     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+        #     logging.info("view == profile_me")
+        # else:
+        #     user = models.User.get_by_key_name(profile_user_id)
+        #     # good_things.filter('user =',user)
+        #     good_things = all_good_things.filter('memory =',False).filter('user =',user).filter('public =',True).fetch(limit=10, start_cursor=good_things_cursor)
+        #     good_things_cursor = all_good_things.cursor()
+        #     result = [x.template(user_id,good_things_cursor) for x in good_things]#[::-1]
+        #     logging.info("view == profile_others")
+
+
         goodthing_user = self.request.get('user_id')
+        current_user = str(self.current_user['id'])
         if(goodthing_user is None or goodthing_user == ""):
-            goodthing_user = str(self.current_user['id'])
+            goodthing_user = current_user
+        logging.info("goodthing_user=" + str(goodthing_user))
+        logging.info("current_user=" + str(self.current_user['id']))
         goodthing_word = self.request.get('goodthing_word')
         reason_word = self.request.get('reason_word')
         mention_name = self.request.get('friend_word')
@@ -1042,7 +984,11 @@ class SearchHandler(BaseHandler):
             index = search.Index(name=goodthing_user)
             # logging.info(goodthing_user)
             # logging.info("goodthing:" + gword)
-            results = index.search("good_thing:" + gword)
+            # results = index.search("good_thing:" + gword)
+            results = index.search(search.Query(
+                            query_string = "good_thing:" + gword,
+                            options = search.QueryOptions(limit=1000)
+                        ))
             # logging.info(results)
             goodthing_list = []
             for aDocument in results:
@@ -1050,18 +996,26 @@ class SearchHandler(BaseHandler):
                 goodthing_id = long(aDocument.doc_id)
                 goodthing = models.GoodThing.get_by_id(goodthing_id)
                 goodthing_list.append(goodthing)
-            result = [x.template(goodthing_user, upload_url=upload_url) for x in goodthing_list]
+            goodthing_list = sorted(goodthing_list, key = lambda goodthing:goodthing.created, reverse=True)
+            # logging.info("goodthing_user=" + str(goodthing_user))
+            # logging.info("goodthing.user=" + str(goodthing.user.id))
+            result = [x.template(current_user, upload_url=upload_url) for x in goodthing_list]
         elif(reason_word):
             rword = str(reason_word)
             index = search.Index(name=goodthing_user)
-            results = index.search("reason:" + rword)
+            # results = index.search("reason:" + rword)
+            results = index.search(search.Query(
+                            query_string = "reason:" + rword,
+                            options = search.QueryOptions(limit=1000)
+                        ))
             reason_list = []
             for aDocument in results:
                 # goodthing_id = long(aDocument.fields[0].value);
                 goodthing_id = long(aDocument.doc_id)
                 reason = models.GoodThing.get_by_id(goodthing_id)
                 reason_list.append(reason)
-            result = [x.template(goodthing_user, upload_url=upload_url) for x in reason_list]
+            reason_list = sorted(reason_list, key = lambda goodthing:goodthing.created, reverse=True)
+            result = [x.template(current_user, upload_url=upload_url) for x in reason_list]
         elif(mention_name):
             logging.info(mention_name)
 
@@ -1070,19 +1024,26 @@ class SearchHandler(BaseHandler):
             # except UnicodeDecodeError:
             #     mword = ''.join(chr(int(i)) for i in mention_name)
             # else:
-            mword = mention_name.encode('utf-8')
+            # mention_name = u'%s' %(mention_name)
+            mword = mention_name
            
             logging.info(mword)
             # mword = str(mention_name)
             index = search.Index(name=goodthing_user)
-            results = index.search("mentions:" + mword)
+            # results = index.search("mentions:" + mword)
+            results = index.search(search.Query(
+                            query_string = "mentions:" + mword,
+                            options = search.QueryOptions(limit=1000)
+                        ))
             mention_list = []
             for aDocument in results:
                 # goodthing_id = long(aDocument.fields[0].value); 
                 goodthing_id = long(aDocument.doc_id)          
                 mention = models.GoodThing.get_by_id(goodthing_id)
                 mention_list.append(mention)
-            result = [x.template(goodthing_user, upload_url=upload_url) for x in mention_list]
+            mention_list = sorted(mention_list, key = lambda goodthing:goodthing.created, reverse=True)
+
+            result = [x.template(current_user, upload_url=upload_url) for x in mention_list]
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(result))
@@ -1142,7 +1103,9 @@ class ReminderHandler(BaseHandler):
     def get(self):
         logging.info("In ReminderHandler")
         users = models.User.all()
-        for user in users:
+        # for user in users:
+            # user.display_name = user.name
+            # user.put()
             # user.word_cloud.update_word_dict('private')
             # if (user.public_user == True):
             #     user.user_type = 2
@@ -1154,42 +1117,42 @@ class ReminderHandler(BaseHandler):
             #     user.put()
             #=======================================================================
             # Reminder starts here
-            reminder_days = int(user.settings.reminder_days)
-            logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
-            if(reminder_days != -1):
-                last_date_to_post = (datetime.datetime.now() - datetime.timedelta(days = reminder_days)).date()
-                num_posts = user.goodthing_set.filter('created >=', last_date_to_post).filter('deleted =',False).count()
-                logging.info("last_date_to_post=" + str(last_date_to_post) + ", num_posts=" + str(num_posts))
-                if(num_posts <= 0):
-                    latest_post = user.goodthing_set.order('-created').get()
-                    if (latest_post is None):
-                        latest_post_date = user.created
-                    else:
-                        latest_post_date = latest_post.created
-                    days_no_posting = (datetime.datetime.now() - latest_post_date).days
-                    logging.info(str(days_no_posting) + " days no posting")
-                    # if(user.name == "Magi Chung"):
-                    if (days_no_posting > 0 and user.email != "" and user.email is not None):
-                        message = mail.EmailMessage()
-                        if(user.user_type == 0):
-                            message.subject = "Reminder: Post a early memory to 3gt!"
-                            message.sender = "happyapp@uw.edu" #TODO: change sender address
-                            message.to = user.email
-                            EmailMessageage.body = "Dear %s, you haven't posted your early memories for the past %d days.\n" %(user.name, days_no_posting)
-                            message.body += "Post your early memory today at http://tgt-dev.appspot.com/!\n"
-                        else:
-                            message.subject = "Reminder: Post a good thing to 3gt!" #TOOD: change subject
-                            message.sender = "happyapp@uw.edu" #TODO: change sender address
-                            message.to = user.email
-                            message.body = "Dear %s, you haven't posted your good things for the past %d days.\n" %(user.name, days_no_posting)
-                            message.body += "Post your good thing today at http://tgt-dev.appspot.com/!\n"
+            # reminder_days = int(user.settings.reminder_days)
+            # logging.info(str(user.name) + ", reminder_days=" + str(reminder_days))
+            # if(reminder_days != -1):
+            #     last_date_to_post = (datetime.datetime.now() - datetime.timedelta(days = reminder_days)).date()
+            #     num_posts = user.goodthing_set.filter('created >=', last_date_to_post).filter('deleted =',False).count()
+            #     logging.info("last_date_to_post=" + str(last_date_to_post) + ", num_posts=" + str(num_posts))
+            #     if(num_posts <= 0):
+            #         latest_post = user.goodthing_set.order('-created').get()
+            #         if (latest_post is None):
+            #             latest_post_date = user.created
+            #         else:
+            #             latest_post_date = latest_post.created
+            #         days_no_posting = (datetime.datetime.now() - latest_post_date).days
+            #         logging.info(str(days_no_posting) + " days no posting")
+            #         # if(user.name == "Magi Chung"):
+            #         if (days_no_posting > 0 and user.email != "" and user.email is not None):
+            #             message = mail.EmailMessage()
+            #             if(user.user_type == 0):
+            #                 message.subject = "Reminder: Post a early memory to 3gt!"
+            #                 message.sender = "happyapp@uw.edu" #TODO: change sender address
+            #                 message.to = user.email
+            #                 message.body = "Dear %s, you haven't posted your early memories for the past %d day(s).\n" %(user.name, days_no_posting)
+            #                 message.body += "Post your early memory today at http://tgt-dev.appspot.com/ !\n"
+            #             else:
+            #                 message.subject = "Reminder: Post a good thing to 3gt!" #TOOD: change subject
+            #                 message.sender = "happyapp@uw.edu" #TODO: change sender address
+            #                 message.to = user.email
+            #                 message.body = "Dear %s, you haven't posted your good things for the past %d day(s).\n" %(user.name, days_no_posting)
+            #                 message.body += "Post your good thing today at http://tgt-dev.appspot.com/ !\n"
 
-                        message.send()
-                        logging.info("Sent reminder to " + str(message.to))
-                    else:
-                        logging.info(user.name + " do not have an email in the record.")
-            #=======================================================================
-            # Survey reminder starts here
+            #             message.send()
+            #             logging.info("Sent reminder to " + str(message.to))
+            #         else:
+            #             logging.info(user.name + " do not have an email in the record.")
+            # #=======================================================================
+            # # Survey reminder starts here
             # date_since_enroll = (datetime.datetime.now() - user.created).days
             # logging.info("date_since_enroll=" + str(date_since_enroll))
 
@@ -1209,13 +1172,13 @@ class ReminderHandler(BaseHandler):
             #     message.sender = "happyapp@uw.edu" #TODO: change sender address
             #     message.to = user.email
             #     message.body = "Dear %s, Thank you for participating in the online positive psychology study.\n" %(user.name)
-            #     message.body += "Please help us answer a few questions and get a chance to win in the raffle!\n"
+            #     message.body += "Please answer a few questions and get a chance to win in the raffle of the six Amazon gift cards (one $500 grand prize and five $100 gift cards)!\n"
             #     message.body += "You can access the survey here: http://tgt-dev.appspot.com/survey?survey_no=%d\n" %(survey_no)
 
             #     message.send()
             #     logging.info("Sent survey reminder to " + str(message.to))
             # else:
-            #     logging.info(user.name + " do not have an email in the record.")
+                # logging.info(user.name + " do not have an email in the record.")
                 
             #=========================================================================             
             # clean search index
@@ -1229,6 +1192,28 @@ class ReminderHandler(BaseHandler):
             #         docindex.delete(document_ids)
             # except search.Error:
             #     logging.exception("Error deleting documents:")
+
+# crob job to create tagged index
+class TaggedIndexHandler(BaseHandler):
+    def get(self):
+        all_good_things = models.GoodThing.all().order('-created').filter('public =',True).filter('deleted =',False).fetch(limit=None)
+        logging.info("In TaggedIndex Handler. all_good_things = " + str(len(all_good_things)))
+        for good_thing in all_good_things:
+            if(good_thing.num_mentions() > 0):
+                mentioned_name = good_thing.get_mentions()
+                names = [mention['name'].encode('utf-8') for mention in mentioned_name]
+                mention_str = str(names).strip('[]')
+
+                good_thing_Document = search.Document(
+                    doc_id=str(good_thing.key().id()),
+                    fields=[search.TextField(name='mentions', value=mention_str)],
+                    language = 'en')
+
+                index = search.Index(name='tagged_posts')
+                try:
+                    index.put(good_thing_Document)
+                except search.Error:
+                    logging.exception('Failed to put document in tagged_posts')
 
 # change user type
 class AdminHandler(BaseHandler):

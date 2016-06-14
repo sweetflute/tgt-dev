@@ -10,19 +10,30 @@ from google.appengine.api import search
 import logging
 
 # model for user's settings
-# TODO: fix timezone issue
 class Settings(db.Model):
     reminder_days = db.IntegerProperty(default=0)
     default_fb = db.BooleanProperty(default=False)
     default_public = db.BooleanProperty(default=True)
 
-    def template(self):
+    def template(self, user_name, display_name):
+        if (user_name == display_name):
+            same_name = True
+        else:
+            same_name = False
+
         template = {
             'reminder_days':self.reminder_days,
             'default_fb':self.default_fb,
             'default_public':self.default_public,
+            'short_name':self.short_name(user_name),
+            'user_name':user_name,
+            'same_name':same_name
         }
         return template
+
+    def short_name(self, username):
+        ss = username.split()
+        return '%s %s.' % (ss[0], ss[-1][0])
 
 # model for a user's wordcloud. stores a json representation of a counter object
 # and most recent update time
@@ -109,6 +120,9 @@ class WordCloud(db.Model):
                     y = good_thing.reason.lower()
                     z = good_thing.get_mentions()
 
+                    logging.info(x)
+                    logging.info(z)
+
                     words = [word for word in re.split('[ '+ string.punctuation +']', x) if word not in self.stopwords]
                     rwords = [word for word in re.split('[ '+ string.punctuation +']', y) if word not in self.stopwords]
                     fnames = [mention['name'].encode('utf-8') for mention in z]
@@ -138,7 +152,8 @@ class WordCloud(db.Model):
                         index.put(good_thing_document)
                         # count += 1
                     except search.Error:
-                        logging.exception('Failed to put document')
+                        logging.exception('Failed to put document in ' + user.id)
+
 
                 # logging.info("adding " + str(count) + " documents")
 
@@ -186,12 +201,13 @@ class WordCloud(db.Model):
 
 
 # model for each user based on facebook login information
-# TODO: add email field
 class User(db.Model):
     id = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(required=True)
+    # display_name = db.StringProperty()
+    display_name = db.StringProperty(required=True)
     profile_url = db.StringProperty(required=True)
     access_token = db.StringProperty(required=True)
     # public_user = db.BooleanProperty(default=None) # change default back to false
@@ -294,6 +310,8 @@ class GoodThing(db.Model):
     # mentions_no = db.IntegerProperty(default=0)
 
     def template(self,user_id,cursor="", upload_url=""):
+        # logging.info("user_id = " + str(user_id))
+        # logging.info("current_user_id = " + str(self.user.id))
         if user_id == self.user.id:
             current_user = True
         else:
@@ -304,9 +322,12 @@ class GoodThing(db.Model):
             'reason':self.reason,
             'user_id':self.user.id,
             'user_name':self.user.name,
-            #'get_cheers':self.get_cheers(),
+            'display_name':self.user.display_name,
+            'cheer_names':self.get_cheers(),
             'num_cheers':self.num_cheers(),
+            'is_cheered':self.is_cheered(),
             'num_comments':self.num_comments(),
+            'is_commented':self.is_commented(),
             'current_user':current_user,
             'cheered':self.cheered(user_id),
             'mentions':self.get_mentions(),
@@ -316,19 +337,18 @@ class GoodThing(db.Model):
             'cursor': cursor,
             'upload_url': upload_url,
             'img_url': self.get_img_url()
-            #add img
         }
         return template
 
-    # return a list of cheers associated with this good thing
-    # if no cheers, return None
-    def get_cheers(self):
-        cheers = self.cheer_set.fetch(limit=None)
-        if cheers:
-            result = [x.user.id for x in cheers]
-        else:
-            result = None
-        return result
+    # # return a list of cheers associated with this good thing
+    # # if no cheers, return None
+    # def get_cheers(self):
+    #     cheers = self.cheer_set.fetch(limit=None)
+    #     if cheers:
+    #         result = [x.user.id for x in cheers]
+    #     else:
+    #         result = None
+    #     return result
 
     # return true if the fb user id has cheered this good thing
     # else return false
@@ -343,30 +363,54 @@ class GoodThing(db.Model):
 
     # return a list of user names mentioned in this good thing
     def get_mentions(self):
-        mentions = self.mention_set.fetch(limit=None)
+        mentions = self.mention_set.ancestor(self).fetch(limit=None)
+        if len(mentions) == 0:
+            mentions = self.mention_set.fetch(limit=None)
         # print "get_mentions: len(mentions) = " + str(len(mentions)) + ", mentions_no = " + str(self.mentions_no)
         # if (self.mentions_no != 0):
             # while(len(mentions) < self.mentions_no):
                 # mentions = self.mention_set.fetch(limit=None)  
         result = [{'name':mention.to_user_name, 'id':mention.to_fb_user_id} for mention in mentions]
-        # print "get_mentions:" + str(result)
+        # logging.info("get_mentions:" + str(result))
         return result
 
     # return the number of mentions
     def num_mentions(self):
-        count = self.mention_set.count()
+        count = self.mention_set.ancestor(self).count()
+        if count == 0:
+            count = self.mention_set.count()
+        # logging.info("model: num_metions=" + str(count))
         if count > 0:
             return count
         else:
             return None
 
+    # return a list of user names cheered this good thing
+    def get_cheers(self):
+        cheers = self.cheer_set.fetch(limit=None)
+        result = [{'cheer_name':cheer.user.name} for cheer in cheers]
+        # logging.info("get_mentions:" + str(result))
+        return result
+
     #maybe delete
     def num_cheers(self):
         return self.cheer_set.count()
 
+    def is_cheered(self):
+        if self.num_cheers() > 0:
+            return True
+        else:
+            return False
+
     # return the number of comments
     def num_comments(self):
         return self.comment_set.filter('deleted =',False).count()
+
+    def is_commented(self):
+        if self.num_comments() > 0:
+            return True
+        else:
+            return False
 
     # check if the post is public or private
     def is_public(self):
@@ -410,6 +454,7 @@ class Comment(db.Model):#TODO: add time and fix timezone issues for comment
             'id':self.key().id(),
             'comment_text':self.comment_text,
             'user_name':self.user.name,
+            'display_name':self.user.display_name,
             'user_id':self.user.id,
             'comment_created': str(self.created),
             'good_thing_id':self.good_thing.key().id(),

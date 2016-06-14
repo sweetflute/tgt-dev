@@ -1,0 +1,155 @@
+{% extends "base-3gt.html" %}
+{% block head %}
+<link href="/static/css/magicsuggest-min.css" rel="stylesheet">
+<script src="/static/js/magicsuggest-min.js"></script>
+<script src='/static/js/jquery.tagcloud.js'></script>
+<script src='/static/js/apost.js'></script>
+{% endblock %}
+{% block nav_buttons %}
+<li>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "notification_icon">
+        <div class="tgt_notify">
+            <div class="glyphicon glyphicon-globe" aria-hidden="true"></div>
+            <div id="notification_count"></div>
+        </div>
+    </a>
+    <ul class="dropdown-menu" id='notifications'>
+    </ul>
+</li>
+<li>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-target="#settings_modal">Account Settings</a></li>
+        <li class="divider"></li>
+        <li><a href="#" data-toggle="modal" data-target="#faq_modal">FAQ</a></li>
+        <li class="divider"></li>
+        <li><a href="http://tgt-dev.appspot.com/logout" id="logout">Logout</a></li>
+    </ul>
+</li>
+{% endblock %}
+{% block body %}
+<!-- settings modal -->
+<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Settings</h4>
+      </div>
+      <div class="modal-body">
+          <form id='settings' action=''>
+              <div class="form-group">
+                  <input type="radio" name="send_reminders" id="send_reminders_true" value="send_reminders_true">
+                  <label for="send_reminders_true">Send me a reminder email if I have not posted for
+                  <input type='number' name='reminder_days' id='reminder_days' style="width:45px" min="1" max="7"/>
+                  days.</label><br/>
+                  <label for="email_setting">Email:</label>
+                  <input type='text' name ="email_setting" id='email_setting' class="form-control"/><br/>
+                  <input type="radio" name="send_reminders" id="send_reminders_false" value="send_reminders_false">
+                  <label for="send_reminders_false">Don't send me reminder emails</label>
+              </div>
+              <hr>
+              <div class="form-group">
+                  <label for="settings_public"><input type='checkbox' name='default_public' id='settings_public'/> Make my Good Things visible to other 3GT users by default</label>
+                  <label for="settings_wall"><input type='checkbox' name='default_fb' id='settings_wall'/> Post my Good Things to Facebook by default</label>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" id="save_settings">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FAQ modal -->
+<div class="modal fade" id="faq_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Let's see how this works!</h4>
+      </div>
+      <div class="modal-body">
+        <div id="tutorial-slider-public" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+              <li data-target="#tutorial-slider-public" data-slide-to="0" class="active"></li>
+              <li data-target="#tutorial-slider-public" data-slide-to="1"></li>
+              <li data-target="#tutorial-slider-public" data-slide-to="2"></li>
+              <li data-target="#tutorial-slider-public" data-slide-to="3"></li>
+              <li data-target="#tutorial-slider-public" data-slide-to="4"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+              <div class="item active carousel-next-public">
+                  <img src="/static/slides/slides_public-01.png" />
+              </div>
+              <div class="item carousel-next-public">
+                  <img src="/static/slides/slides_public-02.png" />
+              </div>
+              <div class="item carousel-next-public">
+                  <img src="/static/slides/slides_public-03.png" />
+              </div>
+              <div class="item carousel-next-public">
+                  <img src="/static/slides/slides_public-04.png" />
+              </div>
+              <div class="item fb-login">
+                  <img src="/static/slides/slides_public-05.png" />
+              </div>
+          </div>
+
+          <!-- Controls -->
+          <a class="left carousel-control" href="#tutorial-slider-public" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#tutorial-slider-public" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+          </a>
+        </div>
+        <hr>
+        <h4>FAQ</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="close_faq">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-8 col-md-offset-2 col-sm-8 col-xs-12">
+    <!-- list of posted good things -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <ul class="list-group" id='good_things'>
+        </ul>
+        <div id="next" data-name="" style="display:none;"></button>
+    </div>
+</div>
+{% endblock %}
+
+{% block profile %}
+<!-- profile sidebar -->
+<!-- <div class="col-md-2 col-md-offset-2 col-sm-4 col-xs-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <img src="http://graph.facebook.com/{{ user_id }}/picture?width=250" alt="..." class="img-rounded img-responsive">
+            <h4>{{user_name}}</h4>
+            <hr>
+            <h4 class="text-muted" id="good_things_total"></h4>
+            <hr>
+            <h4>My Good Thing Words</h4>
+            <div id="word_cloud"></div>
+            {% if user_id == current_user_id %}
+            <h4>My Reasons</h4>
+            <div id="reason_cloud"></div>
+            <h4>Friends Tagged</h4>
+            <div id="friend_cloud"></div>
+            {% endif %}
+        </div>
+    </div>
+</div> -->
+{% endblock %}
