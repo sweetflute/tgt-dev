@@ -12,15 +12,23 @@
                 <div class="media-body">
                     <div id="name">
                         <h4 class="media-heading"><a href='../user/?userid={{user_id}}' id='profile_link' data-id={{user_id}}>{{display_name}}</a></h4>
+                        <div id="status">
+                            <a href="../posts/?postid={{id}}" target="_blank">
+                                <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
+                            </a>
+                            {{#current_user}}
+                                • <span>{{public}}</span>
+                            {{/current_user}}
+                        </div>
                     </div>
-                    <div id="status">
+                    <!--<div id="status">
                         <a href="../posts/?postid={{id}}" target="_blank">
                             <span class="local-time" data-name="{{cursor}}" data-url="{{upload_url}}">{{created}}</span>
                         </a>
                         {{#current_user}}
                             • <span>{{public}}</span>
                         {{/current_user}}
-                    </div>
+                    </div>-->
                     <div id="content">
                         {{#img_url}}<p><img src="{{img_url}}"/></p>{{/img_url}}
                         <p>{{good_thing}}</p>

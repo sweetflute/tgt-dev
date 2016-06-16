@@ -22,7 +22,8 @@ $(document).on('change', '.form-group :file', function() {
 });
 
 $(document).on('change', "textarea#good_thing", function(){
-    $("#submit_good_thing").removeClass('disabled');
+    // $("#submit_good_thing").removeClass('disabled');
+    $("#submit_good_thing").prop('disabled', false);
 });
 
 $(document).on("click","button#save_settings",function(e) {
@@ -107,8 +108,9 @@ $(document).on("click","#submit_good_thing",function(e) {
     // var data_in = $( "#post" ).serialize() + '&tzoffset=' + timezone_offset + '&mentions=' + mention_list + '&view=';
     // alert("after FormData");
 
-    $("#submit_good_thing").css("display","none");
-    $("#posting").css("display","inline");
+    $("#submit_good_thing").prop("disabled","true");
+    $('body').css('cursor','progress');
+    $("#submit_good_thing").css("background-color","#a6a6a6");
 
     $.get("/upload").done(function(data){
         upload_url = data.upload_url;
@@ -132,8 +134,8 @@ $(document).on("click","#submit_good_thing",function(e) {
             get_posts(data, true);
             get_stats();
 
-            $("#submit_good_thing").css("display","block");
-            $("#posting").css("display","none");
+            $("#submit_good_thing").css("background-color","#59b329");
+            $('body').css('cursor','default');
             $("#div_friend_tagging").css("display", "none");
             $("#icon-user").css("color", "#333");
             $("#icon-user").data('select', 'off');

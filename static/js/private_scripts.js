@@ -21,7 +21,8 @@ $(document).on('change', '.form-group :file', function() {
 });
 
 $(document).on('change', "input#good_thing", function(){
-    $("#submit_good_thing").removeClass('disabled');
+    // $("#submit_good_thing").removeClass('disabled');
+    $("#submit_good_thing").prop('disabled', false);
 });
 
 // submit settings from settings form
@@ -112,8 +113,12 @@ $(document).on("click","#submit_good_thing",function(e) {
     // alert("after FormData");
 
 
-    $("#submit_good_thing").css("display","none");
-    $("#posting").css("display","inline");
+    $("#submit_good_thing").prop("disabled","true");
+    $('body').css('cursor','progress');
+    $("#submit_good_thing").css("background-color","#a6a6a6");
+            
+    // $("#submit_good_thing").css("display","none");
+    // $("#posting").css("display","inline");
 
     $.get("/upload").done(function(data){
         upload_url = data.upload_url;
@@ -137,8 +142,10 @@ $(document).on("click","#submit_good_thing",function(e) {
             get_posts(data, true);
             get_stats();
 
-            $("#submit_good_thing").css("display","block");
-            $("#posting").css("display","none");
+            // $("#submit_good_thing").css("display","block");
+            // $("#posting").css("display","none");
+            $("#submit_good_thing").css("background-color","#59b329");
+            $('body').css('cursor','default');
             $("#div_friend_tagging").css("display", "none");
             $("#icon-user").css("color", "#333");
             $("#icon-user").data('select', 'off');

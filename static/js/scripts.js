@@ -23,7 +23,8 @@ $(document).on('change', '.form-group :file', function() {
 
 $(document).on('change', "input#good_thing", function(){
     if ($("input#good_thing").val().length >= 1){
-        $("#submit_good_thing").removeClass('disabled');
+        $("#submit_good_thing").prop('disabled', false);
+        // $("#submit_good_thing").removeClass('disabled');
     }
 });
 
@@ -117,8 +118,12 @@ $(document).on("click","#submit_good_thing",function(e) {
     data_in.append("mentions", mention_list);
     data_in.append("view", "");
 
-    $("#submit_good_thing").css("display","none");
-    $("#posting").css("display","inline");
+    // $("#submit_good_thing").val("Posting...");
+    // $("#submit_good_thing").css("font-size","10px");
+    $("#submit_good_thing").prop("disabled","true");
+    $('body').css('cursor','progress');
+    $("#submit_good_thing").css("background-color","#cccccc");
+    // $("#submit_good_thing").css("display","none");
     console.log($('#good_thing').text());
 
     $.get("/upload").done(function(data){
@@ -143,8 +148,11 @@ $(document).on("click","#submit_good_thing",function(e) {
             get_posts(data, true);
             get_stats();
 
-            $("#submit_good_thing").css("display","block");
-            $("#posting").css("display","none");
+            // $("#submit_good_thing").val("Post");
+            // $("#submit_good_thing").prop("disabled","true");
+            // $("#posting").css("display","none");
+            $("#submit_good_thing").css("background-color","#59b329");
+            $('body').css('cursor','default');
             $("#div_friend_tagging").css("display", "none");
             $("#icon-user").css("color", "#333");
             $("#icon-user").data('select', 'off');
