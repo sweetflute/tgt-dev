@@ -97,6 +97,17 @@ $(document).on("click","a#delete",function(e) {
 });
 
 // save a comment
+
+$(document).on("keydown", "form#comment_form", function(e){
+    console.log($("#comment_text").val());
+    console.log($("#comment_text").attr("placeholder"));
+    if(e.which == 13) {
+        e.preventDefault();
+        if ($("#comment_text").val() != "" && $("#comment_text").val() != $("#comment_text").attr("placeholder"))
+            $("form#comment_form").submit();
+    }
+});
+
 $(document).on("submit","form#comment_form",function(e) {
     var good_thing = $(this);
     var url_data = $( this ).serialize() + '&good_thing=' + $( this ).parents('div#data_container').data('id');

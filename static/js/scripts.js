@@ -223,7 +223,25 @@ $(document).on("click","a#delete",function(e) {
     return false;
 });
 
+
 // save a comment
+$(document).on("keydown", "form#comment_form", function(e){
+    console.log($("#comment_text").val());
+    console.log($("#comment_text").attr("placeholder"));
+    if(e.which == 13) {
+        e.preventDefault();
+        if ($("#comment_text").val() != "" && $("#comment_text").val() != $("#comment_text").attr("placeholder"))
+            $("form#comment_form").submit();
+    }
+});
+// $("form#comment_form").keypress(function(e){
+//     e.preventDefault();
+//     console.log($("#comment_text").val());
+//     console.log($("#comment_text").attr("placeholder"));
+//     if(e.which == 13 && $("#comment_text").val() != "" && $("#comment_text").val() != $("#comment_text").attr("placeholder"))
+//         $("form#comment_form").submit();
+// });
+
 $(document).on("submit","form#comment_form",function(e) {
     var good_thing = $(this);
     var url_data = $( this ).serialize() + '&good_thing=' + $( this ).parents('div#data_container').data('id');
@@ -419,6 +437,7 @@ function load_all_post(){
 function change_view(){
     $( "a#view_select" ).click(function( event ) {
         // var timezone_offset = (new Date().getTimezoneOffset())/60;
+        $('body').css('cursor','progress');
         current_view = $(this).data('view');
         // var cursor = "";
         // if($('#current-cursor').attr('data-name') != null)
@@ -427,6 +446,7 @@ function change_view(){
         var data = 'view=' + current_view + '&cursor=';
 
         $.post( "/post", data).done(function (data) {
+            $('body').css('cursor', 'default');
             $('ul#good_things').empty();
             get_posts(data,false);
         });

@@ -600,13 +600,13 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
         good_thing_text = self.request.get('good_thing')
         try:
             good_thing_text = base64.b64decode(good_thing_text).decode('utf-8')
-        except UnicodeDecodeError:
+        except:
             pass
         # logging.info(good_thing_text)
         reason = self.request.get('reason')
         try:
             reason = base64.b64decode(reason).decode('utf-8')
-        except UnicodeDecodeError:
+        except:
             pass
         user_id = str(self.current_user['id'])
         user = models.User.get_by_key_name(user_id)

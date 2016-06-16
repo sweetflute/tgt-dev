@@ -250,9 +250,9 @@ body {
   line-height: 20px;
   padding: 2px 6px;
   font-size: 12px;
-  width:60%;
+  width:80%;
 }
-#good_things form#comment_form button {
+/*#good_things form#comment_form button {
   border-radius: 4px;
   border: none;
   background-color: #20aae5;
@@ -267,7 +267,7 @@ body {
 }
 #good_things form#comment_form button:first-letter {
   text-transform: uppercase;
-}
+}*/
 
 #good_things #comments #name{
   display: inline-block;
