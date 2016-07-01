@@ -234,11 +234,14 @@ $(document).on("click","a#delete",function(e) {
 
 // save a comment
 $(document).on("keydown", "form#comment_form", function(e){
-    console.log($("#comment_text").val());
-    console.log($("#comment_text").attr("placeholder"));
+    // console.log($(this).attr("id"));
+    comment_text = $(this).children("#comment_text");
+    // console.log(comment_text.attr("id"));
+    // console.log($("#comment_text").attr("placeholder"));
     if(e.which == 13) {
+        // console.log($("#comment_text").val());
         e.preventDefault();
-        if ($("#comment_text").val() != "" && $("#comment_text").val() != $("#comment_text").attr("placeholder"))
+        if (comment_text.val() != "" && comment_text.val() != comment_text.attr("placeholder"))
             $("form#comment_form").submit();
     }
 });

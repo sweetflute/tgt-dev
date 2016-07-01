@@ -296,8 +296,8 @@ class Survey(db.Model):
 # model for each good thing
 # TODO: update to work with images
 class GoodThing(db.Model):
-    good_thing = db.StringProperty(required=True,  multiline=True)
-    reason = db.StringProperty(default=None)
+    good_thing = db.StringProperty(required=True, multiline=True)
+    reason = db.StringProperty(default=None, multiline=True)
     created = db.DateTimeProperty(auto_now_add=True)
     created_origin = db.DateTimeProperty(auto_now_add=True)
     user = db.ReferenceProperty(User,required=True)

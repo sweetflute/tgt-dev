@@ -1,9 +1,17 @@
 
 $(document).ready(function(){
-
-
+ 
     
-    
+    if(window.location.hash) {
+        // console.log("hash");
+        var hash = window.location.hash.substring(1);
+        // console.log(hash);
+        if(hash =="web-info"){
+            $('#short-info').css('display', 'none');
+            $('#web-info').css('display','block');
+        }
+    }
+
     $('[data-toggle="tooltip"]').tooltip(); 
     // $.validate();
 
@@ -14,6 +22,11 @@ $(document).ready(function(){
     $("#yes-btn").click(function() {
         $('#enroll-form').css('display', 'none');
         $('#email-form').css('display','block');    
+    });
+
+    $("#read-web-btn").click(function() {
+        $('#short-info').css('display', 'none');
+        $('#web-info').css('display','block');    
     });
 
     $("#exit-btn").click(function() {

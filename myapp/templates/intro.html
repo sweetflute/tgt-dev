@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+x{% extends "base.html" %}
 {% block head %}
 <script src='/static/js/intro.js'></script>
 {% endblock %}
@@ -10,7 +10,60 @@
 {% endblock %}
 {% block body %}
 
-<div class="container-fluid">
+<div class="container-fluid" id="short-info">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="page-header">
+                        <h2 class="text-center">Positive Psychology Study</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <blockquote>
+                                <h3>How do I participate?</h3>
+                                <p>Just sign up! You’ll be invited to use one of the applications. You can use it as much or as little as you like, but it should take a maximum of five minutes a day to use. </p>
+                                <p>To learn more about your experience, we’ll ask you to complete short surveys. The first survey will occur when you enroll. We’ll also email with an invitation to participate in a survey one week, one month, three months, and six months after you sign up. Each time you complete a survey, you will be entered in a lottery for a gift card.</p>
+                            </blockquote>
+                            <blockquote>
+                                <h3>What are the prizes?</h3>
+                                <p>We know the surveys take time. As a token of your appreciation, each time you complete a survey, you will earn an entry into a lottery for the following prizes:
+                                    <ul>
+                                        <li>One $500 Amazon gift card</li>
+                                        <li>One of ten $100 Amazon gift cards</li>
+                                        <li>One of twenty $25 Amazon gift cards</li>
+                                    </ul></p>
+                                <p>You can complete each survey regardless of whether you have been using the app, so enter even if you haven’t used the software! </p>
+                            </blockquote>
+                        </div>
+                        <div class="col-sm-3">
+                            <img src="/static/slides/intro.png" style="width:100%"/>
+                            <br/>
+                            <br/>
+                            <p class="text-left">
+                                Returning user? Log in here:
+                                <fb:login-button autologoutlink="true" data-size= "large" scope="publish_actions, user_friends"></fb:login-button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="enroll-form">
+                <div class="col-sm-6">
+                    <button id="read-web-btn" type="button" class="btn btn-success btn-lg btn-block">Read more and sign up</button>
+                </div>
+                <div class="col-sm-6">
+                    <a href="mailto:happyapp@uw.edu"><button type="button" class="btn btn-default btn-lg btn-block">Contact us with questions</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" id="web-info" style="display:none;">
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <div class="row">

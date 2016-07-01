@@ -13,6 +13,9 @@ div.post {
   display: inline-block;
 }
 
+#short-info blockquote{
+  font-size: 14px;
+}
 #status {
   color: #999 !important;
   /*margin-bottom:10px;*/
