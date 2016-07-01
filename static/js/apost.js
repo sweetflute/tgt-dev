@@ -375,7 +375,7 @@ function get_posts(post_list, posting) {
 }
 
 function get_comments(comment_list,id) {
-    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/apost_good_thing_tpl.html', function(templates) {
         var comment_section = $('div#data_container[data-id="'+id+'"]').find('div#comments');
         // comment_section.empty();
         comment_list.forEach(function(data) {
@@ -464,7 +464,7 @@ function get_settings() {
 }
 
 function get_notifications(notification_list) {
-    $.get('../static/templates/profile_good_thing_tpl.html', function(templates) {
+    $.get('../static/templates/apost_good_thing_tpl.html', function(templates) {
         if (notification_list.length > 0) {
             notification_list.forEach(function(data) {
                 var template;
