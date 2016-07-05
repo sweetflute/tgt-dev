@@ -97,6 +97,18 @@
         </div>
         <hr>
         <h4>FAQ</h4>
+        <ol>
+          <li><h5>What is a good thing?</h5></li>
+          A good thing can be anything that went well, that you enjoyed, or that you were greatful for. They can be small moments or events of great importance to you. They might vary from day to day and person to person. If it made you happier, it can be a good thing.
+          <li><h5>Do I have to write three good things at the same time?</h5></li>
+          You can write any number of good things at any time that is convinient to you. We recommend writing at least three per day, but you don't have to write them at exactly the same time. Some people make record them as they happen, others make a ritual of writing and reflecting on them before they go to bed. Try it and see what works best for you.
+          <li><h5>Why do I have to record a reason?</h5></li>
+          The exercise works best when you reflect on why something happened. Whether it happened because of your initiative or skills, because of a caring friend or family member, or even just by chance, pausing to consider why a good thing happened can help you find gratitude or appreciation, and may even help you repeat it.
+          <li><h5>Will the app share my post to my Facebook Newsfeed or any other Facebook group?</h5></li>
+          No, our app will never share your posts to Facebook.
+          <li><h5>Why did you ask me to login my Facebook account?</h5></li>
+          We use Facebook authentication to manage user accounts and support login. It also allows you to tag friends in your good things/memories.
+        </ol>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" id="close_faq">Close</button>
@@ -121,6 +133,12 @@
         <!-- </div>
     </div> -->
     {% endif %}
+    <div class="alert alert-warning alert-dismissible" role="alert" id="privacy-info">
+      This is your private space to record Good Things. You can tag your Facebook friends, but your posts will be private; we will not share them with your friends or on Facebook.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <!-- input for posting a good thing -->
     <div class="panel panel-default" id="my_good_thing">
         <div class="panel-body">
@@ -138,7 +156,7 @@
                         </div>
                         <!-- the reason -->
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Why did it happen?" name="reason" id="reason" data-toggle="tooltip" data-placement="bottom" title="Reasons will never be shared!"/>
+                            <input type="text" class="form-control" placeholder="Why did it happen?" name="reason" id="reason"/>
                         </div>
                         <!-- friends tagged -->
                         <div class="input-group"  id="div_friend_tagging">

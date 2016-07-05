@@ -361,6 +361,10 @@ class GoodThing(db.Model):
             cheered = False
         return cheered
 
+    def short_name(self, username):
+        ss = username.split()
+        return '%s %s.' % (ss[0], ss[-1][0])
+
     # return a list of user names mentioned in this good thing
     def get_mentions(self):
         mentions = self.mention_set.ancestor(self).fetch(limit=None)
@@ -369,8 +373,11 @@ class GoodThing(db.Model):
         # print "get_mentions: len(mentions) = " + str(len(mentions)) + ", mentions_no = " + str(self.mentions_no)
         # if (self.mentions_no != 0):
             # while(len(mentions) < self.mentions_no):
-                # mentions = self.mention_set.fetch(limit=None)  
-        result = [{'name':mention.to_user_name, 'id':mention.to_fb_user_id} for mention in mentions]
+                # mentions = self.mention_set.fetch(limit=None)
+        if self.user.name != self.user.display_name:
+            result = [{'name':self.short_name(mention.to_user_name), 'id':mention.to_fb_user_id} for mention in mentions]
+        else:
+            result = [{'name':mention.to_user_name, 'id':mention.to_fb_user_id} for mention in mentions]
         # logging.info("get_mentions:" + str(result))
         return result
 

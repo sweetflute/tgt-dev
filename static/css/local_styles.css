@@ -75,6 +75,10 @@ div.post {
   font-size: 20px;
 }
 
+#privacy-info{
+  display:none;
+}
+
 /*.form-group .glyphicon{
   margin-left: 10px;
 }*/

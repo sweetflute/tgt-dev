@@ -76,6 +76,11 @@ $(document).on("click", ".glyphicon-user", function(){
     } 
 });
 
+$(document).on("closed.bs.alert","#privacy-info", function(e){
+    Cookies.set('privacy-dismissed', true, {expires:365});
+});
+
+
 // submit a new post
 // clear form on success
 $(document).on("click","#submit_good_thing",function(e) {
@@ -288,7 +293,14 @@ $(window).scroll(function()
 
 // on page load
 window.onload = function() {
-    $( document ).ready(function() {        
+    $( document ).ready(function() { 
+
+        isPrivacyDismissed = Cookies.get("privacy-dismissed");
+        if(isPrivacyDismissed)
+            $("#privacy-info").css("display","none");
+        else
+            $("#privacy-info").css("display","block");
+
         load_all_post();
         change_view();
         tag_friends();

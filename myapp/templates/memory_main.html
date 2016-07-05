@@ -93,6 +93,14 @@
         </div>
         <hr/>
         <h4>FAQ</h4>
+          <ol>
+            <li><h5>Will the app share my post to my Facebook Newsfeed or any other Facebook group?</h5></li>
+            No, our app will never share your posts to Facebook.
+            <li><h5>Why did you ask me to login my Facebook account?</h5></li>
+            We use Facebook authentication to manage user accounts and support login. It also allows you to tag friends in your good things/memories.
+            <li><h5>Do I have to post to post a happy memory?</h5></li>
+            You can use this tool as a space to write about any memory you want.
+          </ol>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" id="close_faq">Close</button>
@@ -117,6 +125,12 @@
         <!-- </div>
     </div> -->
     {% endif %}
+    <div class="alert alert-warning alert-dismissible" role="alert" id="privacy-info">
+      This is your private space to record early childhood memories. You can tag your Facebook friends, but your posts will be private; we will not share them with your friends or on Facebook.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <!-- input for posting a good thing -->
     <div class="panel panel-default" id="my_good_thing">
         <div class="panel-body">
@@ -130,7 +144,7 @@
                     <form id="post" action=''>
                       <!-- the good thing -->
                       <div class="form-group">
-                          <textarea rows="6" class="form-control" placeholder='Write about one or more childhood memory' name="good_thing" id="good_thing" required="true"></textarea>
+                          <textarea rows="6" class="form-control" placeholder='Write about one or more childhood memory.' name="good_thing" id="good_thing" required="true"></textarea>
                       </div>
                       <!-- friends tagged -->
                       <div class="input-group"  id="div_friend_tagging">
