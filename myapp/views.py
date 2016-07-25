@@ -67,6 +67,7 @@ class BaseHandler(webapp2.RequestHandler):
                         key_name=str(profile["id"]),
                         id=str(profile["id"]),
                         name=profile["name"],
+                        display_name=profile["name"],
                         profile_url=profile["link"],
                         access_token=cookie["access_token"],
                         settings=settings,
@@ -598,11 +599,13 @@ class PostHandler(blobstore_handlers.BlobstoreUploadHandler, BaseHandler):
     def save_post(self):
         logging.info("save_post")
         good_thing_text = self.request.get('good_thing')
+        logging.info(good_thing_text)
         try:
             good_thing_text = base64.b64decode(good_thing_text).decode('utf-8')
         except:
             pass
-        # logging.info(good_thing_text)
+        good_thing_text = good_thing_text.replace('=\r\n','')
+        logging.info(good_thing_text)
         reason = self.request.get('reason')
         try:
             reason = base64.b64decode(reason).decode('utf-8')

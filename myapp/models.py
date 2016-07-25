@@ -221,6 +221,14 @@ class User(db.Model):
     survey_3_id = db.StringProperty()#3-month survey ID
     survey_4_id = db.StringProperty()#6-month survey ID
 
+    # def admin_stat(self):
+    #     stat = {
+    #         'id':self.key().id(),
+    #         'updated' = self.updated(),
+    #         'type' = self.user_type
+    #     }
+    #     return stat
+
 # model for each survey with unique survey id
 class Survey(db.Model):
     # id = db.StringProperty(required=True)

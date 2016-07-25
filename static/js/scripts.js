@@ -21,11 +21,15 @@ $(document).on('change', '.form-group :file', function() {
     $('.glyphicon-camera').data('select','on');
 });
 
-$(document).on('change', "input#good_thing", function(){
-    if ($("input#good_thing").val().length >= 1){
+$(document).on('input', "input#good_thing", function(){
+    if($("input#good_thing").val())
         $("#submit_good_thing").prop('disabled', false);
+    else
+        $("#submit_good_thing").prop('disabled', true);
+    // if ($("input#good_thing").val().length >= 1){
+    //     $("#submit_good_thing").prop('disabled', false);
         // $("#submit_good_thing").removeClass('disabled');
-    }
+    // }
 });
 
 // $(document).on('change', "input#good_thing", function(){

@@ -21,9 +21,12 @@ $(document).on('change', '.form-group :file', function() {
     $('.glyphicon-camera').data('select','on');
 });
 
-$(document).on('change', "textarea#good_thing", function(){
+$(document).on('input', "textarea#good_thing", function(){
     // $("#submit_good_thing").removeClass('disabled');
-    $("#submit_good_thing").prop('disabled', false);
+    if($("textarea#good_thing").val())
+        $("#submit_good_thing").prop('disabled', false);
+    else
+        $("#submit_good_thing").prop('disabled', true);
 });
 
 $(document).on("click","button#save_settings",function(e) {
@@ -84,13 +87,13 @@ $(document).on("close.bs.alert","#privacy-info", function(e){
 $(document).on("click","#submit_good_thing",function(e) {
     console.log($( "#post" ).serialize());
     //TODO: check required field
-    $("form#post").find('[required]').each(function(){
-        if($(this).val() == ''){
-            $(this).focus();
-            alert("Memory is required!");
-            e.preventDefault();
-        }
-    });
+    // $("form#post").find('[required]').each(function(){
+    //     if($(this).val() == ''){
+    //         $(this).focus();
+    //         alert("Memory is required!");
+    //         e.preventDefault();
+    //     }
+    // });
 
     var timezone_offset = (new Date().getTimezoneOffset())/60;
     var mention_list = JSON.stringify($('#magic_friend_tagging').magicSuggest().getSelection());
@@ -309,6 +312,8 @@ window.onload = function() {
             $('#tutorial-slider-memory').carousel('next');
         });
 
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#post').validate();
     });
 };
 
